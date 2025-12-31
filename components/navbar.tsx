@@ -17,7 +17,7 @@ import {
   Phone,
   Headphones,
   Info,
-  Mail
+  Mail,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Navbar() {
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -77,8 +78,9 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 w-full bg-white/98 backdrop-blur-sm transition-all duration-300 ${scrolled ? "shadow-lg" : "shadow-md"
-          }`}
+        className={`fixed top-0 left-0 right-0 z-50 w-full bg-white/98 backdrop-blur-sm transition-all duration-300 ${
+          scrolled ? "shadow-lg" : "shadow-md"
+        }`}
       >
         {/* Main Navbar */}
         <nav className="w-full border-b border-gray-100">
@@ -86,18 +88,17 @@ export default function Navbar() {
             <div className="flex items-center justify-between h-14 sm:h-16 lg:h-18">
               {/* LEFT: Brand Logo */}
               <div className="flex items-center shrink-0">
-                <Link href="/" className="flex items-center gap-1.5 sm:gap-2 group">
-                  <div className="bg-linear-to-br from-blue-600 to-blue-800 p-1.5 sm:p-2 rounded-lg shadow-sm group-hover:shadow-md transition-all duration-300 group-hover:scale-105">
-                    <Smartphone className="h-4 w-4 sm:h-5 sm:w-5 lg:h-6 lg:w-6 text-white" />
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-base sm:text-lg lg:text-2xl font-bold text-gray-900 tracking-tight">
-                      Silicon
-                    </span>
-                    <span className="hidden xs:block text-[9px] sm:text-[10px] lg:text-xs text-gray-500 -mt-0.5 lg:-mt-1 tracking-wide">
-                      Smart Devices
-                    </span>
-                  </div>
+                <Link
+                  href="/"
+                  className="flex items-center gap-1.5 sm:gap-2 group"
+                >
+                  <Image
+                    src="/logo.png"
+                    alt="siliconmeditech"
+                    width={170} // set width
+                    height={10} // set height
+                    className="object-contain"
+                  />
                 </Link>
               </div>
 
@@ -118,26 +119,15 @@ export default function Navbar() {
                   <DropdownMenuContent className="w-56 mt-2" align="center">
                     <DropdownMenuItem className="cursor-pointer py-2.5">
                       <Phone className="h-4 w-4 mr-2" />
-                      <Link href="/products" className="flex-1">
+                      <Link href="/products/product" className="flex-1">
                         All Products
                       </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="cursor-pointer py-2.5">
-                      <Smartphone className="h-4 w-4 mr-2" />
-                      <Link href="/products/phones" className="flex-1">
-                        Smartphones
-                      </Link>
-                    </DropdownMenuItem>
+
                     <DropdownMenuItem className="cursor-pointer py-2.5">
                       <Headphones className="h-4 w-4 mr-2" />
                       <Link href="/products/accessories" className="flex-1">
                         Accessories
-                      </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem className="cursor-pointer py-2.5 text-blue-700 font-medium">
-                      <Link href="/products/new" className="w-full">
-                        ✨ New Arrivals
                       </Link>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -154,7 +144,7 @@ export default function Navbar() {
                   href="/contact"
                   className="px-2 lg:px-4 py-2 text-sm lg:text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
                 >
-                  Contact
+                  Contact - US
                 </Link>
               </div>
 
@@ -163,7 +153,10 @@ export default function Navbar() {
                 {/* Search - Desktop */}
                 <form onSubmit={handleSearch} className="hidden lg:block">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+                    <Search
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                      size={18}
+                    />
                     <input
                       type="text"
                       value={searchQuery}
@@ -177,11 +170,18 @@ export default function Navbar() {
                 {/* Search Icon - Mobile/Tablet */}
                 <button
                   onClick={() => setSearchOpen(!searchOpen)}
-                  className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${searchOpen ? "bg-blue-700 text-white" : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                    }`}
+                  className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${
+                    searchOpen
+                      ? "bg-blue-700 text-white"
+                      : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                  }`}
                   aria-label="Toggle search"
                 >
-                  {searchOpen ? <X size={18} className="sm:w-5 sm:h-5" /> : <Search size={18} className="sm:w-5 sm:h-5" />}
+                  {searchOpen ? (
+                    <X size={18} className="sm:w-5 sm:h-5" />
+                  ) : (
+                    <Search size={18} className="sm:w-5 sm:h-5" />
+                  )}
                 </button>
 
                 {/* Wishlist - Hidden on smallest screens */}
@@ -202,7 +202,10 @@ export default function Navbar() {
                   className="relative p-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
                   aria-label="Shopping cart"
                 >
-                  <ShoppingCart size={18} className="sm:w-5 sm:h-5 lg:w-6 lg:h-6" />
+                  <ShoppingCart
+                    size={18}
+                    className="sm:w-5 sm:h-5 lg:w-6 lg:h-6"
+                  />
                   <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-[10px] sm:text-xs font-bold bg-blue-700 text-white rounded-full">
                     2
                   </span>
@@ -217,23 +220,26 @@ export default function Navbar() {
                       <ChevronDown className="h-3 w-3 lg:h-4 lg:w-4" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="w-48 mt-2" align="end">
-                      <DropdownMenuItem className="cursor-pointer py-2.5">
-                        <LogIn className="h-4 w-4 mr-2" />
-                        Login
+                      <DropdownMenuItem
+                        asChild
+                        className="cursor-pointer py-2.5"
+                      >
+                        <Link href="/login" className="flex items-center">
+                          <LogIn className="h-4 w-4 mr-2" />
+                          Login
+                        </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer py-2.5">
-                        <UserPlus className="h-4 w-4 mr-2" />
-                        Sign Up
+
+                      <DropdownMenuItem
+                        asChild
+                        className="cursor-pointer py-2.5"
+                      >
+                        <Link href="/signup" className="flex items-center">
+                          <UserPlus className="h-4 w-4 mr-2" />
+                          Sign Up
+                        </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem className="cursor-pointer py-2.5">
-                        <Package className="h-4 w-4 mr-2" />
-                        My Orders
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer py-2.5">
-                        <Heart className="h-4 w-4 mr-2" />
-                        Wishlist
-                      </DropdownMenuItem>
+                      
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -256,7 +262,10 @@ export default function Navbar() {
           <div className="lg:hidden border-t border-gray-200 bg-white animate-in slide-in-from-top duration-200">
             <div className="max-w-7xl mx-auto px-3 sm:px-4 py-3">
               <form onSubmit={handleSearch} className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={18} />
+                <Search
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                  size={18}
+                />
                 <input
                   type="text"
                   value={searchQuery}
@@ -281,8 +290,9 @@ export default function Navbar() {
 
       {/* Mobile Menu Drawer */}
       <aside
-        className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out ${mobileMenu ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out ${
+          mobileMenu ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         <div className="flex flex-col h-full">
           {/* Mobile Menu Header */}
@@ -314,7 +324,9 @@ export default function Navbar() {
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold text-gray-900">Welcome!</p>
-                  <p className="text-sm text-gray-600">Sign in to your account</p>
+                  <p className="text-sm text-gray-600">
+                    Sign in to your account
+                  </p>
                 </div>
               </div>
               <div className="flex gap-2">
@@ -322,7 +334,10 @@ export default function Navbar() {
                   <LogIn className="h-4 w-4 mr-1" />
                   Login
                 </Button>
-                <Button variant="outline" className="flex-1 text-sm py-2 border-blue-700 text-blue-700 hover:bg-blue-50">
+                <Button
+                  variant="outline"
+                  className="flex-1 text-sm py-2 border-blue-700 text-blue-700 hover:bg-blue-50"
+                >
                   <UserPlus className="h-4 w-4 mr-1" />
                   Sign Up
                 </Button>
@@ -411,7 +426,9 @@ export default function Navbar() {
                 <Heart className="h-5 w-5" />
                 <span>My Wishlist</span>
               </div>
-              <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">3</span>
+              <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">
+                3
+              </span>
             </Link>
             <Link
               href="/orders"
@@ -425,7 +442,10 @@ export default function Navbar() {
             </Link>
             <div className="pt-2 border-t border-gray-300">
               <p className="text-xs text-center text-gray-500">
-                Need help? <Link href="/support" className="text-blue-700 font-medium">Contact Support</Link>
+                Need help?{" "}
+                <Link href="/support" className="text-blue-700 font-medium">
+                  Contact Support
+                </Link>
               </p>
             </div>
           </div>

@@ -160,7 +160,7 @@ export default function ProductCategorySection() {
         <div className="text-center mt-16 pt-12 border-t border-gray-100">
           <div className="max-w-xl mx-auto">
             <p className="text-gray-600 mb-6">
-              Can't find what you're looking for?
+              Can&apos;t find what you&apos;re looking for?
             </p>
             <button
               onClick={() => router.push('/shop/products')}

@@ -11,32 +11,31 @@ import {
   Instagram,
   Heart,
 } from "lucide-react";
+import Image from "next/image";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300">
-
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Company Info */}
           <div>
             <Link href="/" className="flex items-center gap-2 group mb-4">
-              <div className="bg-gradient-to-br from-blue-600 to-blue-800 p-2 rounded-lg shadow-lg group-hover:shadow-xl transition-all duration-300">
-                <Smartphone className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <span className="text-xl font-bold text-white">Silicon</span>
-                <span className="block text-xs text-gray-400 -mt-1">
-                  Smart Devices
-                </span>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="Silicon Meditech Logo"
+                width={200}
+                height={60}
+                priority
+              />
             </Link>
 
             <p className="text-sm text-gray-400 mb-5 leading-relaxed">
-              Your trusted destination for the latest smartphones, accessories, and tech gadgets.
+              Your trusted destination for the latest smartphones, accessories,
+              and tech gadgets.
             </p>
 
             {/* Social Media */}
@@ -218,4 +217,3 @@ export default function Footer() {
     </footer>
   );
 }
-

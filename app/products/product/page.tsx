@@ -28,6 +28,7 @@ type Specification = {
 
 type ProductFromAPI = {
   _id: string;
+  modelId : string
   productTitle: string;
   productCategory: string;
   description?: string;
@@ -39,6 +40,7 @@ type ProductFromAPI = {
 
 type ProductForList = {
   id: string;
+  modelId : string
   title: string;
   category: string;
   price: number;
@@ -83,6 +85,7 @@ export default function ShopPage() {
             if (product.colors?.length) {
               return product.colors.map((color) => ({
                 id: product._id,
+                modelId: product.modelId,
                 title: product.productTitle,
                 category: product.productCategory,
                 price: product.priceDetails?.finalPrice || 0,
@@ -96,6 +99,7 @@ export default function ShopPage() {
             return [
               {
                 id: product._id,
+                modelId : product.modelId,
                 title: product.productTitle,
                 category: product.productCategory,
                 price: product.priceDetails?.finalPrice || 0,
@@ -211,7 +215,7 @@ Product Image: ${selectedProduct.image}
                 {/* Action Buttons */}
                 <div className="flex gap-2">
                   <button
-                    onClick={() => router.push(`/products/product/${product.id}`)}
+                    onClick={() => router.push(`/products/product/${product.modelId}`)}
                     className="flex-1 px-3 py-2 bg-blue-900 text-white text-xs font-semibold rounded-lg
                              hover:bg-blue-800 transition-all duration-200 flex items-center justify-center gap-1.5"
                   >

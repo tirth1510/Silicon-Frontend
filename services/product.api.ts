@@ -7,7 +7,7 @@ import {
   ProductDTO,
   ProductModelDTO,
   ColorVariantPayload,
-  UpdateProductModelFeaturesPayload
+  UpdateProductModelFeaturesPayload,
 } from "@/types/product";
 
 const API = axios.create({
@@ -82,3 +82,5 @@ export const updateProductModelFeatures = async (
   );
   return res.data;
 };
+
+

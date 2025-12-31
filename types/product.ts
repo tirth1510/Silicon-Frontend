@@ -108,3 +108,5 @@ export interface UpdateProductModelFeaturesPayload {
   standardParameters?: { iconName: string }[];
   optiomalParameters?: { iconName: string }[];
 }
+
+

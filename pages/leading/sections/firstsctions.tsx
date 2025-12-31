@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { ArrowRight, Award, CheckCircle, Zap, Shield, TrendingUp, Star, Users } from "lucide-react";
@@ -5,6 +6,7 @@ import Autoplay from "embla-carousel-autoplay";
 import * as React from "react";
 import ProductsPage from "./products2";
 import Accessories from "./accessories";
+import LimitedTimeDeal from "./limitedDeal"
 import Category from "./category";
 import {
   Carousel,
@@ -14,7 +16,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import Image from "next/image";
-
+import Sell from "./sell"
 type HeroSliderProps = {
   setCurrentSection?: (
     section: "home" | "portfolio" | "shop" | "about" | "contact"
@@ -224,9 +226,17 @@ export default function HeroSlider({ setCurrentSection }: HeroSliderProps) {
           </div>
         </div>
       </section>
+      
+      <section>
+        <LimitedTimeDeal />
+      </section>
 
       <section className="bg-white">
         <Category />
+      </section>
+
+      <section>
+        <Sell />
       </section>
 
       <section className="bg-white">
