@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 
 type ProductColor = {
   name: string;
-  images?: { url: string }[];
+  images?: { url: string; }[];
 };
 
 type ProductFromAPI = {
@@ -36,7 +36,7 @@ type ProductFromAPI = {
     finalPrice?: number;
   };
   colors?: ProductColor[];
-  productImages?: { url: string }[];
+  productImages?: { url: string; }[];
 };
 
 type ProductsAPIResponse = {
@@ -111,8 +111,6 @@ Product Image: ${selectedProduct.productImage}
           "http://localhost:5000/api/accessorize/all",
           { timeout: 10000 }
         );
-
-        console.log("RAW API:", response.data);
 
         if (!response.data.success) {
           throw new Error("API failed");

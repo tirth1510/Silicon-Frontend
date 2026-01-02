@@ -3,8 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 import { Providers } from "@/providers/providers";
-import Navbar from "@/components/navbar"; // <-- Import your navbar here
-import Footer from "@/components/footer"; // <-- Import your footer here
+import ConditionalLayout from "@/components/conditional-layout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,16 +29,9 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
-          {/* Add navbar above page content */}
-          <Navbar />
-
-          {/* Add some top padding to prevent content being hidden under fixed navbar */}
-          <main>
+          <ConditionalLayout>
             {children}
-          </main>
-
-          {/* Footer at the bottom */}
-          <Footer />
+          </ConditionalLayout>
         </Providers>
       </body>
     </html>

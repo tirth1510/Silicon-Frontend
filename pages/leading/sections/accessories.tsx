@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input";
 
 type ProductColor = {
   name: string;
-  images?: { url: string }[];
+  images?: { url: string; }[];
 };
 
 type ProductFromAPI = {
@@ -36,7 +36,7 @@ type ProductFromAPI = {
     finalPrice?: number;
   };
   colors?: ProductColor[];
-  productImages?: { url: string }[];
+  productImages?: { url: string; }[];
 };
 
 type ProductsAPIResponse = {
@@ -112,60 +112,42 @@ Product Image: ${selectedProduct.productImage}
           { timeout: 10000 }
         );
 
-        console.log("RAW API:", response.data);
-
         if (!response.data.success) {
           throw new Error("API failed");
         }
 
-        const mapped: ProductForList[] = response.data.products.flatMap(
+        // Handle different API response structures
+        const productsArray = response.data.products || response.data.data || [];
+
+        const mapped: ProductForList[] = productsArray.map(
           (product: {
-            productImages: any;
-
+            id: string;
+            productTitle: string;
+            productCategory: string;
             price: number;
-            discount: number;
+            discount?: number;
             finalPrice: number;
-
-            colors: any[];
-            _id: any;
-            productTitle: any;
-            productCategory: any;
+            productImages?: { url: string; }[];
+            galleryImages?: { url: string; }[];
           }) => {
-            const price = product.price ?? 0;
-            const discount = product.discount ?? 0;
-
-            if (product.colors?.length) {
-              return product.colors.map((color) => ({
-                id: product._id,
-                productname: product.productTitle,
-                category: product.productCategory || "Accessories",
-                price,
-                finalPrice: product.finalPrice,
-                discount,
-                color: color.name,
-                productImage:
-                  product.productImages?.[0]?.url ??
-                  "https://via.placeholder.com/400x400?text=No+Image",
-              }));
-            }
-
-            return [
-              {
-                id: product._id,
-                productname: product.productTitle,
-                category: product.productCategory || "Accessories",
-                price,
-                finalPrice: product?.finalPrice,
-                discount,
-                productImage:
-                  product.productImages?.[0]?.url ??
-                  "https://via.placeholder.com/400x400?text=No+Image",
-              },
-            ];
+            return {
+              id: product.id,
+              productname: product.productTitle,
+              category: product.productCategory || "Accessories",
+              price: product.price ?? 0,
+              finalPrice: product.finalPrice ?? product.price ?? 0,
+              discount: product.discount ?? 0,
+              productImage:
+                product.productImages?.[0]?.url ??
+                "https://via.placeholder.com/400x400?text=No+Image",
+            };
           }
         );
 
-        setProducts(mapped.slice(0, 8));
+        // Filter out products with undefined IDs
+        const validProducts = mapped.filter(p => p.id);
+
+        setProducts(validProducts.slice(0, 8));
       } catch (error) {
         console.error("❌ API fetch error:", error);
         setProducts([]);
@@ -236,10 +218,10 @@ Product Image: ${selectedProduct.productImage}
               Check back soon for new products
             </p>
             <Button
-              onClick={() => router.push("/shop/products")}
+              onClick={() => router.push("/products/accessories")}
               className="bg-blue-900 hover:bg-blue-800 text-white font-semibold px-6 py-2 rounded-lg"
             >
-              Browse All Products
+              Browse All Accessories
             </Button>
           </div>
         )}
@@ -254,13 +236,13 @@ Product Image: ${selectedProduct.productImage}
                                        hover:border-blue-900 hover:shadow-lg transition-all duration-300"
               >
                 {/* Image Section */}
-                <div className="relative h-48 bg-gray-50 overflow-hidden">
+                <div className="relative h-48 bg-gray-50 overflow-hidden rounded-t-xl">
                   <Image
                     src={product.productImage}
                     alt={product.productname}
                     fill
                     unoptimized
-                    className="object-cover group-hover:scale-110 transition-transform duration-300"
+                    className="object-contain p-2 group-hover:scale-110 transition-transform duration-300"
                   />
 
                   {/* Category Badge */}
@@ -272,6 +254,16 @@ Product Image: ${selectedProduct.productImage}
                       {product.category}
                     </span>
                   </div>
+
+                  {/* Discount Badge */}
+                  {product.discount > 0 && (
+                    <div className="absolute top-2 right-2">
+                      <span className="inline-block px-2.5 py-1 text-[10px] font-semibold text-white bg-red-600 
+                                     rounded-md shadow-md">
+                        {product.discount}% OFF
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Content Section */}
@@ -281,18 +273,30 @@ Product Image: ${selectedProduct.productImage}
                     {product.productname}
                   </h3>
 
-                  <p className="text-xl font-bold text-blue-900 mb-4">
-                    ₹
-                    {(product.finalPrice ?? product.price)?.toLocaleString(
-                      "en-IN"
+                  {/* Price */}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2">
+                      <p className="text-xl font-bold text-blue-900">
+                        ₹{product.finalPrice.toLocaleString("en-IN")}
+                      </p>
+                      {product.discount > 0 && (
+                        <p className="text-sm text-gray-500 line-through">
+                          ₹{product.price.toLocaleString("en-IN")}
+                        </p>
+                      )}
+                    </div>
+                    {product.discount > 0 && (
+                      <p className="text-xs text-green-700 font-semibold">
+                        Save ₹{(product.price - product.finalPrice).toLocaleString("en-IN")}
+                      </p>
                     )}
-                  </p>
+                  </div>
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
                     <button
                       onClick={() =>
-                        router.push(`/shop/products/${product.id}`)
+                        router.push(`/products/accessories/${product.id}`)
                       }
                       className="flex-1 px-3 py-2 bg-blue-900 text-white text-xs font-semibold rounded-lg
                                            hover:bg-blue-800 transition-all duration-200 flex items-center justify-center gap-1.5"
@@ -324,14 +328,14 @@ Product Image: ${selectedProduct.productImage}
         {products.length > 0 && (
           <div className="text-center mt-12">
             <Button
-              onClick={() => router.push("/shop/products")}
+              onClick={() => router.push("/products/accessories")}
               className="inline-flex items-center gap-2 px-8 py-4 
                          bg-blue-900 text-white font-semibold rounded-xl 
                          hover:bg-blue-800 transition-all duration-300 
                          shadow-lg hover:shadow-xl hover:-translate-y-0.5"
             >
               <ShoppingBag className="w-5 h-5" />
-              <span>View All Products</span>
+              <span>View All Accessories</span>
             </Button>
           </div>
         )}

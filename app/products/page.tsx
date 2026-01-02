@@ -3,8 +3,9 @@
 
 import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { ShoppingBag, Eye, MessageCircle } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { ShoppingBag, Eye, MessageCircle, X } from "lucide-react";
+import { useCategoryBySlug } from "@/hooks/useCategories";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -57,8 +58,10 @@ type ProductForList = {
 };
 
 /* ---------- COMPONENT ---------- */
-export default function ShopPage() {
+export default function AllProductsPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const categorySlug = searchParams.get("category");
 
   const [products, setProducts] = useState<ProductForList[]>([]);
   const [open, setOpen] = useState(false);
@@ -75,6 +78,9 @@ export default function ShopPage() {
 
   // Static fallback image when API doesn't provide one
   const FALLBACK_IMAGE = "https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg";
+
+  // Fetch category info if category slug is provided
+  const { category, loading: categoryLoading } = useCategoryBySlug(categorySlug || undefined);
 
   /* ---------- FETCH PRODUCTS ---------- */
   useEffect(() => {
@@ -104,9 +110,9 @@ export default function ShopPage() {
               price: priceInfo?.finalPrice || 0,
               originalPrice: priceInfo?.price || 0,
               discount: priceInfo?.discount || 0,
-              image: firstColor?.imageUrl ||
-                firstColor?.productImageUrl?.[0]?.url ||
-                FALLBACK_IMAGE,
+              image: firstColor?.imageUrl || 
+                     firstColor?.productImageUrl?.[0]?.url || 
+                     FALLBACK_IMAGE,
             };
           });
 
@@ -144,15 +150,26 @@ Product Image: ${selectedProduct.image}
     setOpen(false);
   };
 
-  // Show only 8 random products - memoized so it only shuffles once when products are loaded
+  // Filter products by category
   const visibleProducts = useMemo(() => {
-    return products
-      .sort(() => Math.random() - 0.5)
-      .slice(0, 8);
-  }, [products.length]); // Only re-shuffle when products array length changes (i.e., when data is first loaded)
+    if (!categorySlug || !category) {
+      return products; // Show all products if no category filter
+    }
+
+    // Filter products where productCategory matches categoryId
+    // Convert both to strings for comparison to handle any type mismatches
+    return products.filter(
+      (product) => String(product.category) === String(category.categoryId)
+    );
+  }, [products, category, categorySlug]);
+
+  // Clear category filter
+  const clearCategoryFilter = () => {
+    router.push("/products");
+  };
 
   return (
-    <section className="relative bg-white py-20 overflow-hidden">
+    <section className="relative bg-white py-20 overflow-hidden min-h-screen">
       {/* Subtle Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div className="absolute inset-0"
@@ -163,25 +180,78 @@ Product Image: ${selectedProduct.image}
         </div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
         {/* SECTION HEADER */}
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg mb-5 border border-blue-100">
             <ShoppingBag className="w-4 h-4 text-blue-900" />
-            <span className="text-sm font-semibold text-blue-900">Featured Collection</span>
+            <span className="text-sm font-semibold text-blue-900">
+              {category ? category.categoryName : "Complete Collection"}
+            </span>
           </div>
 
           <h2 className="text-4xl sm:text-5xl font-bold text-blue-900 mb-4">
-            Premium Products
+            {category ? category.categoryName : "All Medical Equipment"}
           </h2>
 
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Explore our carefully curated selection of high-quality medical equipment
+            {category 
+              ? category.categoryDescription || "Browse products in this category"
+              : "Browse our complete range of high-quality medical equipment and devices"
+            }
           </p>
         </div>
 
+        {/* Active Category Filter Badge */}
+        {category && (
+          <div className="mb-6 flex justify-center items-center gap-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-900 text-white rounded-lg shadow-md">
+              <span className="text-sm font-semibold">
+                Filtered by: {category.categoryName}
+              </span>
+              <button
+                onClick={clearCategoryFilter}
+                className="ml-2 p-1 hover:bg-blue-800 rounded transition-colors"
+                aria-label="Clear filter"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="text-sm text-gray-600 font-medium">
+              {visibleProducts.length} {visibleProducts.length === 1 ? 'product' : 'products'} found
+            </div>
+          </div>
+        )}
+
+        {/* Loading State for Category */}
+        {categoryLoading && categorySlug && (
+          <div className="flex justify-center items-center py-10">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900"></div>
+          </div>
+        )}
+
+        {/* No Products Found */}
+        {!categoryLoading && categorySlug && category && visibleProducts.length === 0 && (
+          <div className="text-center py-20">
+            <ShoppingBag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-gray-900 mb-2">
+              No products found in this category
+            </h3>
+            <p className="text-gray-600 mb-4">
+              We couldn't find any products matching "{category.categoryName}"
+            </p>
+            <button
+              onClick={clearCategoryFilter}
+              className="px-6 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors font-semibold"
+            >
+              View All Products
+            </button>
+          </div>
+        )}
+
         {/* ---------- PRODUCT GRID ---------- */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {!categoryLoading && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {visibleProducts.map((product, index) => (
             <div
               key={`${product.id}-${index}`}
@@ -269,21 +339,6 @@ Product Image: ${selectedProduct.image}
               </div>
             </div>
           ))}
-        </div>
-
-        {/* View More Products Button */}
-        {products.length > 8 && (
-          <div className="text-center mt-12">
-            <Button
-              onClick={() => router.push('/products')}
-              className="inline-flex items-center gap-2 px-8 py-4 
-                         bg-blue-900 text-white font-semibold rounded-xl 
-                         hover:bg-blue-800 transition-all duration-300 
-                         shadow-lg hover:shadow-xl hover:-translate-y-0.5"
-            >
-              <ShoppingBag className="w-5 h-5" />
-              <span>View More Products</span>
-            </Button>
           </div>
         )}
       </div>
@@ -380,3 +435,4 @@ Product Image: ${selectedProduct.image}
     </section>
   );
 }
+

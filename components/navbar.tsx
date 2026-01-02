@@ -2,14 +2,12 @@
 
 import { useState, useEffect } from "react";
 import {
-  ShoppingCart,
   Search,
   Menu,
   X,
   User,
   ChevronDown,
   Smartphone,
-  Heart,
   Package,
   LogIn,
   UserPlus,
@@ -29,12 +27,22 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 
 export default function Navbar() {
   const [mobileMenu, setMobileMenu] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const pathname = usePathname();
+
+  // Helper function to check if link is active
+  const isActive = (path: string) => {
+    if (path === "/") {
+      return pathname === "/";
+    }
+    return pathname?.startsWith(path);
+  };
 
   // Handle scroll effect
   useEffect(() => {
@@ -71,16 +79,14 @@ export default function Navbar() {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Searching for:", searchQuery);
     // Add your search logic here
   };
 
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 w-full bg-white/98 backdrop-blur-sm transition-all duration-300 ${
-          scrolled ? "shadow-lg" : "shadow-md"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 w-full bg-white/98 backdrop-blur-sm transition-all duration-300 ${scrolled ? "shadow-lg" : "shadow-md"
+          }`}
       >
         {/* Main Navbar */}
         <nav className="w-full border-b border-gray-100">
@@ -106,20 +112,26 @@ export default function Navbar() {
               <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
                 <Link
                   href="/"
-                  className="px-2 lg:px-4 py-2 text-sm lg:text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${isActive("/")
+                    ? "text-blue-700 bg-blue-50 font-semibold"
+                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                    }`}
                 >
                   Home
                 </Link>
 
                 <DropdownMenu>
-                  <DropdownMenuTrigger className="flex items-center gap-1 px-2 lg:px-4 py-2 text-sm lg:text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200 outline-none">
+                  <DropdownMenuTrigger className={`flex items-center gap-1 px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 outline-none ${isActive("/products")
+                    ? "text-blue-700 bg-blue-50 font-semibold"
+                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                    }`}>
                     Products
                     <ChevronDown className="h-3 w-3 lg:h-4 lg:w-4" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56 mt-2" align="center">
                     <DropdownMenuItem className="cursor-pointer py-2.5">
                       <Phone className="h-4 w-4 mr-2" />
-                      <Link href="/products/product" className="flex-1">
+                      <Link href="/products" className="flex-1">
                         All Products
                       </Link>
                     </DropdownMenuItem>
@@ -135,14 +147,20 @@ export default function Navbar() {
 
                 <Link
                   href="/about"
-                  className="px-2 lg:px-4 py-2 text-sm lg:text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${isActive("/about")
+                    ? "text-blue-700 bg-blue-50 font-semibold"
+                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                    }`}
                 >
                   About
                 </Link>
 
                 <Link
                   href="/contact"
-                  className="px-2 lg:px-4 py-2 text-sm lg:text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${isActive("/contact")
+                    ? "text-blue-700 bg-blue-50 font-semibold"
+                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                    }`}
                 >
                   Contact - US
                 </Link>
@@ -170,11 +188,10 @@ export default function Navbar() {
                 {/* Search Icon - Mobile/Tablet */}
                 <button
                   onClick={() => setSearchOpen(!searchOpen)}
-                  className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${
-                    searchOpen
-                      ? "bg-blue-700 text-white"
-                      : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                  }`}
+                  className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${searchOpen
+                    ? "bg-blue-700 text-white"
+                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                    }`}
                   aria-label="Toggle search"
                 >
                   {searchOpen ? (
@@ -183,33 +200,6 @@ export default function Navbar() {
                     <Search size={18} className="sm:w-5 sm:h-5" />
                   )}
                 </button>
-
-                {/* Wishlist - Hidden on smallest screens */}
-                <Link
-                  href="/wishlist"
-                  className="hidden sm:flex p-2 text-gray-700 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all duration-200 relative"
-                  aria-label="Wishlist"
-                >
-                  <Heart size={20} className="lg:w-6 lg:h-6" />
-                  <span className="absolute -top-1 -right-1 h-4 w-4 flex items-center justify-center text-[10px] font-bold bg-red-600 text-white rounded-full">
-                    3
-                  </span>
-                </Link>
-
-                {/* Cart - Always visible */}
-                <Link
-                  href="/cart"
-                  className="relative p-2 text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                  aria-label="Shopping cart"
-                >
-                  <ShoppingCart
-                    size={18}
-                    className="sm:w-5 sm:h-5 lg:w-6 lg:h-6"
-                  />
-                  <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center text-[10px] sm:text-xs font-bold bg-blue-700 text-white rounded-full">
-                    2
-                  </span>
-                </Link>
 
                 {/* User Menu - Desktop & Tablet */}
                 <div className="hidden sm:block">
@@ -239,7 +229,7 @@ export default function Navbar() {
                           Sign Up
                         </Link>
                       </DropdownMenuItem>
-                      
+
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -290,9 +280,8 @@ export default function Navbar() {
 
       {/* Mobile Menu Drawer */}
       <aside
-        className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out ${
-          mobileMenu ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out ${mobileMenu ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="flex flex-col h-full">
           {/* Mobile Menu Header */}
@@ -348,7 +337,10 @@ export default function Navbar() {
             <div className="px-2">
               <Link
                 href="/"
-                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${isActive("/")
+                  ? "text-blue-700 bg-blue-50 font-semibold"
+                  : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                  }`}
                 onClick={() => setMobileMenu(false)}
               >
                 <Home className="h-5 w-5" />
@@ -358,46 +350,41 @@ export default function Navbar() {
               {/* Products Section */}
               <div className="mt-1">
                 <div className="px-4 py-2">
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                  <p className={`text-xs font-semibold uppercase tracking-wide ${isActive("/products") ? "text-blue-700" : "text-gray-500"
+                    }`}>
                     Products
                   </p>
                 </div>
                 <Link
                   href="/products"
-                  className="flex items-center gap-3 px-4 py-3 text-base text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                  className={`flex items-center gap-3 px-4 py-3 text-base rounded-lg transition-all duration-200 ${pathname === "/products"
+                    ? "text-blue-700 bg-blue-50 font-semibold"
+                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                    }`}
                   onClick={() => setMobileMenu(false)}
                 >
                   <Phone className="h-5 w-5" />
                   All Products
                 </Link>
                 <Link
-                  href="/products/phones"
-                  className="flex items-center gap-3 px-4 py-3 text-base text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
-                  onClick={() => setMobileMenu(false)}
-                >
-                  <Smartphone className="h-5 w-5" />
-                  Smartphones
-                </Link>
-                <Link
                   href="/products/accessories"
-                  className="flex items-center gap-3 px-4 py-3 text-base text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                  className={`flex items-center gap-3 px-4 py-3 text-base rounded-lg transition-all duration-200 ${pathname === "/products/accessories"
+                    ? "text-blue-700 bg-blue-50 font-semibold"
+                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                    }`}
                   onClick={() => setMobileMenu(false)}
                 >
                   <Headphones className="h-5 w-5" />
                   Accessories
                 </Link>
-                <Link
-                  href="/products/new"
-                  className="flex items-center gap-3 px-4 py-3 text-base text-blue-700 font-medium bg-blue-50 rounded-lg transition-all duration-200"
-                  onClick={() => setMobileMenu(false)}
-                >
-                  ✨ New Arrivals
-                </Link>
               </div>
 
               <Link
                 href="/about"
-                className="flex items-center gap-3 px-4 py-3 mt-1 text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                className={`flex items-center gap-3 px-4 py-3 mt-1 text-base font-medium rounded-lg transition-all duration-200 ${isActive("/about")
+                  ? "text-blue-700 bg-blue-50 font-semibold"
+                  : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                  }`}
                 onClick={() => setMobileMenu(false)}
               >
                 <Info className="h-5 w-5" />
@@ -406,7 +393,10 @@ export default function Navbar() {
 
               <Link
                 href="/contact"
-                className="flex items-center gap-3 px-4 py-3 text-base font-medium text-gray-700 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-all duration-200"
+                className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${isActive("/contact")
+                  ? "text-blue-700 bg-blue-50 font-semibold"
+                  : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                  }`}
                 onClick={() => setMobileMenu(false)}
               >
                 <Mail className="h-5 w-5" />
@@ -417,19 +407,6 @@ export default function Navbar() {
 
           {/* Mobile Menu Footer */}
           <div className="border-t border-gray-200 p-4 space-y-2 bg-gray-50">
-            <Link
-              href="/wishlist"
-              className="flex items-center justify-between px-4 py-2.5 text-base text-gray-700 hover:text-red-600 hover:bg-white rounded-lg transition-all duration-200 border border-gray-200"
-              onClick={() => setMobileMenu(false)}
-            >
-              <div className="flex items-center gap-2">
-                <Heart className="h-5 w-5" />
-                <span>My Wishlist</span>
-              </div>
-              <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full">
-                3
-              </span>
-            </Link>
             <Link
               href="/orders"
               className="flex items-center justify-between px-4 py-2.5 text-base text-gray-700 hover:text-blue-700 hover:bg-white rounded-lg transition-all duration-200 border border-gray-200"

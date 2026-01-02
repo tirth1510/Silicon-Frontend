@@ -1,45 +1,49 @@
 "use client";
 
-import { Stethoscope, Activity, ShieldCheck, Settings, ArrowRight, Sparkles, TrendingUp } from "lucide-react";
+import {
+  Stethoscope,
+  Activity,
+  ShieldCheck,
+  Settings,
+  ArrowRight,
+  TrendingUp,
+  Package,
+  Wrench,
+  Heart,
+  Pill,
+  Syringe,
+  Microscope,
+  CircleDot,
+  LucideIcon
+} from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useCategories } from "@/hooks/useCategories";
 
-const categories = [
-  {
-    title: "Medical Devices",
-    description: "Advanced diagnostic and monitoring medical equipment",
-    icon: Stethoscope,
-    category: "medical",
-    stats: "500+ Products",
-    count: "500+",
-  },
-  {
-    title: "Hospital Equipment",
-    description: "Reliable equipment for clinics and hospitals",
-    icon: Activity,
-    category: "equipment",
-    stats: "350+ Items",
-    count: "350+",
-  },
-  {
-    title: "Accessories",
-    description: "Essential accessories and consumables",
-    icon: ShieldCheck,
-    category: "accessories",
-    stats: "200+ Options",
-    count: "200+",
-  },
-  {
-    title: "Services",
-    description: "Installation, maintenance and technical support",
-    icon: Settings,
-    category: "services",
-    stats: "24/7 Support",
-    count: "24/7",
-  },
-];
+// Icon mapping based on category icon name from backend
+const iconMap: Record<string, LucideIcon> = {
+  stethoscope: Stethoscope,
+  activity: Activity,
+  'shield-check': ShieldCheck,
+  settings: Settings,
+  package: Package,
+  wrench: Wrench,
+  heart: Heart,
+  pill: Pill,
+  syringe: Syringe,
+  microscope: Microscope,
+  'circle-dot': CircleDot,
+};
+
+// Helper function to get icon component
+const getIconComponent = (iconName?: string): LucideIcon => {
+  if (!iconName) return Package; // Default icon
+  const icon = iconMap[iconName.toLowerCase()];
+  return icon || Package; // Fallback to Package icon
+};
 
 export default function ProductCategorySection() {
   const router = useRouter();
+  const { categories: apiCategories, loading, error } = useCategories();
 
   return (
     <section className="relative bg-white py-20 overflow-hidden">
@@ -70,110 +74,119 @@ export default function ProductCategorySection() {
           </p>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-900"></div>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="text-center py-20">
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-red-50 rounded-lg border border-red-200">
+              <span className="text-sm font-semibold text-red-700">
+                {error}
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* CATEGORY CARDS */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {categories.map((item, index) => {
-            const Icon = item.icon;
+        {!loading && !error && apiCategories && apiCategories.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {apiCategories.map((item, index) => {
+              const Icon = getIconComponent(item.icon);
 
-            return (
-              <div
-                key={index}
-                onClick={() => router.push(`/shop/products`)}
-                className="group relative cursor-pointer h-full"
-              >
-                {/* Main Card */}
-                <div className="relative bg-white rounded-xl shadow-md h-full
-                               transition-all duration-500 overflow-hidden flex flex-col
-                               group-hover:shadow-2xl group-hover:-translate-y-1">
+              return (
+                <div
+                  key={item._id}
+                  onClick={() => router.push(`/products?category=${item.categorySlug}`)}
+                  className="group relative cursor-pointer h-full"
+                >
+                  {/* Main Card */}
+                  <div className="relative bg-white rounded-xl shadow-md h-full
+                                 transition-all duration-500 overflow-hidden flex flex-col
+                                 group-hover:shadow-2xl group-hover:-translate-y-1">
 
-                  {/* Blue Header Section */}
-                  <div className="relative bg-blue-900 px-6 pt-8 pb-20 
-                                  transition-all duration-500 group-hover:pb-24 shrink-0">
-                    {/* Decorative Dots */}
-                    <div className="absolute top-4 right-4 flex gap-1.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-white/30"></div>
-                      <div className="w-1.5 h-1.5 rounded-full bg-white/30"></div>
-                      <div className="w-1.5 h-1.5 rounded-full bg-white/50"></div>
-                    </div>
+                    {/* Blue Header Section */}
+                    <div className="relative bg-blue-900 px-6 pt-8 pb-20 
+                                    transition-all duration-500 group-hover:pb-24 shrink-0">
+                      {/* Decorative Dots */}
+                      <div className="absolute top-4 right-4 flex gap-1.5">
+                        <div className="w-1.5 h-1.5 rounded-full bg-white/30"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-white/30"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-white/50"></div>
+                      </div>
 
-                    {/* Icon */}
-                    <div className="relative z-10">
-                      <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm
-                                      flex items-center justify-center
-                                      border border-white/20
-                                      group-hover:bg-white/20 group-hover:scale-110
-                                      transition-all duration-500">
-                        <Icon className="w-8 h-8 text-white" strokeWidth={2} />
+                      {/* Icon */}
+                      <div className="relative z-10">
+                        <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm
+                                        flex items-center justify-center
+                                        border border-white/20
+                                        group-hover:bg-white/20 group-hover:scale-110
+                                        transition-all duration-500">
+                          <Icon className="w-8 h-8 text-white" strokeWidth={2} />
+                        </div>
+                      </div>
+
+                      {/* Background Pattern */}
+                      <div className="absolute inset-0 opacity-10">
+                        <div className="absolute top-0 right-0 w-32 h-32 
+                                        bg-white rounded-full blur-2xl transform translate-x-8 -translate-y-8"></div>
+                        <div className="absolute bottom-0 left-0 w-24 h-24 
+                                        bg-white rounded-full blur-2xl transform -translate-x-4 translate-y-4"></div>
                       </div>
                     </div>
 
-                    {/* Background Pattern */}
-                    <div className="absolute inset-0 opacity-10">
-                      <div className="absolute top-0 right-0 w-32 h-32 
-                                      bg-white rounded-full blur-2xl transform translate-x-8 -translate-y-8"></div>
-                      <div className="absolute bottom-0 left-0 w-24 h-24 
-                                      bg-white rounded-full blur-2xl transform -translate-x-4 translate-y-4"></div>
-                    </div>
-                  </div>
-
-                  {/* White Content Section */}
-                  <div className="relative -mt-12 px-6 pb-6 grow flex flex-col">
-                    {/* Title Card */}
-                    <div className="bg-white rounded-lg shadow-lg p-4 mb-4 
-                                    border border-gray-100
-                                    group-hover:shadow-xl transition-shadow duration-500">
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">
-                        {item.title}
-                      </h3>
-                      <div className="flex items-center gap-2 text-xs text-blue-900 font-semibold">
-                        <div className="w-1 h-1 rounded-full bg-blue-900"></div>
-                        <span>{item.count}</span>
+                    {/* White Content Section */}
+                    <div className="relative -mt-12 px-6 pb-6 grow flex flex-col">
+                      {/* Title Card */}
+                      <div className="bg-white rounded-lg shadow-lg p-4 mb-4 
+                                      border border-gray-100
+                                      group-hover:shadow-xl transition-shadow duration-500">
+                        <h3 className="text-lg font-bold text-gray-900 mb-1">
+                          {item.categoryName}
+                        </h3>
+                        <div className="flex items-center gap-2 text-xs text-blue-900 font-semibold">
+                          <div className="w-1 h-1 rounded-full bg-blue-900"></div>
+                          <span>{item.metadata?.productCount || 0} Products</span>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Description */}
-                    <p className="text-sm text-gray-600 leading-relaxed mb-4 grow">
-                      {item.description}
-                    </p>
+                      {/* Description */}
+                      <p className="text-sm text-gray-600 leading-relaxed mb-4 grow">
+                        {item.categoryDescription || 'Explore our range of quality medical products'}
+                      </p>
 
-                    {/* CTA */}
-                    <div className="flex items-center justify-between mt-auto">
-                      <button className="text-sm font-semibold text-blue-900 
-                                       flex items-center gap-2 
-                                       group-hover:gap-3 transition-all duration-300">
-                        <span>Explore</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </button>
+                      {/* CTA */}
+                      <div className="flex items-center justify-between mt-auto">
+                        <button className="text-sm font-semibold text-blue-900 
+                                         flex items-center gap-2 
+                                         group-hover:gap-3 transition-all duration-300">
+                          <span>Explore</span>
+                          <ArrowRight className="w-4 h-4" />
+                        </button>
 
-                      <div className="text-xs text-gray-400 font-medium">
-                        #{String(index + 1).padStart(2, '0')}
+                        <div className="text-xs text-gray-400 font-medium">
+                          #{String(index + 1).padStart(2, '0')}
+                        </div>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Bottom CTA Section */}
-        <div className="text-center mt-16 pt-12 border-t border-gray-100">
-          <div className="max-w-xl mx-auto">
-            <p className="text-gray-600 mb-6">
-              Can&apos;t find what you&apos;re looking for?
-            </p>
-            <button
-              onClick={() => router.push('/shop/products')}
-              className="inline-flex items-center gap-3 px-8 py-4 
-                         bg-blue-900 text-white 
-                         font-semibold rounded-xl hover:bg-blue-800 
-                         transition-all duration-300 shadow-lg hover:shadow-xl
-                         hover:-translate-y-0.5">
-              <span>Browse All Products</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
+              );
+            })}
           </div>
-        </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && !error && (!apiCategories || apiCategories.length === 0) && (
+          <div className="text-center py-20">
+            <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+            <p className="text-lg text-gray-600">No categories available at the moment</p>
+          </div>
+        )}
       </div>
     </section>
   );
