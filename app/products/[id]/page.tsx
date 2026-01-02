@@ -134,6 +134,13 @@ export default function ProductDetailsPage() {
   const activeColor = activeModel?.colors?.[activeColorIndex];
   const activePrice = activeColor?.colorPrice?.[0];
 
+  // Reset activeColorIndex if it's out of bounds
+  useEffect(() => {
+    if (activeModel?.colors && activeColorIndex >= activeModel.colors.length) {
+      setActiveColorIndex(0);
+    }
+  }, [activeModel, activeColorIndex]);
+
   // Get product images from the active color
   const productImages = React.useMemo(() => {
     if (!activeColor) return ["/placeholder.png"];
@@ -349,23 +356,25 @@ export default function ProductDetailsPage() {
             )}
 
             {/* Available Colors */}
-            {activeModel.colors.length > 0 && (
+            {activeModel.colors && activeModel.colors.length > 0 && (
               <div>
                 <p className="font-semibold text-gray-900 mb-3">Available Colors</p>
                 <div className="flex gap-3 flex-wrap">
-                  {activeModel.colors.map((c, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setActiveColorIndex(idx)}
-                      className={`px-5 py-2.5 rounded-lg border-2 font-medium transition-all ${
-                        idx === activeColorIndex
-                          ? "bg-blue-900 text-white border-blue-900 shadow-md"
-                          : "border-gray-300 text-gray-700 hover:border-blue-900 hover:text-blue-900"
-                      }`}
-                    >
-                      {c.colorName}
-                    </button>
-                  ))}
+                  {activeModel.colors
+                    .filter((c) => c && c.colorName) // Filter out null/undefined colors
+                    .map((c, idx) => (
+                      <button
+                        key={c.colorName || idx}
+                        onClick={() => setActiveColorIndex(idx)}
+                        className={`px-5 py-2.5 rounded-lg border-2 font-medium transition-all ${
+                          idx === activeColorIndex
+                            ? "bg-blue-900 text-white border-blue-900 shadow-md"
+                            : "border-gray-300 text-gray-700 hover:border-blue-900 hover:text-blue-900"
+                        }`}
+                      >
+                        {c.colorName}
+                      </button>
+                    ))}
                 </div>
               </div>
             )}
@@ -375,25 +384,27 @@ export default function ProductDetailsPage() {
               <div>
                 <p className="font-semibold text-gray-900 mb-3">Available Models</p>
                 <div className="flex gap-3 flex-wrap">
-                  {product.allModels.map((model) => (
-                    <button
-                      key={model.modelId}
-                      onClick={() => router.push(`/products/${model.modelId}`)}
-                      className={`px-5 py-2.5 rounded-lg border-2 font-medium transition-all ${
-                        model.modelId === product.modelId
-                          ? "bg-blue-900 text-white border-blue-900 shadow-md"
-                          : "border-gray-300 text-gray-700 hover:border-blue-900 hover:text-blue-900"
-                      }`}
-                    >
-                      {model.modelName}
-                    </button>
-                  ))}
+                  {product.allModels
+                    .filter((model) => model && model.modelId && model.modelName) // Filter out null/undefined models
+                    .map((model) => (
+                      <button
+                        key={model.modelId}
+                        onClick={() => router.push(`/products/${model.modelId}`)}
+                        className={`px-5 py-2.5 rounded-lg border-2 font-medium transition-all ${
+                          model.modelId === product.modelId
+                            ? "bg-blue-900 text-white border-blue-900 shadow-md"
+                            : "border-gray-300 text-gray-700 hover:border-blue-900 hover:text-blue-900"
+                        }`}
+                      >
+                        {model.modelName}
+                      </button>
+                    ))}
                 </div>
               </div>
             )}
 
             {/* Warranty */}
-            {activeModel.warranty.length > 0 && (
+            {activeModel.warranty && activeModel.warranty.length > 0 && (
               <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6 shadow-md">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="p-2 bg-green-600 rounded-lg">
@@ -402,12 +413,14 @@ export default function ProductDetailsPage() {
                   <h3 className="font-bold text-green-900 text-lg">Warranty Information</h3>
                 </div>
                 <ul className="space-y-3">
-                  {activeModel.warranty.map((w, i) => (
-                    <li key={i} className="flex items-center gap-3 text-base text-green-900 font-medium">
-                      <CheckCircle className="w-5 h-5 text-green-600" />
-                      {w.points}
-                    </li>
-                  ))}
+                  {activeModel.warranty
+                    .filter((w) => w && w.points) // Filter out null/undefined items
+                    .map((w, i) => (
+                      <li key={w.points || i} className="flex items-center gap-3 text-base text-green-900 font-medium">
+                        <CheckCircle className="w-5 h-5 text-green-600" />
+                        {w.points}
+                      </li>
+                    ))}
                 </ul>
               </div>
             )}
@@ -415,7 +428,7 @@ export default function ProductDetailsPage() {
         </div>
 
         {/* Product Features */}
-        {activeModel.productFeatures.length > 0 && (
+        {activeModel.productFeatures && activeModel.productFeatures.length > 0 && (
           <div className="mt-12 bg-gradient-to-br from-blue-50 to-white border-2 border-blue-200 rounded-xl p-8 shadow-lg">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-blue-900 rounded-lg">
@@ -424,21 +437,23 @@ export default function ProductDetailsPage() {
               <h3 className="text-2xl font-bold text-gray-900">Technical Specifications</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {activeModel.productFeatures.map((f, i) => (
-                <div 
-                  key={i} 
-                  className="flex justify-between items-start p-4 bg-white rounded-lg border border-blue-200 hover:border-blue-400 transition-all shadow-sm hover:shadow-md"
-                >
-                  <span className="font-semibold text-blue-900">{f.key}</span>
-                  <span className="text-gray-900 font-medium text-right ml-4">{f.value}</span>
-                </div>
-              ))}
+              {activeModel.productFeatures
+                .filter((f) => f && f.key && f.value) // Filter out null/undefined items
+                .map((f, i) => (
+                  <div 
+                    key={f.key || i} 
+                    className="flex justify-between items-start p-4 bg-white rounded-lg border border-blue-200 hover:border-blue-400 transition-all shadow-sm hover:shadow-md"
+                  >
+                    <span className="font-semibold text-blue-900">{f.key}</span>
+                    <span className="text-gray-900 font-medium text-right ml-4">{f.value}</span>
+                  </div>
+                ))}
             </div>
           </div>
         )}
 
         {/* Product Specifications/Features List */}
-        {activeModel.specifications.length > 0 && (
+        {activeModel.specifications && activeModel.specifications.length > 0 && (
           <div className="mt-8 bg-white border-2 border-gray-200 rounded-xl p-8 shadow-lg">
             <div className="flex items-center gap-3 mb-6">
               <div className="p-2 bg-green-600 rounded-lg">
@@ -447,12 +462,14 @@ export default function ProductDetailsPage() {
               <h3 className="text-2xl font-bold text-gray-900">Product Features & Description</h3>
             </div>
             <ul className="space-y-4">
-              {activeModel.specifications.map((spec, i) => (
-                <li key={i} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-all">
-                  <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                  <span className="text-gray-700 leading-relaxed">{spec.points}</span>
-                </li>
-              ))}
+              {activeModel.specifications
+                .filter((spec) => spec && spec.points) // Filter out null/undefined items
+                .map((spec, i) => (
+                  <li key={spec.points || i} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-all">
+                    <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700 leading-relaxed">{spec.points}</span>
+                  </li>
+                ))}
             </ul>
           </div>
         )}
