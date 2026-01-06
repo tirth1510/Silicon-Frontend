@@ -1,5 +1,6 @@
 import { updateProductStatusService } from "@/services/accessory.service";
 import { Product } from "@/types/accessory";
+import { useRouter } from "next/navigation";
 
 export const accessoriesColumns = [
   {
@@ -44,18 +45,7 @@ export const accessoriesColumns = [
     label: "Actions",
     render: (row: Product) => (
       <div className="flex gap-2">
-        {/* EDIT DETAILS */}
-        <button
-          className="px-3 py-1 text-sm font-medium rounded border text-blue-700 border-blue-700 hover:bg-blue-50"
-          onClick={() => {
-            const event = new CustomEvent("open-product-dialog", {
-              detail: row,
-            });
-            window.dispatchEvent(event);
-          }}
-        >
-          Edit Details
-        </button>
+        
 
         {/* SET LIVE */}
         <button

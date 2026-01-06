@@ -11,6 +11,7 @@ export type TextBlock = {
 };
 
 export type Product = {
+  [x: string]: any;
   productImageUrl: any;
   productGallery: any;
   description: any;

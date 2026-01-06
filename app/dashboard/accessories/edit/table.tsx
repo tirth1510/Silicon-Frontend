@@ -11,7 +11,8 @@ import {
 } from "@/components/ui/table";
 import { accessoriesColumns } from "./colums";
 import { Product } from "@/types/accessory";
-import ProductUpdateDialog from "./editAceesoriesdilaogbox"; // ✅ import dialog
+import UpdateAccessoriesDialog from "./editAceesoriesdilaogbox";
+import { Button } from "@/components/ui/button";
 
 type Props = {
   data: Product[];
@@ -23,15 +24,16 @@ export default function AccessoriesTable({ data }: Props) {
 
   // Listen to the custom event from the "Edit Details" button
   useEffect(() => {
-    const handler = (event: CustomEvent) => {
-      setSelectedProduct(event.detail);
+    const handler = (event: Event) => {
+      const customEvent = event as CustomEvent<Product>;
+      setSelectedProduct(customEvent.detail);
       setOpenDialog(true);
     };
 
-    window.addEventListener("open-product-dialog", handler as EventListener);
+    window.addEventListener("open-product-dialog", handler);
 
     return () => {
-      window.removeEventListener("open-product-dialog", handler as EventListener);
+      window.removeEventListener("open-product-dialog", handler);
     };
   }, []);
 
@@ -56,20 +58,33 @@ export default function AccessoriesTable({ data }: Props) {
               {accessoriesColumns.map((col) => (
                 <TableCell key={col.key}>{col.render(row)}</TableCell>
               ))}
+              <TableCell>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedProduct(row);
+                    setOpenDialog(true);
+                  }}
+                >
+                  Edit
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
 
-      {/* ✅ Render dialog when openDialog is true */}
       {selectedProduct && (
-        <ProductUpdateDialog
+        <UpdateAccessoriesDialog
           productId={selectedProduct.id}
           open={openDialog}
-          onClose={() => setOpenDialog(false)}
+          onClose={() => {
+            setOpenDialog(false);
+            setSelectedProduct(null);
+          }}
         />
       )}
-
     </>
   );
 }

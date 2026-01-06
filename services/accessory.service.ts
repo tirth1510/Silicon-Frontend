@@ -164,51 +164,165 @@ export const updateProductService = async (
 
 /** Update product main image */
 
-export const updateBasicDetails = async (
-  id: string,
-  data: {
-    productCategory: string;
-    productTitle: string;
-    stock: number;
-    description: string;
-  }
-): Promise<Product> => {
-  try {
-    const { data: result } = await API.put(
-      `/accessorize/products/${id}/basic/step`,
-      data
-    );
-    return result.product;
-  } catch (error: any) {
-    console.error("Error updating product:", error);
-    throw new Error(
-      error.response?.data?.message || "Failed to update product"
-    );
-  }
-};
 
-export const updatePriceService = async (
-  id: string,
-  data: {
-    price: number;
-    discount?: number;
-    currency?: string;
-  }
-): Promise<Product> => {
-  try {
-    const { data: result } = await API.put(`/accessorize/products/${id}/price`, data);
-    return result.product;
-  } catch (error: any) {
-    console.error("Error updating product:", error);
-    throw new Error(
-      error.response?.data?.message || "Failed to update product"
-    );
-  }
-};
 
 export const getAccessoryByIdService = async (
   id: string
 ): Promise<AccessoryApiResponse> => {
   const res = await API.get<SingleAccessoryResponse>(`/accessorize/${id}`);
   return res.data.data;
+};
+
+
+
+/* ================= UPDATE ACCESSORIES (ADVANCED) ================= */
+
+/* ---------------- Types ---------------- */
+
+export type UpdateAccessoriesPayload = {
+  /* simple fields */
+  productCategory?: string;
+  productTitle?: string;
+  description?: string;
+  status?: string;
+  priceDetails?: string;
+  stock?: number;
+
+  /* arrays */
+  productSpecifications?: any[];
+  specifications?: any[];
+  warranty?: any[];
+
+  /* indexes */
+  specIndexes?: number | number[];
+  specificationIndexes?: number | number[];
+  warrantyIndexes?: number | number[];
+
+  deleteIndex?: number;
+  deleteSpecificationIndex?: number;
+  deleteWarrantyIndex?: number;
+
+  deleteGalleryIndex?: number;
+  replaceGalleryIndex?: number;
+
+  deleteImageIndex?: number;
+  replaceImageIndex?: number;
+};
+
+export type UpdateAccessoriesFiles = {
+  productGallery?: File[];
+  productImageUrl?: File[];
+};
+
+/* ---------------- GET ---------------- */
+
+export const getAccessoryByervice = async (id: string) => {
+  if (!id) throw new Error("Accessory ID required");
+
+  const res = await API.get(`/accessorize/${id}`);
+  return res.data.product;
+};
+
+/* ---------------- UPDATE ---------------- */
+
+export const updateAccessoriesDetailsService = async (
+  id: string,
+  payload: UpdateAccessoriesPayload = {},
+  files?: UpdateAccessoriesFiles
+) => {
+  if (!id) throw new Error("Accessory ID required");
+
+  const formData = new FormData();
+
+  /* ---------- simple fields ---------- */
+  Object.entries(payload).forEach(([key, value]) => {
+    if (
+      value !== undefined &&
+      typeof value !== "object" &&
+      !Array.isArray(value)
+    ) {
+      formData.append(key, String(value));
+    }
+  });
+
+  /* ---------- arrays ---------- */
+  if (payload.productSpecifications)
+    formData.append(
+      "productSpecifications",
+      JSON.stringify(payload.productSpecifications)
+    );
+
+  if (payload.specifications)
+    formData.append("specifications", JSON.stringify(payload.specifications));
+
+  if (payload.warranty)
+    formData.append("warranty", JSON.stringify(payload.warranty));
+
+  /* ---------- indexes ---------- */
+  if (payload.specIndexes !== undefined)
+    formData.append("specIndexes", JSON.stringify(payload.specIndexes));
+
+  if (payload.specificationIndexes !== undefined)
+    formData.append(
+      "specificationIndexes",
+      JSON.stringify(payload.specificationIndexes)
+    );
+
+  if (payload.warrantyIndexes !== undefined)
+    formData.append(
+      "warrantyIndexes",
+      JSON.stringify(payload.warrantyIndexes)
+    );
+
+  if (payload.deleteIndex !== undefined)
+    formData.append("deleteIndex", String(payload.deleteIndex));
+
+  if (payload.deleteSpecificationIndex !== undefined)
+    formData.append(
+      "deleteSpecificationIndex",
+      String(payload.deleteSpecificationIndex)
+    );
+
+  if (payload.deleteWarrantyIndex !== undefined)
+    formData.append(
+      "deleteWarrantyIndex",
+      String(payload.deleteWarrantyIndex)
+    );
+
+  if (payload.deleteGalleryIndex !== undefined)
+    formData.append(
+      "deleteGalleryIndex",
+      String(payload.deleteGalleryIndex)
+    );
+
+  if (payload.replaceGalleryIndex !== undefined)
+    formData.append(
+      "replaceGalleryIndex",
+      String(payload.replaceGalleryIndex)
+    );
+
+  if (payload.deleteImageIndex !== undefined)
+    formData.append("deleteImageIndex", String(payload.deleteImageIndex));
+
+  if (payload.replaceImageIndex !== undefined)
+    formData.append(
+      "replaceImageIndex",
+      String(payload.replaceImageIndex)
+    );
+
+  /* ---------- files ---------- */
+  files?.productGallery?.forEach((file) =>
+    formData.append("productGallery", file)
+  );
+
+  files?.productImageUrl?.forEach((file) =>
+    formData.append("productImageUrl", file)
+  );
+
+  /* ---------- API ---------- */
+  const res = await API.put(`/accessorize/${id}`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+
+  return res.data.product;
 };
