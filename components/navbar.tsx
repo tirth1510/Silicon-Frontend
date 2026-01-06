@@ -1,3 +1,5 @@
+/* eslint-disable react/jsx-no-undef */
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { useState, useEffect } from "react";
@@ -16,6 +18,8 @@ import {
   Headphones,
   Info,
   Mail,
+  HomeIcon,
+  User2Icon,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -27,7 +31,12 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useProfile } from "@/hooks/useprofile";
+import NavbarLoader from "./loader";
+import ShinyText from "@/components/gif/wellcome";
+import { toast } from "sonner";
+import { logoutService } from "@/services/auth.service";
 
 export default function Navbar() {
   const [mobileMenu, setMobileMenu] = useState(false);
@@ -36,7 +45,20 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const pathname = usePathname();
 
+  const { profile, loading } = useProfile();
+  const router = useRouter();
   // Helper function to check if link is active
+
+  const handleLogout = async () => {
+    try {
+      await logoutService();
+      toast.success("Logged out successfully");
+      router.push("/login");
+    } catch {
+      toast.error("Logout failed");
+    }
+  };
+
   const isActive = (path: string) => {
     if (path === "/") {
       return pathname === "/";
@@ -85,8 +107,9 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 w-full bg-white/98 backdrop-blur-sm transition-all duration-300 ${scrolled ? "shadow-lg" : "shadow-md"
-          }`}
+        className={`fixed top-0 left-0 right-0 z-50 w-full bg-white/98 backdrop-blur-sm transition-all duration-300 ${
+          scrolled ? "shadow-lg" : "shadow-md"
+        }`}
       >
         {/* Main Navbar */}
         <nav className="w-full border-b border-gray-100">
@@ -112,19 +135,23 @@ export default function Navbar() {
               <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
                 <Link
                   href="/"
-                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${isActive("/")
-                    ? "text-blue-700 bg-blue-50 font-semibold"
-                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                    }`}
+                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${
+                    isActive("/")
+                      ? "text-blue-700 bg-blue-50 font-semibold"
+                      : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                  }`}
                 >
                   Home
                 </Link>
 
                 <DropdownMenu>
-                  <DropdownMenuTrigger className={`flex items-center gap-1 px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 outline-none ${isActive("/products")
-                    ? "text-blue-700 bg-blue-50 font-semibold"
-                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                    }`}>
+                  <DropdownMenuTrigger
+                    className={`flex items-center gap-1 px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 outline-none ${
+                      isActive("/products")
+                        ? "text-blue-700 bg-blue-50 font-semibold"
+                        : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                    }`}
+                  >
                     Products
                     <ChevronDown className="h-3 w-3 lg:h-4 lg:w-4" />
                   </DropdownMenuTrigger>
@@ -147,20 +174,22 @@ export default function Navbar() {
 
                 <Link
                   href="/about"
-                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${isActive("/about")
-                    ? "text-blue-700 bg-blue-50 font-semibold"
-                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                    }`}
+                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${
+                    isActive("/about")
+                      ? "text-blue-700 bg-blue-50 font-semibold"
+                      : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                  }`}
                 >
                   About
                 </Link>
 
                 <Link
                   href="/contact"
-                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${isActive("/contact")
-                    ? "text-blue-700 bg-blue-50 font-semibold"
-                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                    }`}
+                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${
+                    isActive("/contact")
+                      ? "text-blue-700 bg-blue-50 font-semibold"
+                      : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                  }`}
                 >
                   Contact - US
                 </Link>
@@ -188,10 +217,11 @@ export default function Navbar() {
                 {/* Search Icon - Mobile/Tablet */}
                 <button
                   onClick={() => setSearchOpen(!searchOpen)}
-                  className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${searchOpen
-                    ? "bg-blue-700 text-white"
-                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                    }`}
+                  className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${
+                    searchOpen
+                      ? "bg-blue-700 text-white"
+                      : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                  }`}
                   aria-label="Toggle search"
                 >
                   {searchOpen ? (
@@ -202,36 +232,72 @@ export default function Navbar() {
                 </button>
 
                 {/* User Menu - Desktop & Tablet */}
-                <div className="hidden sm:block">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="flex items-center gap-1.5 px-2 sm:px-3 lg:px-4 py-2 text-sm lg:text-base font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg transition-all duration-200 outline-none shadow-md hover:shadow-lg">
-                      <User size={16} className="lg:w-5 lg:h-5" />
-                      <span className="hidden md:inline">Account</span>
-                      <ChevronDown className="h-3 w-3 lg:h-4 lg:w-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-48 mt-2" align="end">
-                      <DropdownMenuItem
-                        asChild
-                        className="cursor-pointer py-2.5"
-                      >
-                        <Link href="/login" className="flex items-center">
-                          <LogIn className="h-4 w-4 mr-2" />
-                          Login
-                        </Link>
-                      </DropdownMenuItem>
 
-                      <DropdownMenuItem
-                        asChild
-                        className="cursor-pointer py-2.5"
+                <div className="hidden sm:block pl-10">
+                  {loading ? (
+                    <NavbarLoader />
+                  ) : profile?.role === "admin" ? (
+                    /* 🛡️ ADMIN */
+                    <div className="flex items-center gap-3">
+                      <Button
+                        onClick={() => router.push("/dashboard")}
+                        className="flex items-center bg-white border-2 border-blue-900 hover:bg-blue-50 text-blue-900"
                       >
-                        <Link href="/signup" className="flex items-center">
-                          <UserPlus className="h-4 w-4 mr-2" />
-                          Sign Up
-                        </Link>
-                      </DropdownMenuItem>
+                        <HomeIcon className="h-4 w-4 mr-2" />
+                        Dashboard
+                      </Button>
 
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                      <Button
+                        variant="destructive"
+                        onClick={handleLogout}
+                        className="flex items-center"
+                      >
+                        Logout
+                      </Button>
+                    </div>
+                  ) : profile?.role === "user" ? (
+                    /* 👤 USER */
+                    <div className="flex items-center gap-3 border-2 border-blue-900 px-4 py-2 rounded-xl">
+                      <User2Icon className="h-5 w-5 text-blue-700" />
+                      <span className="text-sm lg:text-base font-semibold text-blue-700">
+                        Hello : {profile.username}
+                      </span>
+
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={handleLogout}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        Logout
+                      </Button>
+                    </div>
+                  ) : (
+                    /* 🔓 NOT LOGGED IN */
+                    <DropdownMenu>
+                      <DropdownMenuTrigger className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg shadow-md">
+                        <User size={16} />
+                        <span className="hidden md:inline">Account</span>
+                        <ChevronDown className="h-4 w-4" />
+                      </DropdownMenuTrigger>
+
+                      <DropdownMenuContent className="w-48 mt-2" align="end">
+                        <DropdownMenuItem asChild>
+                          <Link href="/login" className="flex items-center">
+                            <LogIn className="h-4 w-4 mr-2" />
+                            Login
+                          </Link>
+                        </DropdownMenuItem>
+
+                        <DropdownMenuItem asChild>
+                          <Link href="/signup" className="flex items-center">
+                            <UserPlus className="h-4 w-4 mr-2" />
+                            Sign Up
+                          </Link>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  )}
                 </div>
 
                 {/* Mobile Menu Button */}
@@ -280,8 +346,9 @@ export default function Navbar() {
 
       {/* Mobile Menu Drawer */}
       <aside
-        className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out ${mobileMenu ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out ${
+          mobileMenu ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         <div className="flex flex-col h-full">
           {/* Mobile Menu Header */}
@@ -305,42 +372,108 @@ export default function Navbar() {
 
           {/* Mobile Menu Content */}
           <div className="flex-1 overflow-y-auto py-2">
-            {/* User Section - Mobile Only */}
-            <div className="px-4 py-3 mb-2 bg-blue-50 border-y border-blue-100">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="h-12 w-12 rounded-full bg-linear-to-br from-blue-600 to-blue-800 flex items-center justify-center">
-                  <User className="h-6 w-6 text-white" />
+            {profile?.role === "admin" ? (
+              <div className="px-4 py-3 mb-2 bg-blue-50 border-y border-blue-100">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex-1">
+                    <p className="font-bold text-blue-900">
+                      <ShinyText
+                        text={`✨ Welcome ${profile.username}`}
+                        speed={2}
+                        delay={0}
+                        color="#1E3A8A"
+                        shineColor="#ffffff"
+                        spread={120}
+                        direction="left"
+                        yoyo={false}
+                        pauseOnHover={false}
+                      />
+                    </p>
+                    <p className="text-sm text-gray-600 pl-7">
+                      {profile.email}
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-gray-900">Welcome!</p>
-                  <p className="text-sm text-gray-600">
-                    Sign in to your account
-                  </p>
+                <div className="flex gap-2">
+                  <Button className="flex items-center">
+                    <HomeIcon className="h-4 w-4 mr-2" />
+                    Dashboard
+                  </Button>
                 </div>
               </div>
-              <div className="flex gap-2">
-                <Button className="flex-1 bg-blue-700 hover:bg-blue-800 text-white text-sm py-2">
-                  <LogIn className="h-4 w-4 mr-1" />
-                  Login
-                </Button>
-                <Button
-                  variant="outline"
-                  className="flex-1 text-sm py-2 border-blue-700 text-blue-700 hover:bg-blue-50"
-                >
-                  <UserPlus className="h-4 w-4 mr-1" />
-                  Sign Up
-                </Button>
+            ) : profile?.role === "user" ? (
+              <div className="px-4 py-3 mb-2 bg-blue-50 border-y border-blue-100">
+                <div className="flex items-center gap-3 pt-1 mb-3">
+                  <div className="h-12 w-12 rounded-full bg-linear-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                    <User className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-bold text-blue-900">
+                      <ShinyText
+                        text={`✨ Welcome ${profile.username}`}
+                        speed={2}
+                        delay={0}
+                        color="#1E3A8A"
+                        shineColor="#ffffff"
+                        spread={120}
+                        direction="left"
+                        yoyo={false}
+                        pauseOnHover={false}
+                      />
+                    </p>
+                    <p className="text-sm text-gray-600 pl-7">
+                      {profile.email}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            {/* Navigation Links */}
+            ) : (
+              <div className="px-4 py-3 mb-2 bg-blue-50 border-y border-blue-100">
+                <ShinyText
+                  text="✨ Wellcome"
+                  speed={2}
+                  delay={0}
+                  color="#1E3A8A"
+                  shineColor="#ffffff"
+                  spread={120}
+                  direction="left"
+                  yoyo={false}
+                  pauseOnHover={false}
+                />
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="h-12 w-12 rounded-full bg-linear-to-br from-blue-600 to-blue-800 flex items-center justify-center">
+                    <User className="h-6 w-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="font-semibold text-gray-900">Welcome!</p>
+                    <p className="text-sm text-gray-600">
+                      Sign in to your account
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  <Button className="flex-1 bg-blue-700 hover:bg-blue-800 text-white text-sm py-2">
+                    <LogIn className="h-4 w-4 mr-1" />
+                    Login
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex-1 text-sm py-2 border-blue-700 text-blue-700 hover:bg-blue-50"
+                  >
+                    <UserPlus className="h-4 w-4 mr-1" />
+                    Sign Up
+                  </Button>
+                </div>
+              </div>
+            )}
             <div className="px-2">
               <Link
                 href="/"
-                className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${isActive("/")
-                  ? "text-blue-700 bg-blue-50 font-semibold"
-                  : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                  }`}
+                className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${
+                  isActive("/")
+                    ? "text-blue-700 bg-blue-50 font-semibold"
+                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                }`}
                 onClick={() => setMobileMenu(false)}
               >
                 <Home className="h-5 w-5" />
@@ -350,17 +483,21 @@ export default function Navbar() {
               {/* Products Section */}
               <div className="mt-1">
                 <div className="px-4 py-2">
-                  <p className={`text-xs font-semibold uppercase tracking-wide ${isActive("/products") ? "text-blue-700" : "text-gray-500"
-                    }`}>
+                  <p
+                    className={`text-xs font-semibold uppercase tracking-wide ${
+                      isActive("/products") ? "text-blue-700" : "text-gray-500"
+                    }`}
+                  >
                     Products
                   </p>
                 </div>
                 <Link
                   href="/products"
-                  className={`flex items-center gap-3 px-4 py-3 text-base rounded-lg transition-all duration-200 ${pathname === "/products"
-                    ? "text-blue-700 bg-blue-50 font-semibold"
-                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                    }`}
+                  className={`flex items-center gap-3 px-4 py-3 text-base rounded-lg transition-all duration-200 ${
+                    pathname === "/products"
+                      ? "text-blue-700 bg-blue-50 font-semibold"
+                      : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                  }`}
                   onClick={() => setMobileMenu(false)}
                 >
                   <Phone className="h-5 w-5" />
@@ -368,10 +505,11 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/products/accessories"
-                  className={`flex items-center gap-3 px-4 py-3 text-base rounded-lg transition-all duration-200 ${pathname === "/products/accessories"
-                    ? "text-blue-700 bg-blue-50 font-semibold"
-                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                    }`}
+                  className={`flex items-center gap-3 px-4 py-3 text-base rounded-lg transition-all duration-200 ${
+                    pathname === "/products/accessories"
+                      ? "text-blue-700 bg-blue-50 font-semibold"
+                      : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                  }`}
                   onClick={() => setMobileMenu(false)}
                 >
                   <Headphones className="h-5 w-5" />
@@ -381,10 +519,11 @@ export default function Navbar() {
 
               <Link
                 href="/about"
-                className={`flex items-center gap-3 px-4 py-3 mt-1 text-base font-medium rounded-lg transition-all duration-200 ${isActive("/about")
-                  ? "text-blue-700 bg-blue-50 font-semibold"
-                  : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                  }`}
+                className={`flex items-center gap-3 px-4 py-3 mt-1 text-base font-medium rounded-lg transition-all duration-200 ${
+                  isActive("/about")
+                    ? "text-blue-700 bg-blue-50 font-semibold"
+                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                }`}
                 onClick={() => setMobileMenu(false)}
               >
                 <Info className="h-5 w-5" />
@@ -393,10 +532,11 @@ export default function Navbar() {
 
               <Link
                 href="/contact"
-                className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${isActive("/contact")
-                  ? "text-blue-700 bg-blue-50 font-semibold"
-                  : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                  }`}
+                className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${
+                  isActive("/contact")
+                    ? "text-blue-700 bg-blue-50 font-semibold"
+                    : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
+                }`}
                 onClick={() => setMobileMenu(false)}
               >
                 <Mail className="h-5 w-5" />

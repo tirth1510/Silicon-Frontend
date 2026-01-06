@@ -1,12 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  getAllModelsWithProductInfo,
-  goLiveModelService,
-} from "@/services/model.api";
-import { ModelWithProductDTO, ProductModelDetailsDTO } from "@/types/model";
-
+import Image from "next/image";
 import {
   Table,
   TableHeader,
@@ -16,143 +12,279 @@ import {
   TableCell,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Spinner } from "@/components/ui/spinner"; // assuming you have a Spinner component
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
 
-import { ModelDetailsDialog } from "./modelDetailsCard";
+import {
+  deleteModelService,
+  getAllModelsWithProductInfo,
+} from "@/services/model.api";
+import { ModelWithProductDTO, ProductModelDetailsDTO } from "@/types/model";
+import UpdateProductDialog from "./updateProductDilog";
+import UpdateModelDialog from "./updateModeldetails";
+import UpdateModelDetailsDialog, {
+  ModelDetails,
+} from "./updateModeldetailsdilog";
+import { useRouter } from "next/navigation";
+import UpdateColorDialog from "./updateColordetails";
 
-export default function ModelsPage() {
-  const [data, setData] = useState<ModelWithProductDTO[]>([]);
-  const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<ProductModelDetailsDTO | null>(null);
-  const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+export default function ModelsTable() {
+  const [models, setModels] = useState<ModelWithProductDTO[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const fetchModels = async () => {
+  /* Product dialog */
+  const [openProductDialog, setOpenProductDialog] = useState(false);
+  const [selectedProduct, setSelectedProduct] =
+    useState<ModelWithProductDTO | null>(null);
+
+  /* Model dialog */
+  const [openModelDialog, setOpenModelDialog] = useState(false);
+  const [selectedModel, setSelectedModel] =
+    useState<ModelWithProductDTO | null>(null);
+
+  /* Color dialog */
+  const [openColorDialog, setOpenColorDialog] = useState(false);
+  const [selectedColor, setSelectedColor] = useState<{
+    colorId: string;
+    colorData: any;
+    productId: string;
+    modelId: string;
+  } | null>(null);
+
+  /* Model Details dialog */
+  const [openModelDetailsDialog, setOpenModelDetailsDialog] = useState(false);
+
+  /* Color dialog */
+
+  const router = useRouter();
+  const fetchData = async () => {
     try {
-      setLoading(true);
-      const res = await getAllModelsWithProductInfo();
-      setData(res);
-    } catch (err) {
-      console.error(err);
+      const data = await getAllModelsWithProductInfo();
+      setModels(data);
+    } catch (error) {
+      console.error("Error fetching models:", error);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchModels();
+    fetchData();
   }, []);
 
-  const handleEnquiry = async (productId: string, modelId: string) => {
-    try {
-      setActionLoadingId(modelId);
-      await goLiveModelService(productId, modelId, "Enquiry");
-      await fetchModels(); // instant refresh
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setActionLoadingId(null);
-    }
-  };
+  if (loading) return <div>Loading...</div>;
+
+  const mapToModelDetails = (
+    details: ProductModelDetailsDTO
+  ): ModelDetails => ({
+    specifications: details.specifications,
+    productSpecifications: details.productSpecifications,
+    productFeatures: details.productFeatures,
+    warranty: details.warranty,
+  });
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-4">All Products & Models</h1>
-
       <Table>
         <TableHeader>
-          <TableRow className="bg-gray-50">
-            <TableHead>S.No.</TableHead>
-            <TableHead>Colors</TableHead>
-            <TableHead>Product</TableHead>
-            <TableHead>Model</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+          <TableRow>
+            <TableHead>Sr. No</TableHead>
+            <TableHead>Image</TableHead>
+            <TableHead>Product Name</TableHead>
+            <TableHead>Model Name</TableHead>
+            <TableHead>Price</TableHead>
+            <TableHead>Stock</TableHead>
+            <TableHead>Actions</TableHead>
           </TableRow>
         </TableHeader>
 
         <TableBody>
-          {loading ? (
-            <TableRow>
-              <TableCell colSpan={6} className="text-center py-10">
-                <Spinner />
+          {models.map((model, index) => (
+            <TableRow key={model.modelId}>
+              <TableCell>{index + 1}</TableCell>
+
+              <TableCell>
+                {model.productModelDetails?.colors?.[0]?.imageUrl ? (
+                  <Image
+                    src={model.productModelDetails.colors[0].imageUrl}
+                    alt={model.productTitle}
+                    width={50}
+                    height={50}
+                    className="rounded"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-gray-200 rounded" />
+                )}
               </TableCell>
-            </TableRow>
-          ) : data.length === 0 ? (
-            <TableRow>
-              <TableCell colSpan={6} className="text-center py-10 text-muted-foreground">
-                No models found
+
+              <TableCell>{model.productTitle}</TableCell>
+              <TableCell>{model.modelName}</TableCell>
+
+              <TableCell>
+                {model.productModelDetails?.colors?.[0]?.colorPrice?.[0]
+                  ?.finalPrice
+                  ? `${model.productModelDetails.colors[0].colorPrice[0].finalPrice}/-`
+                  : "-"}
               </TableCell>
-            </TableRow>
-          ) : (
-            data.map((model, index) => (
-              <TableRow key={model.modelId} className="hover:bg-gray-50">
-                <TableCell>{index + 1}</TableCell>
 
-                <TableCell>
-                  <div className="flex gap-2">
-                    {model.productModelDetails?.colors?.map((color) => (
-                      <img
-                        key={color.colorName}
-                        src={color.imageUrl}
-                        alt={color.colorName}
-                        className="w-8 h-8 rounded border"
-                      />
-                    ))}
-                    {!model.productModelDetails?.colors?.length && (
-                      <span className="text-muted-foreground">No Colors</span>
-                    )}
-                  </div>
-                </TableCell>
+              <TableCell>
+                {model.productModelDetails?.colors?.[0]?.stock ?? "-"}
+              </TableCell>
 
-                <TableCell>{model.productTitle}</TableCell>
-                <TableCell>{model.modelName}</TableCell>
-
-                <TableCell>
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-medium
-                      ${model.status === "Live" && "bg-green-100 text-green-700"}
-                      ${model.status === "Padding" && "bg-yellow-100 text-yellow-700"}
-                      ${model.status === "Enquiry" && "bg-blue-100 text-blue-700"}
-                    `}
-                  >
-                    {model.status}
-                  </span>
-                </TableCell>
-
-                <TableCell className="flex gap-2 justify-end">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => {
-                      setSelected(model.productModelDetails);
-                      setOpen(true);
-                    }}
-                    disabled={!model.productModelDetails}
-                  >
-                    View
-                  </Button>
-
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleEnquiry(model.productId, model.modelId)}
-                      disabled={actionLoadingId === model.modelId}
-                    >
-                      {actionLoadingId === model.modelId ? "Updating..." : "Enquiry"}
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <MoreHorizontal />
                     </Button>
-                </TableCell>
-              </TableRow>
-            ))
-          )}
+                  </DropdownMenuTrigger>
+
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={() => {
+                        router.push(
+                          `/dashboard/product/add/model/${model.productId}`
+                        );
+                      }}
+                    >
+                      Add New Model
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedProduct(model);
+                        setOpenProductDialog(true);
+                      }}
+                    >
+                      Edit Product
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedModel(model);
+                        setOpenModelDialog(true);
+                      }}
+                    >
+                      Edit Model
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedModel(model);
+                        setOpenModelDetailsDialog(true);
+                      }}
+                    >
+                      Edit Model Details
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={async () => {
+                        const confirmDelete = confirm(
+                          `Are you sure you want to delete the model "${model.modelName}"?`
+                        );
+                        if (!confirmDelete) return;
+
+                        try {
+                          await deleteModelService(
+                            model.productId,
+                            model.modelId
+                          );
+                          alert("Model deleted successfully");
+                          fetchData();
+                        } catch (error: any) {
+                          alert(error.message || "Failed to delete model");
+                        }
+                      }}
+                    >
+                      Delete Model
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        const firstColor =
+                          model.productModelDetails?.colors?.[0];
+
+                        if (!firstColor) {
+                          alert("No color found for this model");
+                          return;
+                        }
+
+                        setSelectedColor({
+                          colorId: firstColor._id, // 🔥 MUST be real colorId
+                          colorData: firstColor,
+                          productId: model.productId,
+                          modelId: model.modelId,
+                          
+                        });
+
+                        setOpenColorDialog(true);
+                      }}
+                    >
+                      Edit Color Details
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </TableCell>
+            </TableRow>
+          ))}
         </TableBody>
       </Table>
 
-      <ModelDetailsDialog
-        open={open}
-        onClose={() => setOpen(false)}
-        data={selected}
-      />
+      {/* ---------------- Update Product Dialog ---------------- */}
+      {selectedProduct && (
+        <UpdateProductDialog
+          open={openProductDialog}
+          onClose={() => setOpenProductDialog(false)}
+          productId={selectedProduct.productId}
+          defaultValues={{
+            productTitle: selectedProduct.productTitle,
+            productCategory: selectedProduct.productCategory ?? "",
+            description: selectedProduct.productDescription,
+          }}
+          onSuccess={fetchData}
+        />
+      )}
+
+      {/* ---------------- Update Model Dialog ---------------- */}
+      {selectedModel && (
+        <UpdateModelDialog
+          open={openModelDialog}
+          onClose={() => setOpenModelDialog(false)}
+          productId={selectedModel.productId}
+          modelId={selectedModel.modelId}
+          defaultValues={{
+            modelName: selectedModel.modelName,
+            status: selectedModel.status,
+          }}
+          onSuccess={fetchData}
+        />
+      )}
+
+      {/* ---------------- Update Model Details Dialog ---------------- */}
+      {selectedModel && selectedModel.productModelDetails && (
+        <UpdateModelDetailsDialog
+          open={openModelDetailsDialog}
+          onClose={() => setOpenModelDetailsDialog(false)}
+          productId={selectedModel.productId}
+          modelId={selectedModel.modelId}
+          modelDetails={mapToModelDetails(selectedModel.productModelDetails)}
+          onSuccess={fetchData}
+        />
+      )}
+
+      {selectedColor && (
+        <UpdateColorDialog
+          open={openColorDialog}
+          onClose={() => setOpenColorDialog(false)}
+          productId={selectedColor.productId}
+          modelId={selectedColor.modelId}
+          colorId={selectedColor.colorId}
+          colorData={selectedColor.colorData}
+          onSuccess={fetchData}
+        />
+      )}
     </>
   );
 }

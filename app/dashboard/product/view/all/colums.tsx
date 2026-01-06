@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 export const modelColumns = (
   onViewDetails: (details: ProductModelDetailsDTO | null) => void
 ): ColumnDef<ModelWithProductDTO>[] => [
+  
   {
     header: "Product",
     accessorKey: "productTitle",

@@ -1,3 +1,64 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import axios from "axios";
+
+
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"
+
+
+
+export interface RegisterServicePayload {
+  username: string;
+  email: string;
+  password: string;
+  role: "admin" | "user";
+  imageUrl?: string;
+}
+
+export interface RegisterServiceResponse {
+  success: boolean;
+  message: string;
+  emailMessage: string;
+  id: string;
+  username: string;
+  email: string;
+  role: string;
+  imageUrl?: string;
+  accessToken: string;
+  tokenExpiresAt: string;
+}
+
+export const registerService = async (
+  payload: RegisterServicePayload
+): Promise<RegisterServiceResponse> => {
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/api/auth/register",
+      payload,
+      {
+        withCredentials: true, // REQUIRED for httpOnly cookie
+      }
+    );
+
+    return response.data;
+  } catch (error: any) {
+    // Normalize backend errors
+    const message =
+      error?.response?.data?.message ||
+      error?.response?.data?.error ||
+      "Registration failed";
+
+    throw new Error(message);
+  }
+};
+
+
+
+
+
+
+
+
 export const loginService = async ({
   email,
   password,
@@ -16,6 +77,41 @@ export const loginService = async ({
 
   const data = await res.json();
   if (!res.ok) throw new Error(data.message || "Login failed");
+
+  return data;
+};
+
+
+export const logoutService = async (): Promise<void> => {
+  const res = await fetch("http://localhost:5000/api/auth/logout", {
+    method: "POST",
+    credentials: "include",
+  });
+
+  if (!res.ok) {
+    throw new Error("Logout failed");
+  }
+};
+
+
+export const googleLoginService = async (idToken: string) => {
+  const res = await fetch(
+    `http://localhost:5000/api/auth/google-login`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // 🔥 REQUIRED for cookies
+      body: JSON.stringify({ idToken }),
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.message || "Google login failed");
+  }
 
   return data;
 };

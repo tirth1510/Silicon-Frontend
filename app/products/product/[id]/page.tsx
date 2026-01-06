@@ -54,6 +54,11 @@ type ProductModelDetails = {
   warranty: { points: string }[];
 };
 
+type AllModels = {
+  modelId: string;
+  modelName: string;
+};
+
 type Product = {
   productId: string;
   productTitle: string;
@@ -61,6 +66,7 @@ type Product = {
   modelId: string;
   modelName: string;
   productModelDetails: ProductModelDetails;
+  allModels: AllModels;
 };
 
 /* ================= COMPONENT ================= */
@@ -265,7 +271,6 @@ export default function ProductDetailsPage() {
           </div>
         </div>
       </div>
-
     </div>
   );
 }

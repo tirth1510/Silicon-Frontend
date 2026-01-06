@@ -6,16 +6,18 @@ import {
   BookOpen,
   Bot,
   Command,
+  Edit3,
+  Eye,
   Frame,
   GalleryVerticalEnd,
   Map,
   PieChart,
+  Plus,
   Settings2,
   SquareTerminal,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
 import {
@@ -25,14 +27,10 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import Image from "next/image";
 
-// This is sample data.
+// Sample data
 const data = {
-  user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
-  },
   teams: [
     {
       name: "Acme Inc",
@@ -50,7 +48,6 @@ const data = {
       plan: "Free",
     },
   ],
-
   navMain: [
     {
       title: "Products",
@@ -60,161 +57,86 @@ const data = {
       items: [
         {
           title: "View Products",
+          icon: Eye,
           items: [
-            {
-              title: "Live Products",
-              url: "/dashboard/product/view/all",
-            },
-            {
-              title: "Padding Products",
-              url: "/dashboard/product/view/padding",
-            },
+            { title: "Live Products", url: "/dashboard/product/view/all", icon: Eye },
+            { title: "Padding Products", url: "/dashboard/product/view/padding", icon: Eye },
           ],
         },
         {
           title: "Add Product",
+          icon: Plus,
           items: [
-            {
-              title: "Add New Products",
-              url: "/dashboard/product/add/Product",
-            },
-            {
-              title: "Add New Model's",
-              url: "/dashboard/product/add/model",
-            },
+            { title: "Add New Products", url: "/dashboard/product/add/Product", icon: Plus },
+            { title: "Add New Model's", url: "/dashboard/product/add/model", icon: Plus },
           ],
         },
         {
           title: "Update Product",
-          items: [
-            {
-              title: "Edit Products",
-              url: "/dashboard/product/edit",
-            },
-          ],
+          icon: Edit3,
+          items: [{ title: "Edit Products", url: "/dashboard/product/edit", icon: Edit3 }],
         },
       ],
     },
     {
       title: "Accesories",
       icon: Bot,
+      isActive: true,
       items: [
         {
-          title: "View Products",
+          title: "View Accesories",
+          icon: Eye,
           items: [
-            {
-              title: "Live Products",
-              url: "/dashboard/product/view/all",
-            },
-            {
-              title: "Padding Products",
-              url: "/dashboard/product/view/padding",
-            },
+            { title: "Live Accesories", url: "/dashboard/accessories/view/all", icon: Eye },
+            { title: "Padding Accesories", url: "/dashboard/accessories/view/padding", icon: Eye },
           ],
         },
         {
           title: "Add Product",
-          items: [
-            {
-              title: "Add New Products",
-              url: "/dashboard/product/add/Product",
-            },
-            {
-              title: "Add New Model's",
-              url: "/dashboard/product/add/model",
-            },
-          ],
+          icon: Plus,
+          items: [{ title: "Add New Accesories", url: "/dashboard/accessories/add/Product", icon: Plus }],
         },
         {
           title: "Update Product",
+          icon: Edit3,
+          items: [{ title: "Edit Products", url: "/dashboard/accessories/edit", icon: Edit3 }],
+        },
+      ],
+    },
+    {
+      title: "Sales Category",
+      url: "#",
+      icon: BookOpen,
+      isActive: true,
+      items: [
+        {
+          title: "View Sale",
+          icon: Eye,
           items: [
-            {
-              title: "Edit Products",
-              url: "/dashboard/product/edit",
-            },
+            { title: "Live sales", url: "/dashboard/sales/all", icon: Eye },
+            { title: "View Sale Product", url: "/dashboard/sales/view", icon: Eye },
           ],
         },
       ],
-    },
-    {
-      title: "Seales",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Settings",
-      url: "#",
-      icon: Settings2,
-      items: [
-        {
-          title: "General",
-          url: "#",
-        },
-        {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
-          url: "#",
-        },
-      ],
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
-      <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+    <Sidebar collapsible="icon" {...props} className="bg-white border-r border-gray-100">
+      <SidebarHeader className="bg-white border-r py-9 border-gray-100">
+        <Image src="/logo.png" alt="SiliconMeditech" height={100} width={270} />
       </SidebarHeader>
-      <SidebarContent>
+
+      <SidebarContent className="bg-white border-r border-gray-100">
         <NavMain items={data.navMain} />
-        <NavProjects projects={data.projects} />
       </SidebarContent>
-      <SidebarFooter>
-        <NavUser user={data.user} />
+
+      <SidebarFooter className="bg-white border-r border-gray-100">
+        <NavUser />
       </SidebarFooter>
+
       <SidebarRail />
     </Sidebar>
   );

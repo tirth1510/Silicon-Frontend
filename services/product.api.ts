@@ -18,9 +18,33 @@ const API = axios.create({
 export const createProductStep1 = async (
   payload: CreateProductStep1Payload
 ): Promise<ApiResponse<ProductDTO>> => {
-  const res = await API.post<ApiResponse<ProductDTO>>("/create/step-1", payload);
+  const res = await API.post<ApiResponse<ProductDTO>>("/products", payload);
   return res.data;
 };
+
+
+/*------------- STEP-1 ------- ADD NEW MODEL ----- */
+
+export const addProductModelService = async (
+  productId: string,
+  payload: { modelName: string }
+): Promise<ApiResponse<ProductModelDTO>> => {
+  const res = await API.post<ApiResponse<ProductModelDTO>>(
+    `/products/${productId}/models`,
+    {
+      modelName: payload.modelName,
+      status: "Padding", // 👈 spelling fixed too
+    }
+  );
+
+  return res.data;
+};
+
+
+
+
+
+
 
 /* ---------- STEP-2 ---------- */
 export const addProductModelDetails = async (
@@ -29,7 +53,7 @@ export const addProductModelDetails = async (
   payload: ProductModelDetailsPayload
 ): Promise<ApiResponse<ProductModelDTO>> => {
   const res = await API.put<ApiResponse<ProductModelDTO>>(
-    `/${productId}/models/${modelId}/details`,
+    `/products/${productId}/models/${modelId}/details`,
     payload
   );
   return res.data;

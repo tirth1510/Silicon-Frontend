@@ -1,28 +1,40 @@
+import {
+  CreateProductPayload,
+  CreateProductFiles,
+} from "@/services/accessory.service";
+import { Value } from "@radix-ui/react-select";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type TextBlock = {
   _id: string;
   points: string[];
 };
 
 export type Product = {
+  productImageUrl: any;
+  productGallery: any;
+  description: any;
+  priceDetails: any;
   id: string;
   productTitle: string;
   productCategory: string;
   stock?: number;
-
+  status: string;
   price: number;
   discount?: number;
   finalPrice?: number;
 
+  // ✅ ADD THESE HERE (IMAGE DATA)
   productImages?: { url: string }[];
+  galleryImages?: { url: string }[];
 
-  soldCount?: number;
-  isRecommended?: boolean;
-
-  description?: TextBlock;
-  specifications?: TextBlock;
-  warranty?: TextBlock;
+  // ✅ TEXT / POINTS DATA
+  specifications?: { points?: string }[];
+  productSpecifications?: { key?: string; value?: string }[];
+  warranty?: { points?: string }[];
+   createdAt: string;
+  updatedAt: string;
 };
-
 
 // -------------------- TYPES --------------------
 export type Point = {
@@ -40,8 +52,13 @@ export type PriceDetails = {
   discount: number;
   finalPrice: number;
 };
-
+export type productSpecifications = {
+  key: string;
+  value: string;
+};
 export type AccessoryApiResponse = {
+  status: any;
+  id: string;
   _id: string;
   productTitle: string;
   productCategory: string;
@@ -51,6 +68,7 @@ export type AccessoryApiResponse = {
   productImageUrl: ImageObj[];
   productGallery: ImageObj[];
   specifications: Point[];
+  productSpecifications: productSpecifications[];
   warranty: Point[];
   createdAt: string;
   updatedAt: string;

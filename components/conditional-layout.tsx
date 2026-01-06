@@ -4,26 +4,29 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 
+interface ConditionalLayoutProps {
+  children: React.ReactNode;
+}
+
 export default function ConditionalLayout({
   children,
-}: {
-  children: React.ReactNode;
-}) {
-  const pathname = usePathname();
-  const isDashboard = pathname.startsWith("/dashboard");
+}: ConditionalLayoutProps) {
+  const pathname = usePathname() || ""; // fallback to empty string
 
-  if (isDashboard) {
-    // Dashboard pages: no navbar/footer
-    return <>{children}</>;
-  }
+  const isDashboard = pathname.startsWith("/dashboard");
+  const isunAuthorized = pathname.startsWith("/unauthorized");
+
+  const isLogin = pathname.startsWith("/login");
+
+  // Dashboard pages: no navbar/footer
+  if (isDashboard || isLogin || isunAuthorized) return <>{children}</>;
 
   // Regular pages: with navbar and footer
   return (
     <>
       <Navbar />
-      <main>{children}</main>
+      <main className="min-h-auto">{children}</main>
       <Footer />
     </>
   );
 }
-

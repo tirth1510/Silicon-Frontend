@@ -1,8 +1,12 @@
+import { Key } from "react";
+
 export interface ImageDTO {
+  _id: string;
   url: string;
 }
 
 export interface ColorPriceDTO {
+  _id: string;
   currency: string;
   price: number;
   discount: number;
@@ -10,6 +14,7 @@ export interface ColorPriceDTO {
 }
 
 export interface ColorDTO {
+  _id: string;
   colorName: string;
   imageUrl: string;
   productImageUrl: ImageDTO[];
@@ -18,7 +23,16 @@ export interface ColorDTO {
   stock: number;
 }
 
+export type ProductallSchemeKey =
+  | "all"
+  | "saleProduct"
+  | "tradingProduct"
+  | "companyProduct"
+  | "valuableProduct"
+  | "recommendedProduct";
+
 export interface ProductSellDTO {
+  all: boolean;
   saleProduct: boolean;
   tradingProduct: boolean;
   companyProduct: boolean;
@@ -39,8 +53,10 @@ export interface ProductModelDetailsDTO {
 }
 
 export interface ModelWithProductDTO {
+  _id: string;
   productId: string;
   productTitle: string;
+  productDescription?: string;
   productCategory: string;
   modelId: string;
   modelName: string;
