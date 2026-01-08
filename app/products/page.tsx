@@ -61,7 +61,7 @@ type ProductForList = {
 export default function AllProductsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const categorySlug = searchParams.get("category");
+  const categorySlug = searchParams?.get("category") || null;
 
   const [products, setProducts] = useState<ProductForList[]>([]);
   const [open, setOpen] = useState(false);
@@ -110,9 +110,9 @@ export default function AllProductsPage() {
               price: priceInfo?.finalPrice || 0,
               originalPrice: priceInfo?.price || 0,
               discount: priceInfo?.discount || 0,
-              image: firstColor?.imageUrl || 
-                     firstColor?.productImageUrl?.[0]?.url || 
-                     FALLBACK_IMAGE,
+              image: firstColor?.imageUrl ||
+                firstColor?.productImageUrl?.[0]?.url ||
+                FALLBACK_IMAGE,
             };
           });
 
@@ -195,7 +195,7 @@ Product Image: ${selectedProduct.image}
           </h2>
 
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {category 
+            {category
               ? category.categoryDescription || "Browse products in this category"
               : "Browse our complete range of high-quality medical equipment and devices"
             }
@@ -252,93 +252,93 @@ Product Image: ${selectedProduct.image}
         {/* ---------- PRODUCT GRID ---------- */}
         {!categoryLoading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {visibleProducts.map((product, index) => (
-            <div
-              key={`${product.id}-${index}`}
-              className="group bg-white rounded-xl overflow-hidden border border-gray-200 
+            {visibleProducts.map((product, index) => (
+              <div
+                key={`${product.id}-${index}`}
+                className="group bg-white rounded-xl overflow-hidden border border-gray-200 
                          hover:border-blue-900 hover:shadow-lg transition-all duration-300"
-            >
-              {/* Image Section */}
-              <div className="relative h-48 bg-gray-50 overflow-hidden">
-                <Image
-                  src={product.image || FALLBACK_IMAGE}
-                  alt={product.title}
-                  fill
-                  unoptimized
-                  className="object-contain p-2 group-hover:scale-110 transition-transform duration-300"
-                />
+              >
+                {/* Image Section */}
+                <div className="relative h-48 bg-gray-50 overflow-hidden">
+                  <Image
+                    src={product.image || FALLBACK_IMAGE}
+                    alt={product.title}
+                    fill
+                    unoptimized
+                    className="object-contain p-2 group-hover:scale-110 transition-transform duration-300"
+                  />
 
-                {/* Category Badge */}
-                <div className="absolute top-2 left-2">
-                  <span className="inline-block px-2.5 py-1 text-[10px] font-semibold text-white bg-blue-900 
+                  {/* Category Badge */}
+                  <div className="absolute top-2 left-2">
+                    <span className="inline-block px-2.5 py-1 text-[10px] font-semibold text-white bg-blue-900 
                                  rounded-md shadow-md">
-                    {product.category}
-                  </span>
-                </div>
-
-                {/* Discount Badge */}
-                {product.discount > 0 && (
-                  <div className="absolute top-2 right-2">
-                    <span className="inline-block px-2.5 py-1 text-[10px] font-semibold text-white bg-red-600 
-                                   rounded-md shadow-md">
-                      {product.discount}% OFF
+                      {product.category}
                     </span>
                   </div>
-                )}
-              </div>
 
-              {/* Content Section */}
-              <div className="p-4">
-                {/* Model Name */}
-                <h3 className="text-sm font-bold text-gray-900 mb-2 line-clamp-2 h-10">
-                  {product.modelName}
-                </h3>
-
-                {/* Price */}
-                <div className="mb-4">
-                  <div className="flex items-center gap-2">
-                    <p className="text-xl font-bold text-blue-900">
-                      ₹{product.price.toLocaleString("en-IN")}
-                    </p>
-                    {product.discount > 0 && (
-                      <p className="text-sm text-gray-500 line-through">
-                        ₹{product.originalPrice.toLocaleString("en-IN")}
-                      </p>
-                    )}
-                  </div>
+                  {/* Discount Badge */}
                   {product.discount > 0 && (
-                    <p className="text-xs text-green-700 font-semibold">
-                      Save ₹{(product.originalPrice - product.price).toLocaleString("en-IN")}
-                    </p>
+                    <div className="absolute top-2 right-2">
+                      <span className="inline-block px-2.5 py-1 text-[10px] font-semibold text-white bg-red-600 
+                                   rounded-md shadow-md">
+                        {product.discount}% OFF
+                      </span>
+                    </div>
                   )}
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => router.push(`/products/${product.modelId}`)}
-                    className="flex-1 px-3 py-2 bg-blue-900 text-white text-xs font-semibold rounded-lg
+                {/* Content Section */}
+                <div className="p-4">
+                  {/* Model Name */}
+                  <h3 className="text-sm font-bold text-gray-900 mb-2 line-clamp-2 h-10">
+                    {product.modelName}
+                  </h3>
+
+                  {/* Price */}
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2">
+                      <p className="text-xl font-bold text-blue-900">
+                        ₹{product.price.toLocaleString("en-IN")}
+                      </p>
+                      {product.discount > 0 && (
+                        <p className="text-sm text-gray-500 line-through">
+                          ₹{product.originalPrice.toLocaleString("en-IN")}
+                        </p>
+                      )}
+                    </div>
+                    {product.discount > 0 && (
+                      <p className="text-xs text-green-700 font-semibold">
+                        Save ₹{(product.originalPrice - product.price).toLocaleString("en-IN")}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => router.push(`/products/${product.modelId}`)}
+                      className="flex-1 px-3 py-2 bg-blue-900 text-white text-xs font-semibold rounded-lg
                              hover:bg-blue-800 transition-all duration-200 flex items-center justify-center gap-1.5"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    <span>View</span>
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setSelectedProduct(product);
-                      setOpen(true);
-                    }}
-                    className="flex-1 px-3 py-2 border-2 border-blue-900 text-blue-900 text-xs font-semibold rounded-lg
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>View</span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setSelectedProduct(product);
+                        setOpen(true);
+                      }}
+                      className="flex-1 px-3 py-2 border-2 border-blue-900 text-blue-900 text-xs font-semibold rounded-lg
                              hover:bg-blue-900 hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5"
-                  >
-                    <MessageCircle className="w-3.5 h-3.5" />
-                    <span>Contact</span>
-                  </button>
+                    >
+                      <MessageCircle className="w-3.5 h-3.5" />
+                      <span>Contact</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
           </div>
         )}
       </div>

@@ -77,8 +77,6 @@ export default function ModelsTable() {
     fetchData();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-
   const mapToModelDetails = (
     details: ProductModelDetailsDTO
   ): ModelDetails => ({
@@ -216,7 +214,7 @@ export default function ModelsTable() {
                           colorData: firstColor,
                           productId: model.productId,
                           modelId: model.modelId,
-                          
+
                         });
 
                         setOpenColorDialog(true);

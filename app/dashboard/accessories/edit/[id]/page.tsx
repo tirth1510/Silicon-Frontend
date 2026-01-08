@@ -39,9 +39,6 @@ export default function AccessoriesFormPage({
     fetchProduct();
   }, [productId]);
 
-  if (loading) return <p className="p-4">Loading...</p>;
-  if (!product) return <p className="p-4">No product found</p>;
-
   /* ---------- handlers ---------- */
   const handleFieldChange = (field: string, value: any) => {
     setProduct((prev: any) => ({ ...prev, [field]: value }));

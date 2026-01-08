@@ -54,8 +54,6 @@ export default function ModelsTable() {
     fetchData();
   }, []);
 
-  if (loading) return <div>Loading...</div>;
-
   const handleSchemeSelect = async (schemeKey: ProductallSchemeKey) => {
     if (!selectedModel) return;
 

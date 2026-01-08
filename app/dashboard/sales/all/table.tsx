@@ -64,8 +64,6 @@ export default function ModelsTable() {
     fetchData();
   }, []);
 
-  if (loading) return <div className="py-10 text-center">Loading...</div>;
-
   const totalPages = Math.ceil(models.length / ITEMS_PER_PAGE);
 
   const paginatedModels = models.slice(
@@ -137,121 +135,121 @@ export default function ModelsTable() {
             </TableRow>
           </TableHeader>
 
-         <TableBody>
-  {paginatedModels.map((model, index) => (
-    <TableRow
-      key={model.modelId}
-      className="border-b border-gray-200 hover:bg-gray-50 transition"
-    >
-      {/* Index */}
-      <TableCell className="py-4 text-center text-gray-600 text-sm">
-        {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
-      </TableCell>
+          <TableBody>
+            {paginatedModels.map((model, index) => (
+              <TableRow
+                key={model.modelId}
+                className="border-b border-gray-200 hover:bg-gray-50 transition"
+              >
+                {/* Index */}
+                <TableCell className="py-4 text-center text-gray-600 text-sm">
+                  {(currentPage - 1) * ITEMS_PER_PAGE + index + 1}
+                </TableCell>
 
-      {/* Image */}
-      <TableCell className="py-2">
-        <div className="flex justify-center">
-          {model.productModelDetails?.colors?.[0]?.imageUrl ? (
-            <div className="relative w-14 h-14 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition-all duration-300 shadow-sm group">
-              <Image
-                src={model.productModelDetails.colors[0].imageUrl}
-                alt={model.productTitle}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                sizes="56px"
-              />
-            </div>
-          ) : (
-            <div className="w-14 h-14 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
-              <span className="text-[10px] text-gray-400 font-medium">No Image</span>
-            </div>
-          )}
-        </div>
-      </TableCell>
+                {/* Image */}
+                <TableCell className="py-2">
+                  <div className="flex justify-center">
+                    {model.productModelDetails?.colors?.[0]?.imageUrl ? (
+                      <div className="relative w-14 h-14 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition-all duration-300 shadow-sm group">
+                        <Image
+                          src={model.productModelDetails.colors[0].imageUrl}
+                          alt={model.productTitle}
+                          fill
+                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          sizes="56px"
+                        />
+                      </div>
+                    ) : (
+                      <div className="w-14 h-14 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
+                        <span className="text-[10px] text-gray-400 font-medium">No Image</span>
+                      </div>
+                    )}
+                  </div>
+                </TableCell>
 
-      {/* Product Name (WIDTH REDUCED) */}
-      <TableCell className="py-4 text-center">
-        <div className="max-w-[160px] mx-auto font-semibold text-gray-900 text-sm truncate">
-          {model.productTitle}
-        </div>
-      </TableCell>
+                {/* Product Name (WIDTH REDUCED) */}
+                <TableCell className="py-4 text-center">
+                  <div className="max-w-[160px] mx-auto font-semibold text-gray-900 text-sm truncate">
+                    {model.productTitle}
+                  </div>
+                </TableCell>
 
-      {/* Model Name */}
-      <TableCell className="py-4 text-center text-gray-700">
-        {model.modelName}
-      </TableCell>
+                {/* Model Name */}
+                <TableCell className="py-4 text-center text-gray-700">
+                  {model.modelName}
+                </TableCell>
 
-      {/* Price */}
-      <TableCell className="py-4 text-center font-medium text-gray-800">
-        {model.productModelDetails?.colors?.[0]?.colorPrice?.[0]?.finalPrice
-          ? `₹${model.productModelDetails.colors[0].colorPrice[0].finalPrice}`
-          : "-"}
-      </TableCell>
+                {/* Price */}
+                <TableCell className="py-4 text-center font-medium text-gray-800">
+                  {model.productModelDetails?.colors?.[0]?.colorPrice?.[0]?.finalPrice
+                    ? `₹${model.productModelDetails.colors[0].colorPrice[0].finalPrice}`
+                    : "-"}
+                </TableCell>
 
-      {/* Stock */}
-      <TableCell className="py-4 text-center text-gray-600">
-        {model.productModelDetails?.colors?.[0]?.stock ?? "-"}
-      </TableCell>
+                {/* Stock */}
+                <TableCell className="py-4 text-center text-gray-600">
+                  {model.productModelDetails?.colors?.[0]?.stock ?? "-"}
+                </TableCell>
 
-      {/* Action */}
-      <TableCell className="py-4">
-        <div className="flex justify-center">
-          <Button
-            variant="outline"
-            className="border-gray-400 text-gray-700 bg-white hover:bg-gray-800 hover:text-white text-xs px-4 py-2"
-            onClick={() => {
-              setSelectedModel(model);
-              setOpenSellDialog(true);
+                {/* Action */}
+                <TableCell className="py-4">
+                  <div className="flex justify-center">
+                    <Button
+                      variant="outline"
+                      className="border-gray-400 text-gray-700 bg-white hover:bg-gray-800 hover:text-white text-xs px-4 py-2"
+                      onClick={() => {
+                        setSelectedModel(model);
+                        setOpenSellDialog(true);
 
-              const activeScheme = PRODUCT_SCHEMES.find(
-                (scheme) =>
-                  model.productModelDetails?.schem?.[scheme.key]
-              );
-              setSelectedScheme(activeScheme?.key || "");
-            }}
-          >
-            Add Sell
-          </Button>
-        </div>
-      </TableCell>
-    </TableRow>
-  ))}
-</TableBody>
+                        const activeScheme = PRODUCT_SCHEMES.find(
+                          (scheme) =>
+                            model.productModelDetails?.schem?.[scheme.key]
+                        );
+                        setSelectedScheme(activeScheme?.key || "");
+                      }}
+                    >
+                      Add Sell
+                    </Button>
+                  </div>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
 
         </Table>
 
         {/* ================= PAGINATION ================= */}
         <div className="py-4 ">
           {totalPages > 1 && (
-          <Pagination className="mt-6">
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
-                />
-              </PaginationItem>
-
-              {[...Array(totalPages)].map((_, i) => (
-                <PaginationItem key={i}>
-                  <PaginationLink
-                    isActive={currentPage === i + 1}
-                    onClick={() => setCurrentPage(i + 1)}
-                  >
-                    {i + 1}
-                  </PaginationLink>
+            <Pagination className="mt-6">
+              <PaginationContent>
+                <PaginationItem>
+                  <PaginationPrevious
+                    onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  />
                 </PaginationItem>
-              ))}
 
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() =>
-                    setCurrentPage((p) => Math.min(p + 1, totalPages))
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
-        )}
+                {[...Array(totalPages)].map((_, i) => (
+                  <PaginationItem key={i}>
+                    <PaginationLink
+                      isActive={currentPage === i + 1}
+                      onClick={() => setCurrentPage(i + 1)}
+                    >
+                      {i + 1}
+                    </PaginationLink>
+                  </PaginationItem>
+                ))}
+
+                <PaginationItem>
+                  <PaginationNext
+                    onClick={() =>
+                      setCurrentPage((p) => Math.min(p + 1, totalPages))
+                    }
+                  />
+                </PaginationItem>
+              </PaginationContent>
+            </Pagination>
+          )}
         </div>
       </div>
 

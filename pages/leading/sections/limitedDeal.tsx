@@ -41,9 +41,7 @@ export default function SaleProductsPage() {
   const FALLBACK_IMAGE =
     "https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg";
 
-  if (isLoading) return <p>Loading...</p>;
-  if (isError) return <p>{(error as Error).message}</p>;
-
+  if (isLoading) return <p></p>;
   /* ---------------- SAFE DATA ---------------- */
   const apiProducts: SaleProductAPIItem[] = data?.data ?? [];
 

@@ -74,24 +74,6 @@ export default function ProductCategorySection() {
           </p>
         </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-900"></div>
-          </div>
-        )}
-
-        {/* Error State */}
-        {error && (
-          <div className="text-center py-20">
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-red-50 rounded-lg border border-red-200">
-              <span className="text-sm font-semibold text-red-700">
-                {error}
-              </span>
-            </div>
-          </div>
-        )}
-
         {/* CATEGORY CARDS */}
         {!loading && !error && apiCategories && apiCategories.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
