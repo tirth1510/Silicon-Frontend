@@ -2,24 +2,16 @@
 
 import * as React from "react";
 import {
-  AudioWaveform,
-  BookOpen,
-  Bot,
-  Command,
-  Edit3,
+  LayoutDashboard,
+  Package,
+  ShoppingBag,
+  TrendingUp,
   Eye,
-  Frame,
-  GalleryVerticalEnd,
-  Map,
-  PieChart,
-  Plus,
-  Settings2,
-  SquareTerminal,
+  BarChart3,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
 import { NavUser } from "@/components/nav-user";
-import { TeamSwitcher } from "@/components/team-switcher";
 import {
   Sidebar,
   SidebarContent,
@@ -29,93 +21,42 @@ import {
 } from "@/components/ui/sidebar";
 import Image from "next/image";
 
-// Sample data
+// Navigation data
 const data = {
-  teams: [
-    {
-      name: "Acme Inc",
-      logo: GalleryVerticalEnd,
-      plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: AudioWaveform,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Command,
-      plan: "Free",
-    },
-  ],
   navMain: [
     {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: LayoutDashboard,
+      isActive: true,
+    },
+    {
       title: "Products",
-      url: "#",
-      icon: SquareTerminal,
+      url: "/dashboard/product",
+      icon: Package,
       isActive: true,
-      items: [
-        {
-          title: "View Products",
-          icon: Eye,
-          items: [
-            { title: "Live Products", url: "/dashboard/product/view/all", icon: Eye },
-            { title: "Padding Products", url: "/dashboard/product/view/padding", icon: Eye },
-          ],
-        },
-        {
-          title: "Add Product",
-          icon: Plus,
-          items: [
-            { title: "Add New Products", url: "/dashboard/product/add/Product", icon: Plus },
-            { title: "Add New Model's", url: "/dashboard/product/add/model", icon: Plus },
-          ],
-        },
-        {
-          title: "Update Product",
-          icon: Edit3,
-          items: [{ title: "Edit Products", url: "/dashboard/product/edit", icon: Edit3 }],
-        },
-      ],
     },
     {
-      title: "Accesories",
-      icon: Bot,
+      title: "Accessories",
+      url: "/dashboard/accessories",
+      icon: ShoppingBag,
       isActive: true,
-      items: [
-        {
-          title: "View Accesories",
-          icon: Eye,
-          items: [
-            { title: "Live Accesories", url: "/dashboard/accessories/view/all", icon: Eye },
-            { title: "Padding Accesories", url: "/dashboard/accessories/view/padding", icon: Eye },
-          ],
-        },
-        {
-          title: "Add Product",
-          icon: Plus,
-          items: [{ title: "Add New Accesories", url: "/dashboard/accessories/add/Product", icon: Plus }],
-        },
-        {
-          title: "Update Product",
-          icon: Edit3,
-          items: [{ title: "Edit Products", url: "/dashboard/accessories/edit", icon: Edit3 }],
-        },
-      ],
     },
     {
-      title: "Sales Category",
+      title: "Sales",
       url: "#",
-      icon: BookOpen,
+      icon: BarChart3,
       isActive: true,
       items: [
-        {
-          title: "View Sale",
-          icon: Eye,
-          items: [
-            { title: "Live sales", url: "/dashboard/sales/all", icon: Eye },
-            { title: "View Sale Product", url: "/dashboard/sales/view", icon: Eye },
-          ],
+        { 
+          title: "Live Sales", 
+          url: "/dashboard/sales/all", 
+          icon: TrendingUp 
+        },
+        { 
+          title: "View Sales", 
+          url: "/dashboard/sales/view", 
+          icon: Eye 
         },
       ],
     },
@@ -124,20 +65,38 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props} className="bg-white border-r border-gray-100">
-      <SidebarHeader className="bg-white border-r py-9 border-gray-100">
-        <Image src="/logo.png" alt="SiliconMeditech" height={100} width={270} />
+    <Sidebar 
+      collapsible="icon" 
+      {...props} 
+      className="border-r border-gray-200 bg-white"
+    >
+      {/* Header with Logo */}
+      <SidebarHeader className="border-b border-gray-200 py-6 px-4 bg-white group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-5">
+        <div className="flex items-center justify-center">
+          <Image 
+            src="/logo.png" 
+            alt="Silicon Meditech" 
+            height={60} 
+            width={180}
+            className="object-contain group-data-[collapsible=icon]:hidden"
+          />
+          <div className="hidden group-data-[collapsible=icon]:flex w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl items-center justify-center shadow-lg">
+            <span className="text-white font-bold text-xl">SM</span>
+          </div>
+        </div>
       </SidebarHeader>
 
-      <SidebarContent className="bg-white border-r border-gray-100">
+      {/* Navigation Content */}
+      <SidebarContent className="py-4 px-3 bg-white group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-5">
         <NavMain items={data.navMain} />
       </SidebarContent>
 
-      <SidebarFooter className="bg-white border-r border-gray-100">
+      {/* Footer with User */}
+      <SidebarFooter className="border-t border-gray-200 py-3 px-3 bg-white group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-4">
         <NavUser />
       </SidebarFooter>
 
-      <SidebarRail />
+      <SidebarRail className="bg-gray-300" />
     </Sidebar>
   );
 }

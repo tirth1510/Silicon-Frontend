@@ -54,21 +54,23 @@ export default function DashboardLayout({ children }: LayoutProps) {
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-screen overflow-hidden">
+      <div className="flex h-screen w-screen overflow-hidden bg-gray-50">
         {/* Sidebar */}
         <AppSidebar />
 
         {/* Main Content */}
         <SidebarInset className="flex-1 flex flex-col overflow-hidden">
-          {/* Sticky Header */}
-          <header className="bg-background sticky top-0 z-20 flex items-center gap-4 border-b p-4 h-16">
-            <SidebarTrigger className="-ml-1 text-blue-900 hover:bg-blue-50 hover:text-blue-800" />
-            <Breadcrumb className="flex-1 text-base font-medium overflow-hidden">
-              <BreadcrumbList className="flex items-center gap-2 whitespace-nowrap overflow-x-auto">
+          {/* Header with Breadcrumb */}
+          <header className="sticky top-0 z-0 flex items-center gap-4 border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
+            <SidebarTrigger className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-md" />
+            <Breadcrumb className="flex-1">
+              <BreadcrumbList className="flex items-center gap-2">
                 {breadcrumbs.map((crumb, idx) =>
                   idx === breadcrumbs.length - 1 ? (
                     <BreadcrumbItem key={idx}>
-                      <BreadcrumbPage >{crumb.label}</BreadcrumbPage>
+                      <BreadcrumbPage className="text-gray-900 font-semibold text-base">
+                        {crumb.label}
+                      </BreadcrumbPage>
                     </BreadcrumbItem>
                   ) : (
                     <BreadcrumbItem
@@ -78,10 +80,10 @@ export default function DashboardLayout({ children }: LayoutProps) {
                       <BreadcrumbLink asChild>
                         <Link
                           href={crumb.href}
-                          className="flex items-center gap-1 text-muted-foreground"
+                          className="flex items-center gap-1.5 text-gray-600 hover:text-blue-600 text-sm transition-colors"
                         >
                           {crumb.label}
-                          <MdArrowForwardIos className="h-3 w-3 text-muted-foreground" />
+                          <MdArrowForwardIos className="h-3 w-3 text-gray-400" />
                         </Link>
                       </BreadcrumbLink>
                     </BreadcrumbItem>
@@ -92,7 +94,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
           </header>
 
           {/* Page Content */}
-          <main className="flex-1 overflow-auto p-4">{children}</main>
+          <main className="flex-1 overflow-auto bg-gray-50">{children}</main>
         </SidebarInset>
       </div>
     </SidebarProvider>

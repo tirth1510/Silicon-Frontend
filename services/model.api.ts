@@ -59,6 +59,15 @@ export const updateModel = (
 ) =>
   axios.put(`${API_BASE_URL}/products/${productId}/models/${modelId}`, payload);
 
+export const updateModelService = async (
+  productId: string,
+  modelId: string,
+  payload: any
+) => {
+  const res = await axios.put(`${API_BASE_URL}/products/${productId}/models/${modelId}`, payload);
+  return res.data;
+};
+
 export type ModelDetailsSection =
   | "specifications"
   | "productSpecifications"

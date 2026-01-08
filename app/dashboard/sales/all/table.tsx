@@ -149,18 +149,22 @@ export default function ModelsTable() {
       </TableCell>
 
       {/* Image */}
-      <TableCell className="py-4">
+      <TableCell className="py-2">
         <div className="flex justify-center">
           {model.productModelDetails?.colors?.[0]?.imageUrl ? (
-            <Image
-              src={model.productModelDetails.colors[0].imageUrl}
-              alt={model.productTitle}
-              width={48}
-              height={48}
-              className="rounded-md border border-gray-300"
-            />
+            <div className="relative w-14 h-14 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition-all duration-300 shadow-sm group">
+              <Image
+                src={model.productModelDetails.colors[0].imageUrl}
+                alt={model.productTitle}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                sizes="56px"
+              />
+            </div>
           ) : (
-            <div className="w-12 h-12 bg-gray-200 rounded-md" />
+            <div className="w-14 h-14 bg-gray-100 rounded-lg border border-gray-200 flex items-center justify-center">
+              <span className="text-[10px] text-gray-400 font-medium">No Image</span>
+            </div>
           )}
         </div>
       </TableCell>

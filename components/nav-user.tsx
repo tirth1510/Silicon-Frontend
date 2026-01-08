@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronsUpDown, CircleQuestionMark, LogOut, LucideShieldCheck, TicketCheck, User, User2, VariableIcon } from "lucide-react";
+import { ChevronsUpDown, LogOut, User, User2, LucideShieldCheck } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/sidebar";
 
 import { useProfile } from "@/hooks/useprofile";
-import { FaTiktok } from "react-icons/fa";
 
 export function NavUser() {
   const { isMobile } = useSidebar();
@@ -36,50 +35,53 @@ export function NavUser() {
             <SidebarMenuButton
               size="lg"
               className="
-                bg-white text-blue-900
-                hover:bg-blue-50
-                data-[state=open]:bg-blue-50
-                data-[state=open]:text-blue-900
+                bg-gray-50 text-gray-700 border border-gray-200
+                hover:bg-gray-100
+                data-[state=open]:bg-gray-100
+                group-data-[collapsible=icon]:!p-0
+                group-data-[collapsible=icon]:!w-14
+                group-data-[collapsible=icon]:!h-14
+                group-data-[collapsible=icon]:justify-center
               "
             >
-              <Avatar className="h-8 w-8 rounded-lg">
+              <Avatar className="h-9 w-9 rounded-full border-2 border-blue-600 group-data-[collapsible=icon]:h-12 group-data-[collapsible=icon]:w-12">
                 <AvatarImage
                   src={profile.imageUrl || ""}
                   alt={profile.username}
                 />
-                <AvatarFallback className="rounded-lg bg-blue-900 text-white">
-                  <User />
+                <AvatarFallback className="rounded-full bg-blue-600 text-white">
+                  <User className="w-5 h-5 group-data-[collapsible=icon]:w-6 group-data-[collapsible=icon]:h-6" />
                 </AvatarFallback>
               </Avatar>
 
-              <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{profile.username}</span>
-                <span className="truncate text-xs text-gray-600">
+              <div className="grid flex-1 text-left text-sm leading-tight group-data-[collapsible=icon]:hidden">
+                <span className="truncate font-semibold text-gray-800 text-base">{profile.username}</span>
+                <span className="truncate text-sm text-gray-500">
                   {profile.email}
                 </span>
               </div>
 
-              <ChevronsUpDown className="ml-auto size-4 text-blue-900" />
+              <ChevronsUpDown className="ml-auto size-4 text-gray-400 group-data-[collapsible=icon]:hidden" />
             </SidebarMenuButton>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent
-            className="min-w-56 rounded-lg bg-white border border-blue-100"
+            className="min-w-56 rounded-lg bg-white border border-gray-200 shadow-xl"
             side={isMobile ? "bottom" : "right"}
             align="end"
             sideOffset={4}
           >
             <DropdownMenuLabel className="p-0 font-normal">
-              <div className="flex items-center gap-2 px-2 py-2">
-                <Avatar className="h-8 w-8 rounded-lg">
+              <div className="flex items-center gap-3 px-3 py-3 bg-blue-50">
+                <Avatar className="h-10 w-10 rounded-full border-2 border-blue-600">
                   <AvatarImage src={profile.imageUrl || ""} />
-                  <AvatarFallback className="rounded-lg bg-blue-900 text-white">
-                    <User2 />
+                  <AvatarFallback className="rounded-full bg-blue-600 text-white">
+                    <User2 className="w-5 h-5" />
                   </AvatarFallback>
                 </Avatar>
 
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium text-blue-900">
+                  <span className="truncate font-bold text-gray-900">
                     {profile.username}
                   </span>
                   <span className="truncate text-xs text-gray-600">
@@ -93,18 +95,18 @@ export function NavUser() {
 
             <DropdownMenuGroup>
               {profile.isVerified && (
-                <DropdownMenuItem className="gap-2 border-2 font-xl bg-green-50 border-green-300 text-green-800">
-                  <LucideShieldCheck  className="size-4 text-green-800" />
-                  Verified account
+                <DropdownMenuItem className="gap-2 mx-2 my-1 rounded-md bg-green-50 border border-green-200 text-green-800 hover:bg-green-100">
+                  <LucideShieldCheck className="size-4 text-green-700" />
+                  <span className="font-semibold">Verified Account</span>
                 </DropdownMenuItem>
               )}
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
 
-            <DropdownMenuItem className="gap-2 text-red-600 hover:bg-red-50">
+            <DropdownMenuItem className="gap-2 mx-2 my-1 rounded-md text-red-600 hover:bg-red-50 hover:text-red-700 cursor-pointer">
               <LogOut className="size-4" />
-              Log out
+              <span className="font-medium">Log out</span>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

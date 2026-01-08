@@ -121,22 +121,33 @@ Product Image: ${selectedProduct.productImage}
 
         const mapped: ProductForList[] = productsArray.map(
           (product: {
-            id: string;
+            _id?: string;
+            id?: string;
             productTitle: string;
             productCategory: string;
-            price: number;
+            price?: number;
             discount?: number;
-            finalPrice: number;
+            finalPrice?: number;
+            priceDetails?: {
+              price: number;
+              discount?: number;
+              finalPrice?: number;
+            };
             productImages?: { url: string; }[];
             galleryImages?: { url: string; }[];
-          }) => {
+          }, index: number) => {
+            // Handle both direct price fields and priceDetails object
+            const price = product.price ?? product.priceDetails?.price ?? 0;
+            const discount = product.discount ?? product.priceDetails?.discount ?? 0;
+            const finalPrice = product.finalPrice ?? product.priceDetails?.finalPrice ?? price;
+
             return {
-              id: product.id,
+              id: product._id || product.id || `fallback-${index}-${Date.now()}`,
               productname: product.productTitle,
               category: product.productCategory || "Accessories",
-              price: product.price ?? 0,
-              finalPrice: product.finalPrice ?? product.price ?? 0,
-              discount: product.discount ?? 0,
+              price: price,
+              finalPrice: finalPrice,
+              discount: discount,
               productImage:
                 product.productImages?.[0]?.url ??
                 "https://via.placeholder.com/400x400?text=No+Image",
@@ -145,7 +156,7 @@ Product Image: ${selectedProduct.productImage}
         );
 
         // Filter out products with undefined IDs
-        const validProducts = mapped.filter(p => p.id);
+        const validProducts = mapped.filter(p => p.id && p.id !== "");
 
         setProducts(validProducts.slice(0, 8));
       } catch (error) {

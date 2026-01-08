@@ -107,4 +107,15 @@ export const updateProductModelFeatures = async (
   return res.data;
 };
 
+/* ---------- UPDATE PRODUCT ---------- */
+export const updateProductService = async (
+  productId: string,
+  payload: any
+): Promise<ApiResponse<any>> => {
+  const res = await API.put<ApiResponse<any>>(
+    `/products/${productId}`,
+    payload
+  );
+  return res.data;
+};
 
