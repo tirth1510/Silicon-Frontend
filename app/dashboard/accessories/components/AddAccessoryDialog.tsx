@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Check, Package, FileText, Palette } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useMutation } from "@tanstack/react-query";
 import { createProductService, CreateProductPayload, CreateProductFiles } from "@/services/accessory.service";
+import { Product } from "@/types/accessory";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,22 +24,30 @@ import { Label } from "@/components/ui/label";
 interface AddAccessoryDialogProps {
   open: boolean;
   onClose: () => void;
+  accessories: Product[];
   onSuccess: () => void;
 }
 
-const categories = [
-  { value: "1", label: "Category 1" },
-  { value: "2", label: "Category 2" },
-  { value: "3", label: "Category 3" },
-  { value: "4", label: "Category 4" },
-];
-
-export default function AddAccessoryDialog({ open, onClose, onSuccess }: AddAccessoryDialogProps) {
+export default function AddAccessoryDialog({ open, onClose, accessories, onSuccess }: AddAccessoryDialogProps) {
   const [activeTab, setActiveTab] = useState<string>("basic");
+  const [newCategory, setNewCategory] = useState("");
+
+  // Extract unique categories from existing accessories - these are the valid enum values!
+  const uniqueCategories = useMemo(() => {
+    const categories = accessories
+      .map(acc => acc.productCategory)
+      .filter((cat, index, self) =>
+        cat &&
+        cat !== "SPO2" && // Filter out invalid "SPO2" category
+        self.indexOf(cat) === index
+      )
+      .sort();
+    return categories;
+  }, [accessories]);
 
   // Form state
   const [form, setForm] = useState<CreateProductPayload>({
-    productCategory: "1",
+    productCategory: "",
     productTitle: "",
     description: "",
     price: 0,
@@ -54,26 +63,56 @@ export default function AddAccessoryDialog({ open, onClose, onSuccess }: AddAcce
 
   const mutation = useMutation({
     mutationFn: async () => {
+      // Use new category if provided, otherwise use selected category
+      const categoryToUse = newCategory.trim() || form.productCategory;
+
+      // Prepare payload in the correct format
+      const payload: any = {
+        productCategory: categoryToUse,
+        productTitle: form.productTitle,
+        description: form.description,
+        price: form.price,
+        discount: form.discount || 0,
+        stock: form.stock,
+      };
+
+      // Convert specifications string to JSON array format
+      if (form.specifications) {
+        const specsArray = form.specifications
+          .split("\n")
+          .filter((line) => line.trim())
+          .map((line) => ({ points: line.trim() }));
+        payload.specifications = JSON.stringify(specsArray);
+      }
+
+      // Convert warranty string to JSON array format
+      if (form.warranty) {
+        const warrantyArray = form.warranty
+          .split("\n")
+          .filter((line) => line.trim())
+          .map((line) => ({ points: line.trim() }));
+        payload.warranty = JSON.stringify(warrantyArray);
+      }
+
       const files: CreateProductFiles = {
         productImages,
         galleryImages,
       };
-      return createProductService(form, files);
+      return createProductService(payload, files);
     },
     onSuccess: () => {
-      alert("Accessory created successfully!");
       onSuccess();
       handleClose();
     },
     onError: (error: any) => {
-      alert(error.message || "Failed to create accessory");
+      console.error("Failed to create accessory:", error);
     },
   });
 
   const handleClose = () => {
     setActiveTab("basic");
     setForm({
-      productCategory: "1",
+      productCategory: "",
       productTitle: "",
       description: "",
       price: 0,
@@ -83,6 +122,7 @@ export default function AddAccessoryDialog({ open, onClose, onSuccess }: AddAcce
       warranty: "",
       productSpecifications: [],
     });
+    setNewCategory("");
     setProductImages([]);
     setGalleryImages([]);
     onClose();
@@ -94,7 +134,8 @@ export default function AddAccessoryDialog({ open, onClose, onSuccess }: AddAcce
     { value: "images", label: "Images", icon: Palette, completed: false },
   ];
 
-  const canProceedToDetails = form.productTitle && form.description && form.price > 0;
+  const hasCategory = form.productCategory || newCategory.trim();
+  const canProceedToDetails = hasCategory && form.productTitle && form.description && form.price > 0;
   const canSubmit = canProceedToDetails && productImages.length > 0;
 
   return (
@@ -187,21 +228,38 @@ export default function AddAccessoryDialog({ open, onClose, onSuccess }: AddAcce
                         <Label className="block text-sm font-semibold text-gray-700">
                           Product Category <span className="text-red-500">*</span>
                         </Label>
-                        <Select
-                          value={form.productCategory}
-                          onValueChange={(value) => setForm({ ...form, productCategory: value })}
-                        >
-                          <SelectTrigger className="w-full !h-12 px-4 py-0 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((cat) => (
-                              <SelectItem key={cat.value} value={cat.value} className="cursor-pointer hover:bg-blue-50">
-                                {cat.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <div className="space-y-2">
+                          <Select
+                            value={form.productCategory}
+                            onValueChange={(value) => {
+                              setForm({ ...form, productCategory: value });
+                              setNewCategory(""); // Clear new category when selecting existing
+                            }}
+                          >
+                            <SelectTrigger className="w-full !h-12 px-4 py-0 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium">
+                              <SelectValue placeholder="Select existing category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {uniqueCategories.map((category) => (
+                                <SelectItem key={category} value={category} className="cursor-pointer hover:bg-blue-50">
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <div className="text-center text-xs text-gray-500">OR</div>
+                          <Input
+                            placeholder="Enter new category name"
+                            value={newCategory}
+                            onChange={(e) => {
+                              setNewCategory(e.target.value);
+                              if (e.target.value.trim()) {
+                                setForm({ ...form, productCategory: "" }); // Clear selected category
+                              }
+                            }}
+                            className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400"
+                          />
+                        </div>
                       </div>
 
                       <div className="space-y-3">

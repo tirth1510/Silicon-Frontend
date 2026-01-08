@@ -288,7 +288,11 @@ export default function ShopPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-4">
-      {PRODUCT_SCHEMES.map((s) => renderTable(s.key as ProductallSchemeKey))}
+      {PRODUCT_SCHEMES.map((s) => (
+        <div key={s.key}>
+          {renderTable(s.key as ProductallSchemeKey)}
+        </div>
+      ))}
 
       <ModelDetailsDialog
         open={openDialog}

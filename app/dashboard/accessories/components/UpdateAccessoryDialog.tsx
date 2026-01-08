@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -22,19 +22,13 @@ interface UpdateAccessoryDialogProps {
   open: boolean;
   onClose: () => void;
   accessory: Product;
+  accessories: Product[];
   onSuccess: () => void;
 }
 
-const categories = [
-  { value: "1", label: "Category 1" },
-  { value: "2", label: "Category 2" },
-  { value: "3", label: "Category 3" },
-  { value: "4", label: "Category 4" },
-];
-
-export default function UpdateAccessoryDialog({ open, onClose, accessory, onSuccess }: UpdateAccessoryDialogProps) {
+export default function UpdateAccessoryDialog({ open, onClose, accessory, accessories, onSuccess }: UpdateAccessoryDialogProps) {
   const [form, setForm] = useState<CreateProductPayload>({
-    productCategory: "1",
+    productCategory: "",
     productTitle: "",
     description: "",
     price: 0,
@@ -44,32 +38,82 @@ export default function UpdateAccessoryDialog({ open, onClose, accessory, onSucc
     warranty: "",
   });
 
+  // Extract unique categories from existing accessories - these are the valid enum values!
+  const uniqueCategories = useMemo(() => {
+    const categories = accessories
+      .map(acc => acc.productCategory)
+      .filter((cat, index, self) => 
+        cat && 
+        cat !== "SPO2" && // Filter out invalid "SPO2" category
+        self.indexOf(cat) === index
+      )
+      .sort();
+    console.log("📋 Available categories:", categories);
+    return categories;
+  }, [accessories]);
+
+  // Populate form when accessory data loads
   useEffect(() => {
     if (accessory) {
+      console.log("🔄 Loading accessory category:", accessory.productCategory);
+      
+      // If product has invalid "SPO2" category, set to empty to force user to select valid one
+      const categoryValue = accessory.productCategory === "SPO2" ? "" : accessory.productCategory || "";
+      
       setForm({
-        productCategory: accessory.productCategory || "1",
+        productCategory: categoryValue,
         productTitle: accessory.productTitle || "",
         description: accessory.description || "",
         price: accessory.priceDetails?.price || 0,
         discount: accessory.priceDetails?.discount || 0,
         stock: accessory.stock || 0,
-        specifications: accessory.specifications?.map(s => s.points).join("\n") || "",
-        warranty: accessory.warranty?.map(w => w.points).join("\n") || "",
+        specifications: accessory.specifications?.map((s: any) => s.points).join("\n") || "",
+        warranty: accessory.warranty?.map((w: any) => w.points).join("\n") || "",
       });
     }
   }, [accessory]);
 
   const mutation = useMutation({
     mutationFn: async () => {
-      return updateProductService(accessory.id || accessory._id, form);
+      // Prepare payload - send price and discount as separate fields, not as priceDetails object
+      const payload: any = {
+        productCategory: form.productCategory,
+        productTitle: form.productTitle,
+        description: form.description,
+        price: form.price,
+        discount: form.discount || 0,
+        stock: form.stock,
+      };
+
+      console.log("📤 Sending productCategory:", form.productCategory);
+      console.log("📦 Full payload:", payload);
+
+      // Convert specifications string to JSON array format
+      if (form.specifications) {
+        const specsArray = form.specifications
+          .split("\n")
+          .filter((line) => line.trim())
+          .map((line) => ({ points: line.trim() }));
+        payload.specifications = JSON.stringify(specsArray);
+      }
+
+      // Convert warranty string to JSON array format
+      if (form.warranty) {
+        const warrantyArray = form.warranty
+          .split("\n")
+          .filter((line) => line.trim())
+          .map((line) => ({ points: line.trim() }));
+        payload.warranty = JSON.stringify(warrantyArray);
+      }
+
+      return updateProductService(accessory.id || accessory._id, payload);
     },
     onSuccess: () => {
-      alert("Accessory updated successfully!");
       onSuccess();
       onClose();
     },
     onError: (error: any) => {
-      alert(error.message || "Failed to update accessory");
+      console.error("Failed to update accessory:", error);
     },
   });
 
@@ -93,12 +137,12 @@ export default function UpdateAccessoryDialog({ open, onClose, accessory, onSucc
                 onValueChange={(value) => setForm({ ...form, productCategory: value })}
               >
                 <SelectTrigger className="w-full !h-12 px-4 py-0 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium">
-                  <SelectValue />
+                  <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat.value} value={cat.value}>
-                      {cat.label}
+                  {uniqueCategories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
                     </SelectItem>
                   ))}
                 </SelectContent>

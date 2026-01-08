@@ -42,7 +42,7 @@ export default function AccessoriesPage() {
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [openViewDialog, setOpenViewDialog] = useState(false);
-  
+
   const [selectedAccessory, setSelectedAccessory] = useState<Product | null>(null);
 
   const fetchData = async () => {
@@ -177,8 +177,8 @@ export default function AccessoriesPage() {
                         {searchQuery ? "No accessories found" : "No accessories yet"}
                       </p>
                       <p className="text-gray-500 text-sm max-w-md">
-                        {searchQuery 
-                          ? "Try adjusting your search terms" 
+                        {searchQuery
+                          ? "Try adjusting your search terms"
                           : "Click 'Add New Accessory' button to create your first accessory"}
                       </p>
                     </div>
@@ -196,8 +196,8 @@ export default function AccessoriesPage() {
               </TableRow>
             ) : (
               filteredAccessories.map((accessory, index) => (
-                <TableRow 
-                  key={accessory.id || accessory._id} 
+                <TableRow
+                  key={accessory.id || accessory._id}
                   className="hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 border-b border-gray-100 group"
                 >
                   <TableCell className="font-bold text-gray-700">
@@ -251,37 +251,33 @@ export default function AccessoriesPage() {
                   </TableCell>
 
                   <TableCell>
-                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-sm ${
-                      (accessory.stock ?? 0) > 10
+                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-sm ${(accessory.stock ?? 0) > 10
                         ? "bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border border-green-200"
                         : (accessory.stock ?? 0) > 0
-                        ? "bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-700 border border-yellow-200"
-                        : "bg-gradient-to-r from-red-100 to-pink-100 text-red-700 border border-red-200"
-                    }`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${
-                        (accessory.stock ?? 0) > 10
+                          ? "bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-700 border border-yellow-200"
+                          : "bg-gradient-to-r from-red-100 to-pink-100 text-red-700 border border-red-200"
+                      }`}>
+                      <span className={`w-1.5 h-1.5 rounded-full ${(accessory.stock ?? 0) > 10
                           ? "bg-green-500"
                           : (accessory.stock ?? 0) > 0
-                          ? "bg-yellow-500"
-                          : "bg-red-500 animate-pulse"
-                      }`} />
+                            ? "bg-yellow-500"
+                            : "bg-red-500 animate-pulse"
+                        }`} />
                       {accessory.stock ?? 0} units
                     </span>
                   </TableCell>
 
                   <TableCell>
                     <span
-                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-sm ${
-                        accessory.status === "Live"
+                      className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-sm ${accessory.status === "Live"
                           ? "bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 border border-green-200"
                           : accessory.status === "Enquiry"
-                          ? "bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 border border-blue-200"
-                          : "bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-700 border border-yellow-200"
-                      }`}
+                            ? "bg-gradient-to-r from-blue-100 to-cyan-100 text-blue-700 border border-blue-200"
+                            : "bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-700 border border-yellow-200"
+                        }`}
                     >
-                      <span className={`w-1.5 h-1.5 rounded-full ${
-                        accessory.status === "Live" ? "bg-green-500 animate-pulse" : "bg-yellow-500"
-                      }`} />
+                      <span className={`w-1.5 h-1.5 rounded-full ${accessory.status === "Live" ? "bg-green-500 animate-pulse" : "bg-yellow-500"
+                        }`} />
                       {accessory.status}
                     </span>
                   </TableCell>
@@ -289,9 +285,9 @@ export default function AccessoriesPage() {
                   <TableCell className="text-right">
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
+                        <Button
+                          variant="ghost"
+                          size="sm"
                           className="h-9 w-9 p-0 hover:bg-blue-100 hover:text-blue-700 transition-all duration-200 rounded-lg"
                         >
                           <MoreHorizontal className="h-5 w-5" />
@@ -375,6 +371,7 @@ export default function AccessoriesPage() {
       <AddAccessoryDialog
         open={openAddDialog}
         onClose={() => setOpenAddDialog(false)}
+        accessories={accessories}
         onSuccess={fetchData}
       />
 
@@ -387,6 +384,7 @@ export default function AccessoriesPage() {
               setSelectedAccessory(null);
             }}
             accessory={selectedAccessory}
+            accessories={accessories}
             onSuccess={fetchData}
           />
 
