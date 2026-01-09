@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import {
   Table,
@@ -51,6 +51,9 @@ export default function ModelsTable() {
 
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Prevent duplicate API calls in React Strict Mode
+  const hasFetchedRef = useRef(false);
+
   const fetchData = async () => {
     try {
       const data = await getAllModelsWithProductInfo();
@@ -61,7 +64,11 @@ export default function ModelsTable() {
   };
 
   useEffect(() => {
-    fetchData();
+    // Only fetch if we haven't already fetched
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      fetchData();
+    }
   }, []);
 
   const totalPages = Math.ceil(models.length / ITEMS_PER_PAGE);

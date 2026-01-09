@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/components/ui/spinner";
 import {
@@ -26,6 +26,9 @@ export default function Dashboard() {
     viewSales: 0,
   });
   const [loading, setLoading] = useState(true);
+
+  // Prevent duplicate API calls in React Strict Mode
+  const hasFetchedRef = useRef(false);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -94,7 +97,11 @@ export default function Dashboard() {
       }
     };
 
-    fetchDashboardData();
+    // Only fetch if we haven't already fetched
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      fetchDashboardData();
+    }
   }, []); // Empty dependency array ensures this runs only once
 
   const statsCards = [

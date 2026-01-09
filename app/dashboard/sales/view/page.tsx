@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { Sparkles } from "lucide-react";
 
 import { PRODUCT_SCHEMES, ProductallSchemeKey } from "./schemes";
@@ -71,12 +71,19 @@ export default function ShopPage() {
   );
   const [currentPages, setCurrentPages] = useState<Record<string, number>>({});
 
+  // Prevent duplicate API calls in React Strict Mode
+  const hasFetchedRef = useRef(false);
+
   /* ================= FETCH ================= */
   useEffect(() => {
-    (async () => {
-      const data = await fetchProductsByallScheme("all");
-      setProducts(data || []);
-    })();
+    // Only fetch if we haven't already fetched
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      (async () => {
+        const data = await fetchProductsByallScheme("all");
+        setProducts(data || []);
+      })();
+    }
   }, []);
 
   /* ================= TABLE DATA ================= */

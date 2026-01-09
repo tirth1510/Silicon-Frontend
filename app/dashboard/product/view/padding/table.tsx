@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 // Services
 import {
@@ -35,6 +35,9 @@ export default function ModelsPage() {
   const [loading, setLoading] = useState(true);
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
 
+  // Prevent duplicate API calls in React Strict Mode
+  const hasFetchedRef = useRef(false);
+
   // ✅ Fetch function (reusable)
   const fetchModels = useCallback(async () => {
     setLoading(true);
@@ -48,7 +51,11 @@ export default function ModelsPage() {
 
   // ✅ Initial fetch + auto refresh
   useEffect(() => {
-    fetchModels();
+    // Only fetch if we haven't already fetched
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      fetchModels();
+    }
   }, [fetchModels]);
 
   // ✅ Go Live handler
