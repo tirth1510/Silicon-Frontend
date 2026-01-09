@@ -88,147 +88,151 @@ export default function ModelsTable() {
 
   return (
     <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Sr. No</TableHead>
-            <TableHead>Image</TableHead>
-            <TableHead>Product Name</TableHead>
-            <TableHead>Model Name</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Stock</TableHead>
-            <TableHead>Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-
-        <TableBody>
-          {models.map((model, index) => (
-            <TableRow key={model.modelId}>
-              <TableCell>{index + 1}</TableCell>
-
-              <TableCell>
-                {model.productModelDetails?.colors?.[0]?.imageUrl ? (
-                  <Image
-                    src={model.productModelDetails.colors[0].imageUrl}
-                    alt={model.productTitle}
-                    width={50}
-                    height={50}
-                    className="rounded"
-                  />
-                ) : (
-                  <div className="w-12 h-12 bg-gray-200 rounded" />
-                )}
-              </TableCell>
-
-              <TableCell>{model.productTitle}</TableCell>
-              <TableCell>{model.modelName}</TableCell>
-
-              <TableCell>
-                {model.productModelDetails?.colors?.[0]?.colorPrice?.[0]
-                  ?.finalPrice
-                  ? `${model.productModelDetails.colors[0].colorPrice[0].finalPrice}/-`
-                  : "-"}
-              </TableCell>
-
-              <TableCell>
-                {model.productModelDetails?.colors?.[0]?.stock ?? "-"}
-              </TableCell>
-
-              <TableCell>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="sm">
-                      <MoreHorizontal />
-                    </Button>
-                  </DropdownMenuTrigger>
-
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      onClick={() => {
-                        router.push(
-                          `/dashboard/product/add/model/${model.productId}`
-                        );
-                      }}
-                    >
-                      Add New Model
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedProduct(model);
-                        setOpenProductDialog(true);
-                      }}
-                    >
-                      Edit Product
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedModel(model);
-                        setOpenModelDialog(true);
-                      }}
-                    >
-                      Edit Model
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem
-                      onClick={() => {
-                        setSelectedModel(model);
-                        setOpenModelDetailsDialog(true);
-                      }}
-                    >
-                      Edit Model Details
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={async () => {
-                        const confirmDelete = confirm(
-                          `Are you sure you want to delete the model "${model.modelName}"?`
-                        );
-                        if (!confirmDelete) return;
-
-                        try {
-                          await deleteModelService(
-                            model.productId,
-                            model.modelId
-                          );
-                          alert("Model deleted successfully");
-                          fetchData();
-                        } catch (error: any) {
-                          alert(error.message || "Failed to delete model");
-                        }
-                      }}
-                    >
-                      Delete Model
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onClick={() => {
-                        const firstColor =
-                          model.productModelDetails?.colors?.[0];
-
-                        if (!firstColor) {
-                          alert("No color found for this model");
-                          return;
-                        }
-
-                        setSelectedColor({
-                          colorId: firstColor._id, // 🔥 MUST be real colorId
-                          colorData: firstColor,
-                          productId: model.productId,
-                          modelId: model.modelId,
-
-                        });
-
-                        setOpenColorDialog(true);
-                      }}
-                    >
-                      Edit Color Details
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </TableCell>
+      <div className="overflow-x-auto rounded-lg border">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Sr. No</TableHead>
+              <TableHead>Image</TableHead>
+              <TableHead>Product Name</TableHead>
+              <TableHead>Model Name</TableHead>
+              <TableHead>Price</TableHead>
+              <TableHead>Stock</TableHead>
+              <TableHead className="sticky right-0 bg-background shadow-[-4px_0_8px_rgba(0,0,0,0.08)] z-10">
+                Actions
+              </TableHead>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHeader>
+
+          <TableBody>
+            {models.map((model, index) => (
+              <TableRow key={model.modelId}>
+                <TableCell>{index + 1}</TableCell>
+
+                <TableCell>
+                  {model.productModelDetails?.colors?.[0]?.imageUrl ? (
+                    <Image
+                      src={model.productModelDetails.colors[0].imageUrl}
+                      alt={model.productTitle}
+                      width={50}
+                      height={50}
+                      className="rounded"
+                    />
+                  ) : (
+                    <div className="w-12 h-12 bg-gray-200 rounded" />
+                  )}
+                </TableCell>
+
+                <TableCell>{model.productTitle}</TableCell>
+                <TableCell>{model.modelName}</TableCell>
+
+                <TableCell>
+                  {model.productModelDetails?.colors?.[0]?.colorPrice?.[0]
+                    ?.finalPrice
+                    ? `${model.productModelDetails.colors[0].colorPrice[0].finalPrice}/-`
+                    : "-"}
+                </TableCell>
+
+                <TableCell>
+                  {model.productModelDetails?.colors?.[0]?.stock ?? "-"}
+                </TableCell>
+
+                <TableCell className="sticky right-0 bg-background shadow-[-4px_0_8px_rgba(0,0,0,0.08)] z-10">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm">
+                        <MoreHorizontal />
+                      </Button>
+                    </DropdownMenuTrigger>
+
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem
+                        onClick={() => {
+                          router.push(
+                            `/dashboard/product/add/model/${model.productId}`
+                          );
+                        }}
+                      >
+                        Add New Model
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSelectedProduct(model);
+                          setOpenProductDialog(true);
+                        }}
+                      >
+                        Edit Product
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSelectedModel(model);
+                          setOpenModelDialog(true);
+                        }}
+                      >
+                        Edit Model
+                      </DropdownMenuItem>
+
+                      <DropdownMenuItem
+                        onClick={() => {
+                          setSelectedModel(model);
+                          setOpenModelDetailsDialog(true);
+                        }}
+                      >
+                        Edit Model Details
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={async () => {
+                          const confirmDelete = confirm(
+                            `Are you sure you want to delete the model "${model.modelName}"?`
+                          );
+                          if (!confirmDelete) return;
+
+                          try {
+                            await deleteModelService(
+                              model.productId,
+                              model.modelId
+                            );
+                            alert("Model deleted successfully");
+                            fetchData();
+                          } catch (error: any) {
+                            alert(error.message || "Failed to delete model");
+                          }
+                        }}
+                      >
+                        Delete Model
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => {
+                          const firstColor =
+                            model.productModelDetails?.colors?.[0];
+
+                          if (!firstColor) {
+                            alert("No color found for this model");
+                            return;
+                          }
+
+                          setSelectedColor({
+                            colorId: firstColor._id, // 🔥 MUST be real colorId
+                            colorData: firstColor,
+                            productId: model.productId,
+                            modelId: model.modelId,
+
+                          });
+
+                          setOpenColorDialog(true);
+                        }}
+                      >
+                        Edit Color Details
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
       {/* ---------------- Update Product Dialog ---------------- */}
       {selectedProduct && (
