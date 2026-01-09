@@ -43,22 +43,22 @@ export default function AddModelDialog({ open, onClose, productId, onSuccess }: 
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-5xl h-[90vh] overflow-hidden p-0 gap-0 flex flex-col">
+      <DialogContent className="w-[95vw] max-w-3xl lg:max-w-4xl xl:max-w-5xl h-[90vh] overflow-hidden p-0 gap-0 flex flex-col">
         <VisuallyHidden>
           <DialogTitle>Add New Model</DialogTitle>
         </VisuallyHidden>
 
         {/* Header */}
-        <div className="px-10 py-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 flex-shrink-0">
-          <h2 className="text-3xl font-bold text-gray-900">Add New Model</h2>
-          <p className="text-sm text-gray-600 mt-2">
+        <div className="px-4 sm:px-6 lg:px-10 py-4 sm:py-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 shrink-0">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Add New Model</h2>
+          <p className="text-xs sm:text-sm text-gray-600 mt-2">
             Add a new model variant to the existing product
           </p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
           {/* Enhanced Step Indicator */}
-          <div className="px-10 pt-6 pb-4 bg-gray-50/50 flex-shrink-0">
+          <div className="px-4 sm:px-6 lg:px-10 pt-4 sm:pt-6 pb-3 sm:pb-4 bg-gray-50/50 shrink-0">
             <div className="flex items-center justify-between relative">
               {/* Progress Line */}
               <div className="absolute top-6 left-0 right-0 h-1 bg-gray-200 -z-10">
@@ -81,12 +81,12 @@ export default function AddModelDialog({ open, onClose, productId, onSuccess }: 
                     key={step.value}
                     onClick={() => !step.disabled && setActiveTab(step.value)}
                     disabled={step.disabled}
-                    className={`flex flex-col items-center gap-2 flex-1 relative group ${step.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
+                    className={`flex flex-col items-center gap-1 sm:gap-2 flex-1 relative group ${step.disabled ? 'cursor-not-allowed opacity-50' : 'cursor-pointer'
                       }`}
                   >
                     {/* Circle */}
                     <div
-                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${isActive
+                      className={`w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center transition-all duration-300 ${isActive
                         ? 'bg-gradient-to-br from-purple-500 to-pink-600 shadow-lg shadow-purple-500/50 scale-110'
                         : isPast || isCompleted
                           ? 'bg-green-500 shadow-md'
@@ -94,10 +94,10 @@ export default function AddModelDialog({ open, onClose, productId, onSuccess }: 
                         }`}
                     >
                       {isPast || isCompleted ? (
-                        <Check className="w-6 h-6 text-white" />
+                        <Check className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                       ) : (
                         <Icon
-                          className={`w-6 h-6 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-purple-500'
+                          className={`w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-purple-500'
                             }`}
                         />
                       )}
@@ -106,7 +106,7 @@ export default function AddModelDialog({ open, onClose, productId, onSuccess }: 
                     {/* Label */}
                     <div className="text-center">
                       <div
-                        className={`text-xs font-semibold transition-colors ${isActive
+                        className={`text-[10px] sm:text-xs font-semibold transition-colors ${isActive
                           ? 'text-purple-600'
                           : isPast || isCompleted
                             ? 'text-green-600'
@@ -116,7 +116,7 @@ export default function AddModelDialog({ open, onClose, productId, onSuccess }: 
                         Step {index + 1}
                       </div>
                       <div
-                        className={`text-sm font-medium mt-1 transition-colors ${isActive
+                        className={`text-[10px] sm:text-xs lg:text-sm font-medium mt-0.5 sm:mt-1 transition-colors ${isActive
                           ? 'text-gray-900'
                           : 'text-gray-600'
                           }`}
@@ -131,7 +131,7 @@ export default function AddModelDialog({ open, onClose, productId, onSuccess }: 
           </div>
 
           {/* Tab Contents */}
-          <div className="flex-1 overflow-y-auto px-10 py-6">
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-10 py-4 sm:py-6">
             <TabsContent value="basic" className="mt-0 h-full">
               <ModelBasicTab
                 productId={productId}

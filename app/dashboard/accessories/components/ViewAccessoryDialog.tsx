@@ -17,20 +17,20 @@ export default function ViewAccessoryDialog({ open, onClose, accessory }: ViewAc
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-2xl lg:max-w-3xl xl:max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="text-2xl">{accessory.productTitle}</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl sm:text-2xl">{accessory.productTitle}</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">
             Detailed information about this accessory
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-6 py-4">
+        <div className="space-y-4 sm:space-y-6 py-3 sm:py-4">
           {/* Images */}
           {accessory.productImageUrl && accessory.productImageUrl.length > 0 && (
-            <div className="space-y-3">
-              <h3 className="font-semibold text-lg">Product Images</h3>
-              <div className="grid grid-cols-4 gap-4">
+            <div className="space-y-2 sm:space-y-3">
+              <h3 className="font-semibold text-base sm:text-lg">Product Images</h3>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
                 {accessory.productImageUrl.map((img: any, idx: number) => (
                   <div key={idx} className="relative w-full aspect-square rounded-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition-all duration-300 shadow-sm hover:shadow-lg group">
                     <Image
@@ -47,13 +47,13 @@ export default function ViewAccessoryDialog({ open, onClose, accessory }: ViewAc
           )}
 
           {/* Basic Info */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <h4 className="font-semibold text-sm text-gray-600 mb-1">Category</h4>
-              <p className="text-gray-900">{accessory.productCategory}</p>
+              <h4 className="font-semibold text-xs sm:text-sm text-gray-600 mb-1">Category</h4>
+              <p className="text-gray-900 text-sm sm:text-base">{accessory.productCategory}</p>
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-gray-600 mb-1">Status</h4>
+              <h4 className="font-semibold text-xs sm:text-sm text-gray-600 mb-1">Status</h4>
               <Badge className={accessory.status === "Live" ? "bg-green-500" : "bg-yellow-500"}>
                 {accessory.status}
               </Badge>
@@ -61,40 +61,40 @@ export default function ViewAccessoryDialog({ open, onClose, accessory }: ViewAc
           </div>
 
           {/* Price Info */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <div>
-              <h4 className="font-semibold text-sm text-gray-600 mb-1">Price</h4>
-              <p className="text-gray-900 font-bold">₹{accessory.priceDetails?.price || 0}</p>
+              <h4 className="font-semibold text-xs sm:text-sm text-gray-600 mb-1">Price</h4>
+              <p className="text-gray-900 font-bold text-sm sm:text-base">₹{accessory.priceDetails?.price || 0}</p>
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-gray-600 mb-1">Discount</h4>
-              <p className="text-gray-900">{accessory.priceDetails?.discount || 0}%</p>
+              <h4 className="font-semibold text-xs sm:text-sm text-gray-600 mb-1">Discount</h4>
+              <p className="text-gray-900 text-sm sm:text-base">{accessory.priceDetails?.discount || 0}%</p>
             </div>
             <div>
-              <h4 className="font-semibold text-sm text-gray-600 mb-1">Final Price</h4>
-              <p className="text-green-600 font-bold text-lg">₹{accessory.priceDetails?.finalPrice || 0}</p>
+              <h4 className="font-semibold text-xs sm:text-sm text-gray-600 mb-1">Final Price</h4>
+              <p className="text-green-600 font-bold text-base sm:text-lg">₹{accessory.priceDetails?.finalPrice || 0}</p>
             </div>
           </div>
 
           {/* Stock */}
           <div>
-            <h4 className="font-semibold text-sm text-gray-600 mb-1">Stock</h4>
-            <p className="text-gray-900">{accessory.stock || 0} units</p>
+            <h4 className="font-semibold text-xs sm:text-sm text-gray-600 mb-1">Stock</h4>
+            <p className="text-gray-900 text-sm sm:text-base">{accessory.stock || 0} units</p>
           </div>
 
           {/* Description */}
           <div>
-            <h4 className="font-semibold text-sm text-gray-600 mb-2">Description</h4>
-            <p className="text-gray-700 whitespace-pre-wrap">{accessory.description}</p>
+            <h4 className="font-semibold text-xs sm:text-sm text-gray-600 mb-2">Description</h4>
+            <p className="text-gray-700 whitespace-pre-wrap text-xs sm:text-sm">{accessory.description}</p>
           </div>
 
           {/* Specifications */}
           {accessory.specifications && accessory.specifications.length > 0 && (
             <div>
-              <h4 className="font-semibold text-sm text-gray-600 mb-2">Specifications</h4>
+              <h4 className="font-semibold text-xs sm:text-sm text-gray-600 mb-2">Specifications</h4>
               <ul className="list-disc list-inside space-y-1">
                 {accessory.specifications.map((spec: any, idx: number) => (
-                  <li key={idx} className="text-gray-700">{spec.points || spec}</li>
+                  <li key={idx} className="text-gray-700 text-xs sm:text-sm">{spec.points || spec}</li>
                 ))}
               </ul>
             </div>
@@ -103,10 +103,10 @@ export default function ViewAccessoryDialog({ open, onClose, accessory }: ViewAc
           {/* Warranty */}
           {accessory.warranty && accessory.warranty.length > 0 && (
             <div>
-              <h4 className="font-semibold text-sm text-gray-600 mb-2">Warranty</h4>
+              <h4 className="font-semibold text-xs sm:text-sm text-gray-600 mb-2">Warranty</h4>
               <ul className="list-disc list-inside space-y-1">
                 {accessory.warranty.map((item: any, idx: number) => (
-                  <li key={idx} className="text-gray-700">{item.points || item}</li>
+                  <li key={idx} className="text-gray-700 text-xs sm:text-sm">{item.points || item}</li>
                 ))}
               </ul>
             </div>
@@ -115,8 +115,8 @@ export default function ViewAccessoryDialog({ open, onClose, accessory }: ViewAc
           {/* Gallery */}
           {accessory.productGallery && accessory.productGallery.length > 0 && (
             <div>
-              <h4 className="font-semibold text-sm text-gray-600 mb-2">Gallery</h4>
-              <div className="grid grid-cols-4 gap-4">
+              <h4 className="font-semibold text-xs sm:text-sm text-gray-600 mb-2">Gallery</h4>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
                 {accessory.productGallery.map((img: any, idx: number) => (
                   <div key={idx} className="relative w-full aspect-square rounded-lg overflow-hidden border-2 border-gray-200 hover:border-blue-500 transition-all duration-300 shadow-sm hover:shadow-lg group">
                     <Image

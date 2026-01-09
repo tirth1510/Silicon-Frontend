@@ -22,9 +22,9 @@ import { updateModelDetailsBySection } from "@/services/model.api";
 
 /* ---------------- TYPES ---------------- */
 
-type SpecificationItem = { points: string; _id?: string };
-type KeyValueItem = { key: string; value: string; _id?: string };
-type PointsItem = { points: string; _id?: string };
+type SpecificationItem = { points: string; _id?: string; };
+type KeyValueItem = { key: string; value: string; _id?: string; };
+type PointsItem = { points: string; _id?: string; };
 
 export interface ModelDetails {
   specifications?: SpecificationItem[];
@@ -175,7 +175,7 @@ export default function UpdateModelDetailsDialog({
     (data[field] || []).map((item: any, index: number) => (
       <div
         key={item._id || index}
-        className="flex items-center gap-2 mb-3 bg-gray-50 p-3 rounded"
+        className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mb-3 bg-gray-50 p-2 sm:p-3 rounded"
       >
         {field === "specifications" || field === "warranty" ? (
           <Input
@@ -186,6 +186,7 @@ export default function UpdateModelDetailsDialog({
             onChange={(e) =>
               handleChange(field, index, "points", e.target.value)
             }
+            className="text-xs sm:text-sm"
           />
         ) : (
           <>
@@ -195,6 +196,7 @@ export default function UpdateModelDetailsDialog({
               onChange={(e) =>
                 handleChange(field, index, "key", e.target.value)
               }
+              className="text-xs sm:text-sm"
             />
             <Input
               value={item.value}
@@ -202,6 +204,7 @@ export default function UpdateModelDetailsDialog({
               onChange={(e) =>
                 handleChange(field, index, "value", e.target.value)
               }
+              className="text-xs sm:text-sm"
             />
           </>
         )}
@@ -210,9 +213,9 @@ export default function UpdateModelDetailsDialog({
           variant="ghost"
           size="icon"
           onClick={() => handleDelete(field, index)}
-          className="hover:bg-red-50"
+          className="hover:bg-red-50 shrink-0 self-end sm:self-center"
         >
-          <Trash className="w-4 h-4 text-red-500" />
+          <Trash className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />
         </Button>
       </div>
     ));
@@ -221,10 +224,10 @@ export default function UpdateModelDetailsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="text-2xl">Edit Specifications & Details</DialogTitle>
-          <DialogDescription className="text-sm text-gray-500">
+      <DialogContent className="w-[95vw] max-w-2xl lg:max-w-3xl xl:max-w-4xl max-h-[90vh] overflow-hidden flex flex-col p-4 sm:p-6">
+        <DialogHeader className="shrink-0">
+          <DialogTitle className="text-xl sm:text-2xl">Edit Specifications & Details</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm text-gray-500">
             Update product specifications, features, and warranty information
           </DialogDescription>
         </DialogHeader>
@@ -234,47 +237,47 @@ export default function UpdateModelDetailsDialog({
           onValueChange={(v) =>
             setActiveSection(v as SectionKey)
           }
-          className="mt-4"
+          className="mt-4 flex-1 flex flex-col overflow-hidden"
         >
-          <TabsList className="grid grid-cols-4 w-full">
-            <TabsTrigger value="specifications" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+          <TabsList className="grid grid-cols-2 sm:grid-cols-4 w-full gap-1 h-auto">
+            <TabsTrigger value="specifications" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm py-2">
               Specifications
             </TabsTrigger>
-            <TabsTrigger value="productSpecifications" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+            <TabsTrigger value="productSpecifications" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm py-2">
               Product Specs
             </TabsTrigger>
-            <TabsTrigger value="productFeatures" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+            <TabsTrigger value="productFeatures" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm py-2">
               Features
             </TabsTrigger>
-            <TabsTrigger value="warranty" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+            <TabsTrigger value="warranty" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white text-xs sm:text-sm py-2">
               Warranty
             </TabsTrigger>
           </TabsList>
 
           {SECTIONS.map((field) => (
-            <TabsContent key={field} value={field} className="mt-6 space-y-3">
-              <div className="max-h-[400px] overflow-y-auto">
+            <TabsContent key={field} value={field} className="mt-4 sm:mt-6 space-y-3 flex-1 overflow-hidden flex flex-col">
+              <div className="flex-1 overflow-y-auto pr-2">
                 {renderList(field)}
               </div>
 
               <Button
                 variant="outline"
-                className="mt-4 w-full"
+                className="mt-3 sm:mt-4 w-full shrink-0 text-xs sm:text-sm"
                 onClick={() => handleAdd(field)}
                 disabled={(data[field]?.length || 0) >= MAX_ITEMS}
               >
-                <Plus className="w-4 h-4 mr-2" />
+                <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                 Add New Item {(data[field]?.length || 0) >= MAX_ITEMS && "(Max limit reached)"}
               </Button>
             </TabsContent>
           ))}
         </Tabs>
 
-        <div className="flex justify-end gap-3 mt-6 pt-4 border-t">
-          <Button variant="outline" onClick={onClose}>
+        <div className="flex justify-end gap-2 sm:gap-3 mt-4 sm:mt-6 pt-4 border-t shrink-0">
+          <Button variant="outline" onClick={onClose} className="text-xs sm:text-sm px-3 sm:px-4">
             Cancel
           </Button>
-          <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700">
+          <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm px-3 sm:px-4">
             Save Changes
           </Button>
         </div>

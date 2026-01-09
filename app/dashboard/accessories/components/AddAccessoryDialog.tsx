@@ -140,22 +140,22 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-5xl h-[60vh] overflow-hidden p-0 gap-0 flex flex-col">
+      <DialogContent className="w-[95vw] max-w-3xl lg:max-w-4xl xl:max-w-5xl h-[90vh] overflow-hidden p-0 gap-0 flex flex-col">
         <VisuallyHidden>
           <DialogTitle>Add New Accessory</DialogTitle>
         </VisuallyHidden>
 
         {/* Header */}
-        <div className="px-10 py-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 flex-shrink-0">
-          <h2 className="text-3xl font-bold text-gray-900">Add New Accessory</h2>
-          <p className="text-sm text-gray-600 mt-2">
+        <div className="px-4 sm:px-6 lg:px-10 py-4 sm:py-6 border-b bg-gradient-to-r from-blue-50 to-indigo-50 shrink-0">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Add New Accessory</h2>
+          <p className="text-xs sm:text-sm text-gray-600 mt-2">
             Complete all steps to add a new accessory to your inventory
           </p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 flex flex-col overflow-hidden">
           {/* Step Indicator */}
-          <div className="px-10 pt-6 pb-4 bg-gray-50/50 flex-shrink-0">
+          <div className="px-4 sm:px-6 lg:px-10 pt-4 sm:pt-6 pb-3 sm:pb-4 bg-gray-50/50 shrink-0">
             <div className="flex items-center justify-between relative">
               <div className="absolute top-6 left-0 right-0 h-1 bg-gray-200 -z-10">
                 <div
@@ -175,10 +175,10 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                   <button
                     key={step.value}
                     onClick={() => setActiveTab(step.value)}
-                    className={`flex flex-col items-center gap-2 flex-1 relative group cursor-pointer`}
+                    className={`flex flex-col items-center gap-1 sm:gap-2 flex-1 relative group cursor-pointer`}
                   >
                     <div
-                      className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${isActive
+                      className={`w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 rounded-full flex items-center justify-center transition-all duration-300 ${isActive
                         ? 'bg-gradient-to-br from-blue-500 to-indigo-600 shadow-lg shadow-blue-500/50 scale-110'
                         : isPast
                           ? 'bg-green-500 shadow-md'
@@ -186,10 +186,10 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                         }`}
                     >
                       {isPast ? (
-                        <Check className="w-6 h-6 text-white" />
+                        <Check className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" />
                       ) : (
                         <Icon
-                          className={`w-6 h-6 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-blue-500'
+                          className={`w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 ${isActive ? 'text-white' : 'text-gray-400 group-hover:text-blue-500'
                             }`}
                         />
                       )}
@@ -197,13 +197,13 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
 
                     <div className="text-center">
                       <div
-                        className={`text-xs font-semibold ${isActive ? 'text-blue-600' : isPast ? 'text-green-600' : 'text-gray-500'
+                        className={`text-[10px] sm:text-xs font-semibold ${isActive ? 'text-blue-600' : isPast ? 'text-green-600' : 'text-gray-500'
                           }`}
                       >
                         Step {index + 1}
                       </div>
                       <div
-                        className={`text-sm font-medium mt-1 ${isActive ? 'text-gray-900' : 'text-gray-600'
+                        className={`text-[10px] sm:text-xs lg:text-sm font-medium mt-0.5 sm:mt-1 ${isActive ? 'text-gray-900' : 'text-gray-600'
                           }`}
                       >
                         {step.label}
@@ -216,16 +216,16 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
           </div>
 
           {/* Tab Contents */}
-          <div className="flex-1 overflow-hidden px-10 py-6 relative">
+          <div className="flex-1 overflow-hidden px-4 sm:px-6 lg:px-10 py-4 sm:py-6 relative">
             {/* Basic Info Tab */}
             <TabsContent value="basic" className="mt-0 h-full relative">
               <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto pr-2">
-                  <div className="space-y-6 pb-24">
+                  <div className="space-y-4 sm:space-y-6 pb-24">
                     {/* Category and Title - Equal Width */}
-                    <div className="grid grid-cols-2 gap-6">
-                      <div className="space-y-3">
-                        <Label className="block text-sm font-semibold text-gray-700">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                      <div className="space-y-2 sm:space-y-3">
+                        <Label className="block text-xs sm:text-sm font-semibold text-gray-700">
                           Product Category <span className="text-red-500">*</span>
                         </Label>
                         <div className="space-y-2">
@@ -236,7 +236,7 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                               setNewCategory(""); // Clear new category when selecting existing
                             }}
                           >
-                            <SelectTrigger className="w-full !h-12 px-4 py-0 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium">
+                            <SelectTrigger className="w-full !h-10 sm:!h-12 px-3 sm:px-4 py-0 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium text-xs sm:text-sm">
                               <SelectValue placeholder="Select existing category" />
                             </SelectTrigger>
                             <SelectContent>
@@ -257,28 +257,28 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                                 setForm({ ...form, productCategory: "" }); // Clear selected category
                               }
                             }}
-                            className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400"
+                            className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400 text-xs sm:text-sm"
                           />
                         </div>
                       </div>
 
-                      <div className="space-y-3">
-                        <Label className="block text-sm font-semibold text-gray-700">
+                      <div className="space-y-2 sm:space-y-3">
+                        <Label className="block text-xs sm:text-sm font-semibold text-gray-700">
                           Product Title <span className="text-red-500">*</span>
                         </Label>
                         <Input
                           placeholder="e.g., Surgical Gloves Pack"
                           value={form.productTitle}
                           onChange={(e) => setForm({ ...form, productTitle: e.target.value })}
-                          className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400"
+                          className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400 text-xs sm:text-sm"
                         />
                       </div>
                     </div>
 
                     {/* Price, Discount, Stock in one row */}
-                    <div className="grid grid-cols-3 gap-6">
-                      <div className="space-y-3">
-                        <Label className="block text-sm font-semibold text-gray-700">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6">
+                      <div className="space-y-2 sm:space-y-3">
+                        <Label className="block text-xs sm:text-sm font-semibold text-gray-700">
                           Price (₹) <span className="text-red-500">*</span>
                         </Label>
                         <Input
@@ -286,12 +286,12 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                           placeholder="0"
                           value={form.price || ""}
                           onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })}
-                          className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400"
+                          className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400 text-xs sm:text-sm"
                         />
                       </div>
 
-                      <div className="space-y-3">
-                        <Label className="block text-sm font-semibold text-gray-700">
+                      <div className="space-y-2 sm:space-y-3">
+                        <Label className="block text-xs sm:text-sm font-semibold text-gray-700">
                           Discount (%)
                         </Label>
                         <Input
@@ -299,12 +299,12 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                           placeholder="0"
                           value={form.discount || ""}
                           onChange={(e) => setForm({ ...form, discount: parseFloat(e.target.value) || 0 })}
-                          className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400"
+                          className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400 text-xs sm:text-sm"
                         />
                       </div>
 
-                      <div className="space-y-3">
-                        <Label className="block text-sm font-semibold text-gray-700">
+                      <div className="space-y-2 sm:space-y-3">
+                        <Label className="block text-xs sm:text-sm font-semibold text-gray-700">
                           Stock
                         </Label>
                         <Input
@@ -312,21 +312,21 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                           placeholder="0"
                           value={form.stock || ""}
                           onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) || 0 })}
-                          className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400"
+                          className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400 text-xs sm:text-sm"
                         />
                       </div>
                     </div>
 
                     {/* Description */}
-                    <div className="space-y-3">
-                      <Label className="block text-sm font-semibold text-gray-700">
+                    <div className="space-y-2 sm:space-y-3">
+                      <Label className="block text-xs sm:text-sm font-semibold text-gray-700">
                         Description <span className="text-red-500">*</span>
                       </Label>
                       <Textarea
                         placeholder="Enter a detailed description..."
                         value={form.description}
                         onChange={(e) => setForm({ ...form, description: e.target.value })}
-                        className="w-full min-h-[140px] px-4 py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none"
+                        className="w-full min-h-[100px] sm:min-h-[140px] px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none text-xs sm:text-sm"
                       />
                       <p className="text-xs text-gray-500 mt-1">
                         ({form.description.length} characters)
@@ -335,15 +335,15 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                   </div>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 px-10 py-4">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm text-gray-600">
+                <div className="absolute bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 px-4 sm:px-6 lg:px-10 py-3 sm:py-4">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-0">
+                    <p className="text-xs sm:text-sm text-gray-600">
                       Fields marked with <span className="text-red-500 font-semibold">*</span> are required
                     </p>
                     <Button
                       onClick={() => setActiveTab("details")}
                       disabled={!canProceedToDetails}
-                      className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-10 py-3 h-12 font-semibold rounded-lg min-w-[200px]"
+                      className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-6 sm:px-10 py-2 sm:py-3 h-10 sm:h-12 font-semibold rounded-lg min-w-[160px] sm:min-w-[200px] text-xs sm:text-sm w-full sm:w-auto"
                     >
                       Next: Details <span className="ml-2">→</span>
                     </Button>
@@ -356,41 +356,41 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
             <TabsContent value="details" className="mt-0 h-full relative">
               <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto pr-2">
-                  <div className="space-y-6 pb-24">
-                    <div className="space-y-3">
-                      <Label className="block text-sm font-semibold text-gray-700">Specifications</Label>
+                  <div className="space-y-4 sm:space-y-6 pb-24">
+                    <div className="space-y-2 sm:space-y-3">
+                      <Label className="block text-xs sm:text-sm font-semibold text-gray-700">Specifications</Label>
                       <Textarea
                         placeholder="Enter specifications (one per line)..."
                         value={form.specifications}
                         onChange={(e) => setForm({ ...form, specifications: e.target.value })}
-                        className="w-full min-h-[140px] px-4 py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none"
+                        className="w-full min-h-[100px] sm:min-h-[140px] px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none text-xs sm:text-sm"
                       />
                     </div>
 
-                    <div className="space-y-3">
-                      <Label className="block text-sm font-semibold text-gray-700">Warranty Information</Label>
+                    <div className="space-y-2 sm:space-y-3">
+                      <Label className="block text-xs sm:text-sm font-semibold text-gray-700">Warranty Information</Label>
                       <Textarea
                         placeholder="Enter warranty details..."
                         value={form.warranty}
                         onChange={(e) => setForm({ ...form, warranty: e.target.value })}
-                        className="w-full min-h-[140px] px-4 py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none"
+                        className="w-full min-h-[100px] sm:min-h-[140px] px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none text-xs sm:text-sm"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 px-10 py-4">
-                  <div className="flex items-center justify-between">
+                <div className="absolute bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 px-4 sm:px-6 lg:px-10 py-3 sm:py-4">
+                  <div className="flex items-center justify-between gap-2">
                     <Button
                       variant="outline"
                       onClick={() => setActiveTab("basic")}
-                      className="px-8 py-3 h-12 border-2 border-gray-300 hover:bg-gray-100 rounded-lg"
+                      className="px-4 sm:px-8 py-2 sm:py-3 h-10 sm:h-12 border-2 border-gray-300 hover:bg-gray-100 rounded-lg text-xs sm:text-sm"
                     >
                       ← Back
                     </Button>
                     <Button
                       onClick={() => setActiveTab("images")}
-                      className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-10 py-3 h-12 font-semibold rounded-lg min-w-[200px]"
+                      className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-6 sm:px-10 py-2 sm:py-3 h-10 sm:h-12 font-semibold rounded-lg min-w-[140px] sm:min-w-[200px] text-xs sm:text-sm"
                     >
                       Next: Images <span className="ml-2">→</span>
                     </Button>
@@ -403,9 +403,9 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
             <TabsContent value="images" className="mt-0 h-full relative">
               <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto pr-2">
-                  <div className="space-y-6 pb-24">
-                    <div className="space-y-3">
-                      <Label className="block text-sm font-semibold text-gray-700">
+                  <div className="space-y-4 sm:space-y-6 pb-24">
+                    <div className="space-y-2 sm:space-y-3">
+                      <Label className="block text-xs sm:text-sm font-semibold text-gray-700">
                         Product Images <span className="text-red-500">*</span>
                       </Label>
                       <Input
@@ -413,21 +413,21 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                         multiple
                         accept="image/*"
                         onChange={(e) => setProductImages(Array.from(e.target.files || []))}
-                        className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:font-semibold hover:file:bg-blue-100"
+                        className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 file:mr-2 sm:file:mr-4 file:py-1 sm:file:py-2 file:px-2 sm:file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:font-semibold hover:file:bg-blue-100 text-xs sm:text-sm"
                       />
                       <p className="text-xs text-gray-500">
                         {productImages.length} file(s) selected
                       </p>
                     </div>
 
-                    <div className="space-y-3">
-                      <Label className="block text-sm font-semibold text-gray-700">Gallery Images</Label>
+                    <div className="space-y-2 sm:space-y-3">
+                      <Label className="block text-xs sm:text-sm font-semibold text-gray-700">Gallery Images</Label>
                       <Input
                         type="file"
                         multiple
                         accept="image/*"
                         onChange={(e) => setGalleryImages(Array.from(e.target.files || []))}
-                        className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:font-semibold hover:file:bg-blue-100"
+                        className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 file:mr-2 sm:file:mr-4 file:py-1 sm:file:py-2 file:px-2 sm:file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:font-semibold hover:file:bg-blue-100 text-xs sm:text-sm"
                       />
                       <p className="text-xs text-gray-500">
                         {galleryImages.length} file(s) selected
@@ -436,19 +436,19 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                   </div>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 px-10 py-4">
-                  <div className="flex items-center justify-between">
+                <div className="absolute bottom-0 left-0 right-0 bg-white border-t-2 border-gray-200 px-4 sm:px-6 lg:px-10 py-3 sm:py-4">
+                  <div className="flex items-center justify-between gap-2">
                     <Button
                       variant="outline"
                       onClick={() => setActiveTab("details")}
-                      className="px-8 py-3 h-12 border-2 border-gray-300 hover:bg-gray-100 rounded-lg"
+                      className="px-4 sm:px-8 py-2 sm:py-3 h-10 sm:h-12 border-2 border-gray-300 hover:bg-gray-100 rounded-lg text-xs sm:text-sm"
                     >
                       ← Back
                     </Button>
                     <Button
                       onClick={() => mutation.mutate()}
                       disabled={!canSubmit || mutation.isPending}
-                      className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-10 py-3 h-12 font-semibold rounded-lg min-w-[220px]"
+                      className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 px-6 sm:px-10 py-2 sm:py-3 h-10 sm:h-12 font-semibold rounded-lg min-w-[160px] sm:min-w-[220px] text-xs sm:text-sm"
                     >
                       {mutation.isPending ? (
                         <>

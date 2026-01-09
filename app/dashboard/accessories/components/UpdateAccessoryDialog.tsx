@@ -119,24 +119,24 @@ export default function UpdateAccessoryDialog({ open, onClose, accessory, access
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-[90vw] max-h-[90vh] overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-2xl lg:max-w-3xl xl:max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle className="text-2xl">Edit Accessory</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-xl sm:text-2xl">Edit Accessory</DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm">
             Update the accessory information
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-5 py-4">
+        <div className="space-y-4 sm:space-y-5 py-3 sm:py-4">
           {/* Category and Title */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
             <div className="space-y-2">
-              <Label className="font-semibold">Product Category</Label>
+              <Label className="font-semibold text-xs sm:text-sm">Product Category</Label>
               <Select
                 value={form.productCategory}
                 onValueChange={(value) => setForm({ ...form, productCategory: value })}
               >
-                <SelectTrigger className="w-full !h-12 px-4 py-0 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium">
+                <SelectTrigger className="w-full !h-10 sm:!h-12 px-3 sm:px-4 py-0 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium text-xs sm:text-sm">
                   <SelectValue placeholder="Select a category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -150,88 +150,88 @@ export default function UpdateAccessoryDialog({ open, onClose, accessory, access
             </div>
 
             <div className="space-y-2">
-              <Label className="font-semibold">Product Title</Label>
+              <Label className="font-semibold text-xs sm:text-sm">Product Title</Label>
               <Input
                 value={form.productTitle}
                 onChange={(e) => setForm({ ...form, productTitle: e.target.value })}
-                className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400"
+                className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400 text-xs sm:text-sm"
               />
             </div>
           </div>
 
           {/* Price, Discount, Stock */}
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <div className="space-y-2">
-              <Label className="font-semibold">Price (₹)</Label>
+              <Label className="font-semibold text-xs sm:text-sm">Price (₹)</Label>
               <Input
                 type="number"
                 value={form.price || ""}
                 onChange={(e) => setForm({ ...form, price: parseFloat(e.target.value) || 0 })}
-                className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400"
+                className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400 text-xs sm:text-sm"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="font-semibold">Discount (%)</Label>
+              <Label className="font-semibold text-xs sm:text-sm">Discount (%)</Label>
               <Input
                 type="number"
                 value={form.discount || ""}
                 onChange={(e) => setForm({ ...form, discount: parseFloat(e.target.value) || 0 })}
-                className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400"
+                className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400 text-xs sm:text-sm"
               />
             </div>
 
             <div className="space-y-2">
-              <Label className="font-semibold">Stock</Label>
+              <Label className="font-semibold text-xs sm:text-sm">Stock</Label>
               <Input
                 type="number"
                 value={form.stock || ""}
                 onChange={(e) => setForm({ ...form, stock: parseInt(e.target.value) || 0 })}
-                className="w-full h-12 px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400"
+                className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 font-medium placeholder:text-gray-400 text-xs sm:text-sm"
               />
             </div>
           </div>
 
           {/* Description */}
           <div className="space-y-2">
-            <Label className="font-semibold">Description</Label>
+            <Label className="font-semibold text-xs sm:text-sm">Description</Label>
             <Textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full min-h-[100px] px-4 py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none"
+              className="w-full min-h-[80px] sm:min-h-[100px] px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none text-xs sm:text-sm"
             />
           </div>
 
           {/* Specifications */}
           <div className="space-y-2">
-            <Label className="font-semibold">Specifications</Label>
+            <Label className="font-semibold text-xs sm:text-sm">Specifications</Label>
             <Textarea
               value={form.specifications}
               onChange={(e) => setForm({ ...form, specifications: e.target.value })}
               placeholder="One per line..."
-              className="w-full min-h-[80px] px-4 py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none"
+              className="w-full min-h-[60px] sm:min-h-[80px] px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none text-xs sm:text-sm"
             />
           </div>
 
           {/* Warranty */}
           <div className="space-y-2">
-            <Label className="font-semibold">Warranty</Label>
+            <Label className="font-semibold text-xs sm:text-sm">Warranty</Label>
             <Textarea
               value={form.warranty}
               onChange={(e) => setForm({ ...form, warranty: e.target.value })}
               placeholder="Warranty information..."
-              className="w-full min-h-[80px] px-4 py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none"
+              className="w-full min-h-[60px] sm:min-h-[80px] px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none text-xs sm:text-sm"
             />
           </div>
 
-          <div className="flex justify-end gap-3 pt-4 border-t">
-            <Button variant="outline" onClick={onClose}>
+          <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-3 sm:pt-4 border-t">
+            <Button variant="outline" onClick={onClose} className="text-xs sm:text-sm px-3 sm:px-4">
               Cancel
             </Button>
             <Button
               onClick={() => mutation.mutate()}
               disabled={mutation.isPending}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-xs sm:text-sm px-3 sm:px-4"
             >
               {mutation.isPending ? "Updating..." : "Update Accessory"}
             </Button>

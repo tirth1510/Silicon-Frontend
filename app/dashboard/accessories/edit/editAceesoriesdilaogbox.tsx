@@ -189,49 +189,53 @@ export default function AccessoriesUpdateDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl overflow-y-auto">
+      <DialogContent className="w-[95vw] max-w-3xl lg:max-w-4xl xl:max-w-5xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader>
-          <DialogTitle>Edit Accessory</DialogTitle>
+          <DialogTitle className="text-xl sm:text-2xl">Edit Accessory</DialogTitle>
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-          <TabsList className="grid grid-cols-6 gap-10 mb-4">
+          <TabsList className="grid grid-cols-3 sm:grid-cols-6 gap-1 sm:gap-2 lg:gap-10 mb-3 sm:mb-4 h-auto">
             {TABS.map((t) => (
-              <TabsTrigger key={t} value={t}>
+              <TabsTrigger key={t} value={t} className="text-[10px] sm:text-xs lg:text-sm py-2 px-1 sm:px-2">
                 {t}
               </TabsTrigger>
             ))}
           </TabsList>
 
           {/* ---------------- BASIC ---------------- */}
-          <TabsContent value="basic" className="space-y-4">
+          <TabsContent value="basic" className="space-y-3 sm:space-y-4">
             <Input
               value={product.productTitle}
               onChange={(e) =>
                 setProduct({ ...product, productTitle: e.target.value })
               }
               placeholder="Title"
+              className="text-xs sm:text-sm h-10 sm:h-12"
             />
             <Textarea
               value={product.description}
               onChange={(e) =>
                 setProduct({ ...product, description: e.target.value })
               }
+              className="text-xs sm:text-sm min-h-[80px] sm:min-h-[100px]"
             />
-            <Button onClick={saveBasic} disabled={saving}>
+            <Button onClick={saveBasic} disabled={saving} className="text-xs sm:text-sm">
               Save & Next
             </Button>
           </TabsContent>
 
           {/* ---------------- MAIN IMAGE ---------------- */}
           <TabsContent value="productImage" className="space-y-3">
-            <Image
-              src={product.productImageUrl?.[0]?.url}
-              width={250}
-              height={250}
-              alt=""
-              className="rounded border"
-            />
+            <div className="flex justify-center">
+              <Image
+                src={product.productImageUrl?.[0]?.url}
+                width={200}
+                height={200}
+                alt=""
+                className="rounded border w-full max-w-[200px] sm:max-w-[250px] h-auto"
+              />
+            </div>
             <input
               hidden
               ref={imageRef}
@@ -241,7 +245,7 @@ export default function AccessoriesUpdateDialog({
                 e.target.files && replaceProductImage(e.target.files[0])
               }
             />
-            <Button onClick={() => imageRef.current?.click()}>
+            <Button onClick={() => imageRef.current?.click()} className="w-full sm:w-auto text-xs sm:text-sm">
               Replace Image
             </Button>
           </TabsContent>
@@ -250,19 +254,20 @@ export default function AccessoriesUpdateDialog({
           {(
             ["productSpecifications", "specifications", "warranty"] as const
           ).map((key) => (
-            <TabsContent key={key} value={key} className="space-y-3">
+            <TabsContent key={key} value={key} className="space-y-2 sm:space-y-3">
               {product[key].map((s, i) => (
                 <div
                   key={i}
-                  className="flex justify-between border rounded p-3"
+                  className="flex justify-between items-center border rounded p-2 sm:p-3 gap-2"
                 >
-                  <span>{s.key || s.points}</span>
+                  <span className="text-xs sm:text-sm flex-1 break-words">{s.key || s.points}</span>
                   <Button
                     size="icon"
                     variant="ghost"
                     onClick={() => deleteArrayItem(key, i)}
+                    className="shrink-0"
                   >
-                    <Trash2 className="w-4 h-4 text-red-600" />
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-600" />
                   </Button>
                 </div>
               ))}
@@ -270,15 +275,16 @@ export default function AccessoriesUpdateDialog({
               <Button
                 variant="outline"
                 onClick={() => addArrayItem(key, { points: "New Item" })}
+                className="w-full sm:w-auto text-xs sm:text-sm"
               >
-                <Plus className="w-4 h-4 mr-2" />
+                <Plus className="w-3 h-3 sm:w-4 sm:h-4 mr-2" />
                 Add
               </Button>
             </TabsContent>
           ))}
 
           {/* ---------------- GALLERY ---------------- */}
-          <TabsContent value="gallery" className="grid grid-cols-4 gap-4">
+          <TabsContent value="gallery" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
             {product.productGallery.map((img, i) => (
               <div key={i}>
                 <Image
@@ -286,7 +292,7 @@ export default function AccessoriesUpdateDialog({
                   alt=""
                   width={200}
                   height={200}
-                  className="rounded border"
+                  className="rounded border w-full h-auto"
                 />
                 <input
                   hidden
@@ -298,10 +304,11 @@ export default function AccessoriesUpdateDialog({
                     e.target.files && replaceGallery(i, e.target.files[0])
                   }
                 />
-                <div className="flex gap-2 mt-2">
+                <div className="flex gap-1 sm:gap-2 mt-2">
                   <Button
                     size="sm"
                     onClick={() => galleryRefs.current[i]?.click()}
+                    className="flex-1 text-xs"
                   >
                     Replace
                   </Button>
@@ -309,14 +316,15 @@ export default function AccessoriesUpdateDialog({
                     size="sm"
                     variant="destructive"
                     onClick={() => deleteGallery(i)}
+                    className="shrink-0"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3 h-3 sm:w-4 sm:h-4" />
                   </Button>
                 </div>
               </div>
             ))}
 
-            <label className="border-dashed border-2 rounded flex items-center justify-center cursor-pointer">
+            <label className="border-dashed border-2 rounded flex items-center justify-center cursor-pointer min-h-[100px] sm:min-h-[150px]">
               <input
                 hidden
                 type="file"
@@ -324,13 +332,13 @@ export default function AccessoriesUpdateDialog({
                   e.target.files && addGallery(e.target.files[0])
                 }
               />
-              <Plus />
+              <Plus className="w-6 h-6 sm:w-8 sm:h-8" />
             </label>
           </TabsContent>
         </Tabs>
 
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+        <DialogFooter className="mt-4 sm:mt-6">
+          <Button variant="outline" onClick={onClose} className="text-xs sm:text-sm">
             Close
           </Button>
         </DialogFooter>
