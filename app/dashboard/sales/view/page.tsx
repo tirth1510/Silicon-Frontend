@@ -1,5 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/set-state-in-effect */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
@@ -13,17 +13,23 @@ import {
 import { ModelDetailsDialog } from "../../product/view/all/modelDetailsCard";
 import { ProductModelDetailsDTO } from "@/types/model";
 import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 /* ================= CONSTANTS ================= */
-const ITEMS_PER_PAGE = 5;
-const TABLE_HEIGHT = "h-[300px]";
+const TABLE_HEIGHT = "h-[600px]";
 const ROW_HEIGHT = "h-[50px]";
 
 /* ================= TYPES ================= */
@@ -52,15 +58,6 @@ type TableRow = {
   details: ProductModelDetailsDTO;
 };
 
-/* ================= SCHEME COLORS ================= */
-const SCHEME_COLORS: Record<ProductallSchemeKey, string> = {
-  saleProduct: "bg-red-100 text-red-800",
-  tradingProduct: "bg-orange-100 text-orange-800",
-  recommendedProduct: "bg-green-100 text-green-800",
-  companyProduct: "bg-blue-100 text-blue-800",
-  valuableProduct: "bg-purple-100 text-purple-800",
-  all: "",
-};
 
 /* ================= COMPONENT ================= */
 export default function ShopPage() {
@@ -69,53 +66,48 @@ export default function ShopPage() {
   const [dialogData, setDialogData] = useState<ProductModelDetailsDTO | null>(
     null
   );
-  const [currentPages, setCurrentPages] = useState<Record<string, number>>({});
+  const [selectedScheme, setSelectedScheme] = useState<ProductallSchemeKey | "all">("all");
 
   /* ================= FETCH ================= */
   useEffect(() => {
     (async () => {
-      const data = await fetchProductsByallScheme("all");
+      const data = await fetchProductsByallScheme(selectedScheme as ProductallSchemeKey );
       setProducts(data || []);
     })();
   }, []);
 
   /* ================= TABLE DATA ================= */
-  const tableDataByScheme: Record<ProductallSchemeKey, TableRow[]> =
-    useMemo(() => {
-      const map: Record<ProductallSchemeKey, TableRow[]> = {
-        saleProduct: [],
-        tradingProduct: [],
-        recommendedProduct: [],
-        companyProduct: [],
-        valuableProduct: [],
-        all: [],
-      };
+  const tableData: TableRow[] = useMemo(() => {
+    const rows: TableRow[] = [];
+    products.forEach((product) => {
+      product.models.forEach((model) => {
+        const schem = model.productModelDetails?.schem || {};
+        
+        const schemesToCheck = selectedScheme === "all" 
+          ? PRODUCT_SCHEMES 
+          : PRODUCT_SCHEMES.filter(s => s.key === selectedScheme);
 
-      products.forEach((product) => {
-        product.models.forEach((model) => {
-          const schem = model.productModelDetails?.schem || {};
-          PRODUCT_SCHEMES.forEach((s) => {
-            if (schem[s.key]) {
-              map[s.key].push({
-                productId: product.productId,
-                productTitle: product.productTitle,
-                category: product.productCategory,
-                modelId: model.modelId,
-                modelName: model.modelName,
-                price:
-                  model.productModelDetails?.colors?.[0]?.colorPrice?.[0]
-                    ?.finalPrice || 0,
-                schemeKey: s.key,
-                schemeTitle: s.title,
-                details: model.productModelDetails,
-              });
-            }
-          });
+        schemesToCheck.forEach((s) => {
+          if (schem[s.key]) {
+            rows.push({
+              productId: product.productId,
+              productTitle: product.productTitle,
+              category: product.productCategory,
+              modelId: model.modelId,
+              modelName: model.modelName,
+              price:
+                model.productModelDetails?.colors?.[0]?.colorPrice?.[0]
+                  ?.finalPrice || 0,
+              schemeKey: s.key,
+              schemeTitle: s.title,
+              details: model.productModelDetails,
+            });
+          }
         });
       });
-
-      return map;
-    }, [products]);
+    });
+    return rows;
+  }, [products, selectedScheme]);
 
   /* ================= REMOVE ================= */
   const handleRemove = async (
@@ -151,72 +143,73 @@ export default function ShopPage() {
     );
   };
 
-  /* ================= PAGINATION ================= */
-  const paginateData = (schemeKey: ProductallSchemeKey) => {
-    const page = currentPages[schemeKey] || 1;
-    const rows = tableDataByScheme[schemeKey] || [];
-    const totalPages = Math.ceil(rows.length / ITEMS_PER_PAGE);
-    const paginated = rows.slice(
-      (page - 1) * ITEMS_PER_PAGE,
-      page * ITEMS_PER_PAGE
-    );
-    return { paginated, totalPages };
-  };
+  return (
+    <div className="px-10 pt-4">
+      {/* Header & Filter */}
+      <div className="flex flex-col sm:flex-row justify-between items-end sm:items-center gap-4 mb-6">
+        <div>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg mb-2">
+            <Sparkles className="w-4 h-4 text-blue-900" />
+            <span className="text-sm font-semibold text-blue-900">
+              Sales Performance
+            </span>
+          </div>
+          <h1 className="text-4xl font-bold text-blue-900">Sales Overview</h1>
+        </div>
+        <div className="w-full sm:w-[250px]">
+          <Select value={selectedScheme} onValueChange={(value) => setSelectedScheme(value as ProductallSchemeKey | "all")}>
+            <SelectTrigger className="border-blue-200 focus:ring-blue-900 bg-white">
+              <SelectValue placeholder="Filter by Scheme" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Schemes</SelectItem>
+              {PRODUCT_SCHEMES.map((s) => (
+                <SelectItem key={s.key} value={s.key}>
+                  {s.title}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
 
-  const setPage = (schemeKey: ProductallSchemeKey, page: number) => {
-    setCurrentPages((prev) => ({ ...prev, [schemeKey]: page }));
-  };
-
-  /* ================= RENDER TABLE ================= */
-  const renderTable = (schemeKey: ProductallSchemeKey) => {
-    const { paginated, totalPages } = paginateData(schemeKey);
-
-    return (
-      <div className="border rounded-xl mb-6 flex flex-col">
-        <h3 className="text-xl font-semibold px-4 py-2 bg-gray-50 border-b flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-blue-900" />
-          {PRODUCT_SCHEMES.find((s) => s.key === schemeKey)?.title}
-        </h3>
-
-        <div className={`flex-1 overflow-y-auto ${TABLE_HEIGHT}`}>
-          <table className="min-w-full table-fixed">
-            <thead className="bg-blue-900 text-white sticky top-0">
-              <tr>
-                <th className="px-4 py-2 text-center">Product</th>
-                <th className="px-4 py-2 text-center">Model</th>
-                <th className="px-4 py-2 text-center">Category</th>
-                <th className="px-4 py-2 text-center">Price</th>
-                <th className="px-4 py-2 text-center">Sales</th>
-                <th className="px-4 py-2 text-center">View</th>
-                <th className="px-4 py-2 text-center">Remove</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginated.map((row) => (
-                <tr key={row.modelId} className={`border-b ${ROW_HEIGHT}`}>
-                  <td className="px-4 py-2 text-center truncate">
+      {/* Single Table */}
+      <div className="border border-blue-900 rounded-xl overflow-hidden shadow-sm bg-white">
+        <div className={`flex-1 overflow-y-auto ${TABLE_HEIGHT} scrollbar-thin scrollbar-thumb-blue-100 scrollbar-track-transparent`}>
+          <Table>
+            <TableHeader className="bg-blue-900 sticky top-0 z-10">
+              <TableRow className="hover:bg-blue-900 border-none">
+                <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">Product</TableHead>
+                <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">Model</TableHead>
+                <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">Category</TableHead>
+                <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">Price</TableHead>
+                <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">Sales</TableHead>
+                <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">View</TableHead>
+                <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">Remove</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {tableData.map((row, index) => (
+                <TableRow key={`${row.modelId}-${row.schemeKey}-${index}`} className={`${ROW_HEIGHT} border-b border-gray-100 hover:bg-blue-50/50 transition-colors`}>
+                  <TableCell className="text-center font-medium text-gray-900">
                     {row.productTitle}
-                  </td>
-                  <td className="px-4 py-2 text-center">{row.modelName}</td>
-                  <td className="px-4 py-2 text-center">{row.category}</td>
-                  <td className="px-4 py-2 text-center font-bold text-blue-900">
+                  </TableCell>
+                  <TableCell className="text-center text-gray-600">{row.modelName}</TableCell>
+                  <TableCell className="text-center text-gray-600">{row.category}</TableCell>
+                  <TableCell className="text-center font-bold text-blue-900">
                     ₹{row.price.toLocaleString("en-IN")}
-                  </td>
-                  <td className="px-4 py-2 text-center font-bold">
+                  </TableCell>
+                  <TableCell className="text-center">
                     <span
-                      className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                        row.schemeKey
-                          ? SCHEME_COLORS[row.schemeKey]
-                          : "bg-gray-100 text-gray-800"
-                      }`}
+                      className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-100"
                     >
                       {row.schemeKey ? row.schemeKey : "No Scheme"}
                     </span>
-                  </td>
+                  </TableCell>
 
-                  <td className="px-4 py-2 text-center">
+                  <TableCell className="text-center">
                     <button
-                      className="bg-blue-900 text-white px-3 py-1 rounded text-xs"
+                      className="bg-white border border-blue-200 text-blue-700 px-4 py-1.5 rounded-lg text-xs font-medium hover:bg-blue-50 transition-colors"
                       onClick={() => {
                         setDialogData(row.details);
                         setOpenDialog(true);
@@ -224,75 +217,30 @@ export default function ShopPage() {
                     >
                       View
                     </button>
-                  </td>
-                  <td className="px-4 py-2 text-center">
+                  </TableCell>
+                  <TableCell className="text-center">
                     <button
-                      className="bg-red-100 text-red-700 px-2 py-1 rounded text-xs"
+                      className="bg-white border border-red-200 text-red-600 px-4 py-1.5 rounded-lg text-xs font-medium hover:bg-red-50 transition-colors"
                       onClick={() =>
-                        handleRemove(row.productId, row.modelId, schemeKey)
+                        handleRemove(row.productId, row.modelId, row.schemeKey as ProductallSchemeKey)
                       }
                     >
                       Remove
                     </button>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))}
-              {paginated.length === 0 && (
-                <tr className={`${ROW_HEIGHT}`}>
-                  <td colSpan={6} className="text-center py-10 text-gray-500">
-                    No products in this scheme
-                  </td>
-                </tr>
+              {tableData.length === 0 && (
+                <TableRow className={`${ROW_HEIGHT}`}>
+                  <TableCell colSpan={7} className="text-center py-10 text-gray-500">
+                    No products found
+                  </TableCell>
+                </TableRow>
               )}
-            </tbody>
-          </table>
+            </TableBody>
+          </Table>
         </div>
-
-        {totalPages > 1 && (
-          <div className="py-2 border-t flex justify-center">
-            <Pagination>
-              <PaginationContent>
-                <PaginationPrevious
-                  onClick={() =>
-                    setPage(
-                      schemeKey,
-                      Math.max(1, (currentPages[schemeKey] || 1) - 1)
-                    )
-                  }
-                />
-                {Array.from({ length: totalPages }).map((_, i) => (
-                  <PaginationItem key={i}>
-                    <PaginationLink
-                      isActive={(currentPages[schemeKey] || 1) === i + 1}
-                      onClick={() => setPage(schemeKey, i + 1)}
-                    >
-                      {i + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                ))}
-                <PaginationNext
-                  onClick={() =>
-                    setPage(
-                      schemeKey,
-                      Math.min(totalPages, (currentPages[schemeKey] || 1) + 1)
-                    )
-                  }
-                />
-              </PaginationContent>
-            </Pagination>
-          </div>
-        )}
       </div>
-    );
-  };
-
-  return (
-    <div className="max-w-7xl mx-auto px-4 py-4">
-      {PRODUCT_SCHEMES.map((s) => (
-        <div key={s.key}>
-          {renderTable(s.key as ProductallSchemeKey)}
-        </div>
-      ))}
 
       <ModelDetailsDialog
         open={openDialog}

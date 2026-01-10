@@ -54,15 +54,15 @@ export default function DashboardLayout({ children }: LayoutProps) {
 
   return (
     <SidebarProvider>
-      <div className="flex h-screen w-screen overflow-hidden bg-gray-50">
+      <div className="flex h-screen w-screen overflow-hidden">
         {/* Sidebar */}
         <AppSidebar />
 
         {/* Main Content */}
         <SidebarInset className="flex-1 flex flex-col overflow-hidden">
           {/* Header with Breadcrumb */}
-          <header className="sticky top-0 z-0 flex items-center gap-4 border-b border-gray-200 bg-white px-6 py-4 shadow-sm">
-            <SidebarTrigger className="text-gray-600 hover:bg-gray-100 hover:text-gray-900 rounded-md" />
+          <header className="sticky top-0 z-0 flex items-center gap-4 border-b bg-white px-6 py-4 shadow-sm">
+            <SidebarTrigger className="text-gray-600 hover:text-gray-900 rounded-md" />
             <Breadcrumb className="flex-1">
               <BreadcrumbList className="flex items-center gap-2">
                 {breadcrumbs.map((crumb, idx) =>
@@ -94,7 +94,7 @@ export default function DashboardLayout({ children }: LayoutProps) {
           </header>
 
           {/* Page Content */}
-          <main className="flex-1 overflow-auto bg-gray-50">{children}</main>
+          <main className="flex-1 overflow-auto ">{children}</main>
         </SidebarInset>
       </div>
     </SidebarProvider>

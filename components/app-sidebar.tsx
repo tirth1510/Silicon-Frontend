@@ -68,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar 
       collapsible="icon" 
       {...props} 
-      className="border-r border-gray-200 bg-white"
+      className=" bg-white"
     >
       {/* Header with Logo */}
       <SidebarHeader className="border-b border-gray-200 py-6 px-4 bg-white group-data-[collapsible=icon]:px-2 group-data-[collapsible=icon]:py-5">

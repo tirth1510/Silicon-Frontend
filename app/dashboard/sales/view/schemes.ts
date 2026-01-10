@@ -24,11 +24,7 @@ export const PRODUCT_SCHEMES = [
     title: "Valuable Products",
     description: "High-value and premium products",
   },
-  {
-    key: "all",
-    title: "All Products",
-    description: "Show all products with all schemes",
-  },
+  
 ] as const;
 
 export type ProductallSchemeKey = (typeof PRODUCT_SCHEMES)[number]["key"];
