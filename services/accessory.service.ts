@@ -179,40 +179,7 @@ export const getAccessoryByIdService = async (
 
 /* ---------------- Types ---------------- */
 
-export type UpdateAccessoriesPayload = {
-  /* simple fields */
-  productCategory?: string;
-  productTitle?: string;
-  description?: string;
-  status?: string;
-  priceDetails?: string;
-  stock?: number;
 
-  /* arrays */
-  productSpecifications?: any[];
-  specifications?: any[];
-  warranty?: any[];
-
-  /* indexes */
-  specIndexes?: number | number[];
-  specificationIndexes?: number | number[];
-  warrantyIndexes?: number | number[];
-
-  deleteIndex?: number;
-  deleteSpecificationIndex?: number;
-  deleteWarrantyIndex?: number;
-
-  deleteGalleryIndex?: number;
-  replaceGalleryIndex?: number;
-
-  deleteImageIndex?: number;
-  replaceImageIndex?: number;
-};
-
-export type UpdateAccessoriesFiles = {
-  productGallery?: File[];
-  productImageUrl?: File[];
-};
 
 /* ---------------- GET ---------------- */
 
@@ -225,6 +192,35 @@ export const getAccessoryByervice = async (id: string) => {
 
 /* ---------------- UPDATE ---------------- */
 
+export type UpdateAccessoriesPayload = {
+  productCategory?: string;
+  productTitle?: string;
+  description?: string;
+  stock?: number;
+  priceDetails?: {
+    price: number;
+    discount: number;
+  };
+  specifications?: any[];
+  warranty?: any[];
+  productSpecifications?: any[];
+  specIndexes?: number[];
+  specificationIndexes?: number[];
+  warrantyIndexes?: number[];
+  deleteIndex?: number;
+  deleteSpecificationIndex?: number;
+  deleteWarrantyIndex?: number;
+  deleteGalleryIndex?: number;
+  replaceGalleryIndex?: number;
+  deleteImageIndex?: number;
+  replaceImageIndex?: number;
+};
+
+export type UpdateAccessoriesFiles = {
+  productImageUrl?: File[];
+  productGallery?: File[];
+};
+
 export const updateAccessoriesDetailsService = async (
   id: string,
   payload: UpdateAccessoriesPayload = {},
@@ -235,15 +231,14 @@ export const updateAccessoriesDetailsService = async (
   const formData = new FormData();
 
   /* ---------- simple fields ---------- */
-  Object.entries(payload).forEach(([key, value]) => {
-    if (
-      value !== undefined &&
-      typeof value !== "object" &&
-      !Array.isArray(value)
-    ) {
-      formData.append(key, String(value));
-    }
-  });
+  if (payload.productCategory) formData.append("productCategory", payload.productCategory);
+  if (payload.productTitle) formData.append("productTitle", payload.productTitle);
+  if (payload.description) formData.append("description", payload.description);
+  if (payload.stock !== undefined) formData.append("stock", String(payload.stock));
+
+  if (payload.priceDetails) {
+    formData.append("priceDetails", JSON.stringify(payload.priceDetails));
+  }
 
   /* ---------- arrays ---------- */
   if (payload.productSpecifications)
@@ -290,25 +285,16 @@ export const updateAccessoriesDetailsService = async (
     );
 
   if (payload.deleteGalleryIndex !== undefined)
-    formData.append(
-      "deleteGalleryIndex",
-      String(payload.deleteGalleryIndex)
-    );
+    formData.append("deleteGalleryIndex", String(payload.deleteGalleryIndex));
 
   if (payload.replaceGalleryIndex !== undefined)
-    formData.append(
-      "replaceGalleryIndex",
-      String(payload.replaceGalleryIndex)
-    );
+    formData.append("replaceGalleryIndex", String(payload.replaceGalleryIndex));
 
   if (payload.deleteImageIndex !== undefined)
     formData.append("deleteImageIndex", String(payload.deleteImageIndex));
 
   if (payload.replaceImageIndex !== undefined)
-    formData.append(
-      "replaceImageIndex",
-      String(payload.replaceImageIndex)
-    );
+    formData.append("replaceImageIndex", String(payload.replaceImageIndex));
 
   /* ---------- files ---------- */
   files?.productGallery?.forEach((file) =>

@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Check, Package, FileText, Palette } from "lucide-react";
+import { Check, Package, FileText, Palette, Plus, Trash2, RefreshCw } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useMutation } from "@tanstack/react-query";
 import { createProductService, CreateProductPayload, CreateProductFiles } from "@/services/accessory.service";
@@ -61,6 +61,59 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
   const [productImages, setProductImages] = useState<File[]>([]);
   const [galleryImages, setGalleryImages] = useState<File[]>([]);
 
+  const [specsList, setSpecsList] = useState<string[]>([""]);
+  const [warrantyList, setWarrantyList] = useState<string[]>([""]);
+  const [productSpecsList, setProductSpecsList] = useState<{ key: string; value: string }[]>([{ key: "", value: "" }]);
+
+  const replaceInputRef = useRef<HTMLInputElement>(null);
+  const [replacingTarget, setReplacingTarget] = useState<{ index: number; type: 'product' | 'gallery' } | null>(null);
+
+  const handleAddImages = (e: React.ChangeEvent<HTMLInputElement>, type: 'product' | 'gallery') => {
+    if (e.target.files && e.target.files.length > 0) {
+      const newFiles = Array.from(e.target.files);
+      if (type === 'product') {
+        setProductImages((prev) => [...prev, ...newFiles]);
+      } else {
+        setGalleryImages((prev) => [...prev, ...newFiles]);
+      }
+    }
+    e.target.value = "";
+  };
+
+  const handleRemoveImage = (index: number, type: 'product' | 'gallery') => {
+    if (type === 'product') {
+      setProductImages((prev) => prev.filter((_, i) => i !== index));
+    } else {
+      setGalleryImages((prev) => prev.filter((_, i) => i !== index));
+    }
+  };
+
+  const handleReplaceClick = (index: number, type: 'product' | 'gallery') => {
+    setReplacingTarget({ index, type });
+    replaceInputRef.current?.click();
+  };
+
+  const handleReplaceFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0] && replacingTarget) {
+      const file = e.target.files[0];
+      if (replacingTarget.type === 'product') {
+        setProductImages((prev) => {
+          const newArr = [...prev];
+          newArr[replacingTarget.index] = file;
+          return newArr;
+        });
+      } else {
+        setGalleryImages((prev) => {
+          const newArr = [...prev];
+          newArr[replacingTarget.index] = file;
+          return newArr;
+        });
+      }
+    }
+    setReplacingTarget(null);
+    e.target.value = "";
+  };
+
   const mutation = useMutation({
     mutationFn: async () => {
       // Use new category if provided, otherwise use selected category
@@ -77,21 +130,27 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
       };
 
       // Convert specifications string to JSON array format
-      if (form.specifications) {
-        const specsArray = form.specifications
-          .split("\n")
-          .filter((line) => line.trim())
-          .map((line) => ({ points: line.trim() }));
+      const specsArray = specsList
+        .filter((line) => line.trim())
+        .map((line) => ({ points: line.trim() }));
+      if (specsArray.length > 0) {
         payload.specifications = JSON.stringify(specsArray);
       }
 
       // Convert warranty string to JSON array format
-      if (form.warranty) {
-        const warrantyArray = form.warranty
-          .split("\n")
-          .filter((line) => line.trim())
-          .map((line) => ({ points: line.trim() }));
+      const warrantyArray = warrantyList
+        .filter((line) => line.trim())
+        .map((line) => ({ points: line.trim() }));
+      if (warrantyArray.length > 0) {
         payload.warranty = JSON.stringify(warrantyArray);
+      }
+
+      // Product Specifications (Key-Value)
+      const productSpecsArray = productSpecsList.filter(
+        (item) => item.key.trim() || item.value.trim()
+      );
+      if (productSpecsArray.length > 0) {
+        payload.productSpecifications = productSpecsArray;
       }
 
       const files: CreateProductFiles = {
@@ -125,6 +184,9 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
     setNewCategory("");
     setProductImages([]);
     setGalleryImages([]);
+    setSpecsList([""]);
+    setWarrantyList([""]);
+    setProductSpecsList([{ key: "", value: "" }]);
     onClose();
   };
 
@@ -358,23 +420,133 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                 <div className="flex-1 overflow-y-auto pr-2">
                   <div className="space-y-4 sm:space-y-6 pb-24">
                     <div className="space-y-2 sm:space-y-3">
+                      <Label className="block text-xs sm:text-sm font-semibold text-gray-700">Product Specifications (Key-Value)</Label>
+                      <div className="space-y-2">
+                        {productSpecsList.map((item, index) => (
+                          <div key={index} className="flex gap-2">
+                            <Input
+                              placeholder="Key (e.g., Color)"
+                              value={item.key}
+                              onChange={(e) => {
+                                const newList = [...productSpecsList];
+                                newList[index].key = e.target.value;
+                                setProductSpecsList(newList);
+                              }}
+                              className="flex-1 h-10 px-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 text-xs sm:text-sm"
+                            />
+                            <Input
+                              placeholder="Value (e.g., Red)"
+                              value={item.value}
+                              onChange={(e) => {
+                                const newList = [...productSpecsList];
+                                newList[index].value = e.target.value;
+                                setProductSpecsList(newList);
+                              }}
+                              className="flex-1 h-10 px-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 text-xs sm:text-sm"
+                            />
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => {
+                                const newList = productSpecsList.filter((_, i) => i !== index);
+                                setProductSpecsList(newList.length ? newList : [{ key: "", value: "" }]);
+                              }}
+                              className="shrink-0 h-10 w-10 border-2 border-gray-300 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setProductSpecsList([...productSpecsList, { key: "", value: "" }])}
+                          className="w-full border-2 border-dashed border-gray-300 hover:border-blue-500 hover:bg-blue-50 text-gray-600 hover:text-blue-600 h-10"
+                        >
+                          <Plus className="h-4 w-4 mr-2" /> Add Key-Value Pair
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 sm:space-y-3">
                       <Label className="block text-xs sm:text-sm font-semibold text-gray-700">Specifications</Label>
-                      <Textarea
-                        placeholder="Enter specifications (one per line)..."
-                        value={form.specifications}
-                        onChange={(e) => setForm({ ...form, specifications: e.target.value })}
-                        className="w-full min-h-[100px] sm:min-h-[140px] px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none text-xs sm:text-sm"
-                      />
+                      <div className="space-y-2">
+                        {specsList.map((spec, index) => (
+                          <div key={index} className="flex gap-2">
+                            <Input
+                              placeholder="Enter specification point"
+                              value={spec}
+                              onChange={(e) => {
+                                const newSpecs = [...specsList];
+                                newSpecs[index] = e.target.value;
+                                setSpecsList(newSpecs);
+                              }}
+                              className="flex-1 h-10 px-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 text-xs sm:text-sm"
+                            />
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => {
+                                const newSpecs = specsList.filter((_, i) => i !== index);
+                                setSpecsList(newSpecs.length ? newSpecs : [""]);
+                              }}
+                              className="shrink-0 h-10 w-10 border-2 border-gray-300 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSpecsList([...specsList, ""])}
+                          className="w-full border-2 border-dashed border-gray-300 hover:border-blue-500 hover:bg-blue-50 text-gray-600 hover:text-blue-600 h-10"
+                        >
+                          <Plus className="h-4 w-4 mr-2" /> Add Specification
+                        </Button>
+                      </div>
                     </div>
 
                     <div className="space-y-2 sm:space-y-3">
                       <Label className="block text-xs sm:text-sm font-semibold text-gray-700">Warranty Information</Label>
-                      <Textarea
-                        placeholder="Enter warranty details..."
-                        value={form.warranty}
-                        onChange={(e) => setForm({ ...form, warranty: e.target.value })}
-                        className="w-full min-h-[100px] sm:min-h-[140px] px-3 sm:px-4 py-2 sm:py-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 placeholder:text-gray-400 resize-none text-xs sm:text-sm"
-                      />
+                      <div className="space-y-2">
+                        {warrantyList.map((warranty, index) => (
+                          <div key={index} className="flex gap-2">
+                            <Input
+                              placeholder="Enter warranty point"
+                              value={warranty}
+                              onChange={(e) => {
+                                const newWarranty = [...warrantyList];
+                                newWarranty[index] = e.target.value;
+                                setWarrantyList(newWarranty);
+                              }}
+                              className="flex-1 h-10 px-3 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 text-gray-900 text-xs sm:text-sm"
+                            />
+                            <Button
+                              variant="outline"
+                              size="icon"
+                              onClick={() => {
+                                const newWarranty = warrantyList.filter((_, i) => i !== index);
+                                setWarrantyList(newWarranty.length ? newWarranty : [""]);
+                              }}
+                              className="shrink-0 h-10 w-10 border-2 border-gray-300 hover:bg-red-50 hover:border-red-200 hover:text-red-600"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setWarrantyList([...warrantyList, ""])}
+                          className="w-full border-2 border-dashed border-gray-300 hover:border-blue-500 hover:bg-blue-50 text-gray-600 hover:text-blue-600 h-10"
+                        >
+                          <Plus className="h-4 w-4 mr-2" /> Add Warranty Point
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -401,6 +573,13 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
 
             {/* Images Tab */}
             <TabsContent value="images" className="mt-0 h-full relative">
+              <input
+                type="file"
+                ref={replaceInputRef}
+                className="hidden"
+                accept="image/*"
+                onChange={handleReplaceFile}
+              />
               <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto pr-2">
                   <div className="space-y-4 sm:space-y-6 pb-24">
@@ -408,30 +587,98 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
                       <Label className="block text-xs sm:text-sm font-semibold text-gray-700">
                         Product Images <span className="text-red-500">*</span>
                       </Label>
-                      <Input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        onChange={(e) => setProductImages(Array.from(e.target.files || []))}
-                        className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 file:mr-2 sm:file:mr-4 file:py-1 sm:file:py-2 file:px-2 sm:file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:font-semibold hover:file:bg-blue-100 text-xs sm:text-sm"
-                      />
-                      <p className="text-xs text-gray-500">
-                        {productImages.length} file(s) selected
-                      </p>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        {productImages.map((file, index) => (
+                          <div key={index} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={`Preview ${index}`}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                              <Button
+                                type="button"
+                                variant="secondary"
+                                size="icon"
+                                className="h-8 w-8 rounded-full"
+                                onClick={() => handleReplaceClick(index, 'product')}
+                              >
+                                <RefreshCw className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                className="h-8 w-8 rounded-full"
+                                onClick={() => handleRemoveImage(index, 'product')}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                        <label className="flex flex-col items-center justify-center aspect-square rounded-lg border-2 border-dashed border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer group">
+                          <div className="w-10 h-10 rounded-full bg-gray-100 group-hover:bg-blue-100 flex items-center justify-center mb-2 transition-colors">
+                            <Plus className="h-5 w-5 text-gray-500 group-hover:text-blue-600" />
+                          </div>
+                          <span className="text-xs font-medium text-gray-600 group-hover:text-blue-600">Add Image</span>
+                          <input
+                            type="file"
+                            className="hidden"
+                            multiple
+                            accept="image/*"
+                            onChange={(e) => handleAddImages(e, 'product')}
+                          />
+                        </label>
+                      </div>
                     </div>
 
                     <div className="space-y-2 sm:space-y-3">
                       <Label className="block text-xs sm:text-sm font-semibold text-gray-700">Gallery Images</Label>
-                      <Input
-                        type="file"
-                        multiple
-                        accept="image/*"
-                        onChange={(e) => setGalleryImages(Array.from(e.target.files || []))}
-                        className="w-full h-10 sm:h-12 px-3 sm:px-4 bg-white border-2 border-gray-300 rounded-lg hover:border-blue-500 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 transition-all duration-200 file:mr-2 sm:file:mr-4 file:py-1 sm:file:py-2 file:px-2 sm:file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700 file:font-semibold hover:file:bg-blue-100 text-xs sm:text-sm"
-                      />
-                      <p className="text-xs text-gray-500">
-                        {galleryImages.length} file(s) selected
-                      </p>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        {galleryImages.map((file, index) => (
+                          <div key={index} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
+                            <img
+                              src={URL.createObjectURL(file)}
+                              alt={`Gallery Preview ${index}`}
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                              <Button
+                                type="button"
+                                variant="secondary"
+                                size="icon"
+                                className="h-8 w-8 rounded-full"
+                                onClick={() => handleReplaceClick(index, 'gallery')}
+                              >
+                                <RefreshCw className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="destructive"
+                                size="icon"
+                                className="h-8 w-8 rounded-full"
+                                onClick={() => handleRemoveImage(index, 'gallery')}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))}
+                        <label className="flex flex-col items-center justify-center aspect-square rounded-lg border-2 border-dashed border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition-all cursor-pointer group">
+                          <div className="w-10 h-10 rounded-full bg-gray-100 group-hover:bg-blue-100 flex items-center justify-center mb-2 transition-colors">
+                            <Plus className="h-5 w-5 text-gray-500 group-hover:text-blue-600" />
+                          </div>
+                          <span className="text-xs font-medium text-gray-600 group-hover:text-blue-600">Add Image</span>
+                          <input
+                            type="file"
+                            className="hidden"
+                            multiple
+                            accept="image/*"
+                            onChange={(e) => handleAddImages(e, 'gallery')}
+                          />
+                        </label>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -471,4 +718,3 @@ export default function AddAccessoryDialog({ open, onClose, accessories, onSucce
     </Dialog>
   );
 }
-

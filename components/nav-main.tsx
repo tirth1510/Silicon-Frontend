@@ -52,7 +52,7 @@ function NavNode({ item }: { item: NavItem }) {
     }
     
     // For other routes, check exact match or starts with
-    return pathname === url || pathname.startsWith(url + "/");
+    return pathname === url || pathname?.startsWith(url + "/");
   };
 
   const isActive = isCurrentPath(item.url) || 
