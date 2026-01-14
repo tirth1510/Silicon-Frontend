@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { ArrowRight, Award, CheckCircle, Zap, Shield, TrendingUp, Star, Users } from "lucide-react";
@@ -67,7 +66,7 @@ export default function HeroSlider({ setCurrentSection }: HeroSliderProps) {
   );
 
   const [currentSlide, setCurrentSlide] = React.useState(0);
-  const [api, setApi] = React.useState<any>();
+  const [api, setApi] = React.useState<unknown>();
 
   React.useEffect(() => {
     if (!api) {

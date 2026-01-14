@@ -2,7 +2,7 @@
 import axios from "axios";
 import { ModelWithProductDTO } from "@/types/model";
 
-const API_BASE_URL ="http://localhost:5000/api/demo";
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo`;
 
 export const getAllModelsWithProductInfo = async (): Promise<
   ModelWithProductDTO[]

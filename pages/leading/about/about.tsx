@@ -6,6 +6,7 @@ import Category from "@/pages/leading/sections/category";
 import Achivments from "./achiments";
 import LimitedDeals from "../sections/limitedDeal";
 import Ceo from "./ceo";
+import { Providers } from "@/providers/providers";
 
 export function About() {
   return (
@@ -15,7 +16,7 @@ export function About() {
       </section>
 
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-blue-50 via-white to-purple-50 py-16">
+      <div className="bg-linear-to-br from-blue-50 via-white to-purple-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-6 font-medium">
@@ -104,7 +105,7 @@ export function About() {
                   ))}
                 </ul>
                 <p className="text-blue-900 text-center mt-6 max-w-4xl mx-auto leading-relaxed font-medium">
-                  We believe our clients' success is our success. Contact us to
+                  We believe our clients&apos; success is our success. Contact us to
                   explore our products and build a long-term partnership.
                 </p>
               </div>
@@ -131,7 +132,7 @@ export function About() {
                 <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20"></div>
                 <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full -ml-16 -mb-16"></div>
                 <div className="relative">
-                  <div className="text-6xl text-white/30 mb-4">"</div>
+                  <div className="text-6xl text-white/30 mb-4"></div>
                   <p className="text-white text-lg italic mb-4 leading-relaxed">
                     Our mission is to make advanced medical technology accessible to
                     every healthcare facility. Innovation should serve humanity.
@@ -194,4 +195,10 @@ export function About() {
   );
 }
 
-export default About;
+export default function WrappedAbout() {
+  return (
+    <Providers>
+      <About />
+    </Providers>
+  );
+}

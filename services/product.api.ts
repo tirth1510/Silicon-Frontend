@@ -11,7 +11,7 @@ import {
 } from "@/types/product";
 
 const API = axios.create({
-  baseURL: "http://localhost:5000/api/demo", 
+  baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo`,
 });
 
 /* ---------- STEP-1 ---------- */

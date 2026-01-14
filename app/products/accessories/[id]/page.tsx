@@ -14,6 +14,7 @@ import {
   Truck,
   CheckCircle,
   Award,
+  XCircle,
 } from "lucide-react";
 import { getAccessoryByIdService } from "@/services/accessory.service";
 
@@ -24,6 +25,11 @@ type Point = {
   _id: string;
 };
 
+type ProductSpecification = {
+  key: string;
+  value: string;
+  _id: string;
+};
 type ImageObj = { url: string; };
 
 type PriceDetails = {
@@ -49,9 +55,9 @@ type Accessory = {
   productImages?: ImageObj[];
   productImageUrl?: ImageObj[];
   galleryImages?: ImageObj[];
-  productGallery?: ImageObj[];
+  productGallery?: ImageObj[]; // This is an array of objects with a 'url' property
   specifications?: Point[];
-  productSpecifications?: Array<{ key: string; value: string; _id: string; }>;
+  productSpecifications?: ProductSpecification[];
   warranty?: Point[];
 };
 
@@ -66,6 +72,7 @@ export default function AccessoryDetailsPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showRatingInfo, setShowRatingInfo] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   /* ================= API ================= */
 
@@ -76,12 +83,22 @@ export default function AccessoryDetailsPage() {
       setLoading(true);
       try {
         const data = await getAccessoryByIdService(accessoryId);
-
-        // Log which structure is being used
-        if (data.priceDetails) {
-          setAccessory(data);
-        }
+        // Ensure productSpecifications has _id for each item
+        const processedData: Accessory = {
+          ...data,
+          productSpecifications: data.productSpecifications?.map((spec: any) => ({
+            key: spec.key,
+            value: spec.value,
+            _id: spec._id || Math.random().toString(36).substring(7), // Generate _id if missing
+          })),
+        };
+        setAccessory(processedData);
+        setActiveImageIndex(0);
+        setError(null);
       } catch (error) {
+        setError(
+          "Failed to load accessory details. Please try again later."
+        );
         console.error("Failed to fetch accessory", error);
       } finally {
         setLoading(false);
@@ -139,16 +156,25 @@ export default function AccessoryDetailsPage() {
     return images.length > 0 ? images : ["/placeholder.png"];
   }, [accessory]);
 
-  useEffect(() => {
-    setActiveImageIndex(0);
-  }, [accessory]);
-
   if (loading || !accessory) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900 mx-auto mb-4"></div>
           <p className="text-gray-500">Loading accessory details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="text-center p-6 bg-red-50 border border-red-200 rounded-lg shadow-md">
+          <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold text-red-700 mb-2">Error</h2>
+          <p className="text-gray-600 mb-4">{error}</p>
+          <Button onClick={() => router.push("/products/accessories")} className="bg-red-500 hover:bg-red-600 text-white">Go Back</Button>
         </div>
       </div>
     );

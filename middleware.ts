@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 
 type TokenPayload = {
   id: string;
@@ -8,7 +8,7 @@ type TokenPayload = {
   role: "admin" | "user";
 };
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Public routes
@@ -28,7 +28,9 @@ export function middleware(req: NextRequest) {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET!) as TokenPayload;
+    const secret = new TextEncoder().encode(process.env.JWT_SECRET!);
+    const { payload } = await jwtVerify(token, secret);
+    const decoded = payload as unknown as TokenPayload;
 
     // Only admin can access /dashboard routes
     if (pathname.startsWith("/dashboard") && decoded.role !== "admin") {

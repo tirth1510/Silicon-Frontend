@@ -44,15 +44,15 @@ function NavNode({ item }: { item: NavItem }) {
   
   // Check if current item or any child is active based on pathname
   const isCurrentPath = (url?: string) => {
-    if (!url || url === "#") return false;
+    if (!url || url === "#" || pathname === null) return false;
     
     // Special case for dashboard root - must match exactly
     if (url === "/dashboard") {
       return pathname === "/dashboard";
     }
     
-    // For other routes, check exact match or starts with
-    return pathname === url || pathname.startsWith(url + "/");
+    // For other routes, check exact match or starts with. 'pathname' is guaranteed not null here.
+    return pathname === url || pathname.startsWith(`${url}/`);
   };
 
   const isActive = isCurrentPath(item.url) || 

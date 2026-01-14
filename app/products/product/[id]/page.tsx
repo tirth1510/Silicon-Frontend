@@ -96,7 +96,7 @@ export default function ProductDetailsPage() {
       setLoading(true);
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/demo/model/${modelId}`
+          `http://localhost:5000/api/demo/products/model/${modelId}`
         );
 
         if (res.data?.success) {

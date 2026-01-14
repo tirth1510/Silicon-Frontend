@@ -17,7 +17,7 @@ import { useState } from "react";
 import { registerService } from "@/services/auth.service";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
+import GoogleLoginButton from "./googlebutton";
 
 export function SignupForm({
   className,
@@ -72,9 +72,7 @@ export function SignupForm({
       }
     } catch (err: any) {
       toast.error(
-        err?.response?.data?.message ||
-          err?.message ||
-          "Signup failed"
+        err?.response?.data?.message || err?.message || "Signup failed"
       );
     } finally {
       setLoading(false);
@@ -93,6 +91,9 @@ export function SignupForm({
                   Sign up with your details
                 </p>
               </div>
+              <Field>
+                <GoogleLoginButton />
+              </Field>
 
               <FieldSeparator>Or continue with</FieldSeparator>
 
@@ -125,7 +126,6 @@ export function SignupForm({
                 />
               </Field>
 
-
               <Field>
                 <Button type="submit" disabled={loading} className="w-full">
                   {loading ? "Creating..." : "Create Account"}
@@ -139,7 +139,12 @@ export function SignupForm({
           </form>
 
           <div className="bg-muted relative hidden md:block">
-            <Image src="/image.png" alt="Signup" fill className="object-cover" />
+            <Image
+              src="/image.png"
+              alt="Signup"
+              fill
+              className="object-cover"
+            />
           </div>
         </CardContent>
       </Card>

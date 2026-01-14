@@ -12,7 +12,7 @@ export default function LoginPage() {
         className="absolute top-10 left-20 flex items-center gap-2"
       >
         <Image
-          src="/name2.png"
+          src="/logo.png"
           alt="Logo"
           width={180}
           height={40}

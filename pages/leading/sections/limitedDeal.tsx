@@ -3,7 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Eye, Flame, MessageCircle, ShoppingBag } from "lucide-react";
+import { Eye, Flame, MessageCircle } from "lucide-react";
 import { getSaleProductsService } from "@/services/sell.api";
 import { SaleProductAPIItem, SaleProductUI } from "@/types/sell";
 import { useState } from "react";
@@ -21,7 +21,7 @@ import DealCountdown from "./timer";
 export default function SaleProductsPage() {
   const router = useRouter();
 
-  const { data, isLoading, isError, error } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["sale-products"],
     queryFn: getSaleProductsService,
   });

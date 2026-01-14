@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -11,16 +12,17 @@ import {
   FieldLabel,
   FieldSeparator,
 } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Input } from
+ "@/components/ui/input";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { useLogin } from "@/hooks/uselogin";
-import { googleLoginService } from "@/services/auth.service";
 
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import GoogleLoginButton from "./googlebutton";
+import { Providers } from "@/providers/providers";
 
 export function LoginForm({
   className,
@@ -32,16 +34,6 @@ export function LoginForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleGoogleLogin = async (credentialResponse: any) => {
-    try {
-      const data = await googleLoginService(credentialResponse.credential);
-
-      console.log("Login success:", data);
-      // redirect or update auth state here
-    } catch (err: any) {
-      console.error(err.message);
-    }
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -184,4 +176,10 @@ export function LoginForm({
   );
 }
 
-export default LoginForm;
+export default function WrappedLoginForm(props: any) {
+  return (
+    <Providers>
+      <LoginForm {...props} />
+    </Providers>
+  );
+}

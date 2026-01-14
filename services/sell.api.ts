@@ -14,7 +14,7 @@ export const getSaleProductsService = async (): Promise<SaleProductsResponse> =>
 };
 export const fetchProductsByScheme = async (scheme: ProductSchemeKey) => {
   const res = await axios.get(
-    `http://localhost:5000/api/demo/products/scheme/${scheme}`
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo/products/scheme/${scheme}`
   );
 
   if (!res.data?.success) {
@@ -26,7 +26,7 @@ export const fetchProductsByScheme = async (scheme: ProductSchemeKey) => {
 
 export const fetchProductsByallScheme = async (scheme: ProductallSchemeKey) => {
   const res = await axios.get(
-    `http://localhost:5000/api/demo/products/scheme/${scheme}`
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo/products/scheme/${scheme}`
   );
 
   if (!res.data?.success) {
@@ -45,7 +45,7 @@ export const updateProductSchemeService = async (
   schemeKey: ProductallSchemeKey
 ) => {
   const res = await axios.patch(
-    `http://localhost:5000/api/demo/products/${productId}/models/${modelId}/sell`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo/products/${productId}/models/${modelId}/sell`,
     { [schemeKey]: false } // ✅ always set false
   );
 
@@ -63,7 +63,7 @@ export const addProductSchemeService = async (
   schemeKey: ProductallSchemeKey
 ) => {
   const res = await axios.patch(
-    `http://localhost:5000/api/demo/products/${productId}/models/${modelId}/sell`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo/products/${productId}/models/${modelId}/sell`,
     { [schemeKey]: true } // ✅ always set false
   );
 

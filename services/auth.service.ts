@@ -1,12 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 
-
-
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000"
-
-
-
 export interface RegisterServicePayload {
   username: string;
   email: string;
@@ -33,7 +27,7 @@ export const registerService = async (
 ): Promise<RegisterServiceResponse> => {
   try {
     const response = await axios.post(
-      "http://localhost:5000/api/auth/register",
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/register`,
       payload,
       {
         withCredentials: true, // REQUIRED for httpOnly cookie
@@ -66,7 +60,7 @@ export const loginService = async ({
   email: string;
   password: string;
 }) => {
-  const res = await fetch(`http://localhost:5000/api/auth/login`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`, {
     method: "POST",
     credentials: "include", // 🚀 Important for httpOnly cookie
     headers: {
@@ -83,7 +77,7 @@ export const loginService = async ({
 
 
 export const logoutService = async (): Promise<void> => {
-  const res = await fetch("http://localhost:5000/api/auth/logout", {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/logout`, {
     method: "POST",
     credentials: "include",
   });
@@ -96,7 +90,7 @@ export const logoutService = async (): Promise<void> => {
 
 export const googleLoginService = async (idToken: string) => {
   const res = await fetch(
-    `http://localhost:5000/api/auth/google-login`,
+    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/google-login`,
     {
       method: "POST",
       headers: {

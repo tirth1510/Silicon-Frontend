@@ -4,7 +4,7 @@ import axios from "axios";
 export const fetchProfile = async () => {
   try {
     const res = await axios.get(
-      "http://localhost:5000/api/auth/profile", // backend URL
+      `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/profile`, // backend URL
       {
         withCredentials: true, // send cookies automatically
       }
