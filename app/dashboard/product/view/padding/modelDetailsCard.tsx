@@ -68,7 +68,7 @@ export function ModelDetailsDialog({ open, onClose, data }: Props) {
 
   /* ---------------- RENDERERS ---------------- */
 
-  const renderPoints = (title: string, list?: { points: string }[]) => {
+  const renderPoints = (title: string, list?: { points: string; }[]) => {
     const isEmpty = !list || list.length === 0;
 
     return (
@@ -94,7 +94,7 @@ export function ModelDetailsDialog({ open, onClose, data }: Props) {
 
   const renderValueList = (
     title: string,
-    list?: { value: string }[]
+    list?: { value: string; }[]
   ) => {
     const isEmpty = !list || list.length === 0;
 
@@ -154,7 +154,7 @@ export function ModelDetailsDialog({ open, onClose, data }: Props) {
 
   const renderParamIcons = (
     title: string,
-    list?: { iconName: string }[]
+    list?: { iconName: string; }[]
   ) => {
     const isEmpty = !list || list.length === 0;
 
@@ -200,9 +200,8 @@ export function ModelDetailsDialog({ open, onClose, data }: Props) {
           {entries.map(([k, v]) => (
             <div
               key={k}
-              className={`flex items-center gap-2 p-2 rounded ${
-                v ? "bg-green-100" : "bg-muted"
-              }`}
+              className={`flex items-center gap-2 p-2 rounded ${v ? "bg-green-100" : "bg-muted"
+                }`}
             >
               <FaCheckCircle
                 className={v ? "text-green-600" : "text-gray-400"}

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 import {
   Table,
@@ -54,6 +54,9 @@ export default function AccessoriesPage() {
 
   const [selectedAccessory, setSelectedAccessory] = useState<Product | null>(null);
 
+  // Prevent duplicate API calls in React Strict Mode
+  const hasFetchedRef = useRef(false);
+
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -94,7 +97,11 @@ export default function AccessoriesPage() {
   };
 
   useEffect(() => {
-    fetchData();
+    // Only fetch if we haven't already fetched
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      fetchData();
+    }
   }, []);
 
    useEffect(() => {

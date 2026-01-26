@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useRef } from "react";
 import { Sparkles } from "lucide-react";
 
 import { PRODUCT_SCHEMES, ProductallSchemeKey } from "./schemes";
@@ -68,10 +68,13 @@ export default function ShopPage() {
   );
   const [selectedScheme, setSelectedScheme] = useState<ProductallSchemeKey | "all">("all");
 
+  // Prevent duplicate API calls in React Strict Mode
+  const hasFetchedRef = useRef(false);
+
   /* ================= FETCH ================= */
   useEffect(() => {
     (async () => {
-      const data = await fetchProductsByallScheme(selectedScheme as ProductallSchemeKey );
+      const data = await fetchProductsByallScheme(selectedScheme as ProductallSchemeKey);
       setProducts(data || []);
     })();
   }, []);
@@ -82,9 +85,9 @@ export default function ShopPage() {
     products.forEach((product) => {
       product.models.forEach((model) => {
         const schem = model.productModelDetails?.schem || {};
-        
-        const schemesToCheck = selectedScheme === "all" 
-          ? PRODUCT_SCHEMES 
+
+        const schemesToCheck = selectedScheme === "all"
+          ? PRODUCT_SCHEMES
           : PRODUCT_SCHEMES.filter(s => s.key === selectedScheme);
 
         schemesToCheck.forEach((s) => {
@@ -126,19 +129,19 @@ export default function ShopPage() {
         p.productId !== productId
           ? p
           : {
-              ...p,
-              models: p.models.map((m) =>
-                m.modelId !== modelId
-                  ? m
-                  : {
-                      ...m,
-                      productModelDetails: {
-                        ...m.productModelDetails,
-                        schem: updatedSchem,
-                      },
-                    }
-              ),
-            }
+            ...p,
+            models: p.models.map((m) =>
+              m.modelId !== modelId
+                ? m
+                : {
+                  ...m,
+                  productModelDetails: {
+                    ...m.productModelDetails,
+                    schem: updatedSchem,
+                  },
+                }
+            ),
+          }
       )
     );
   };

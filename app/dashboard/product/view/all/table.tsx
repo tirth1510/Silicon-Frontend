@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   getAllModelsWithProductInfo,
   goLiveModelService,
@@ -27,6 +27,9 @@ export default function ModelsPage() {
   const [actionLoadingId, setActionLoadingId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
+  // Prevent duplicate API calls in React Strict Mode
+  const hasFetchedRef = useRef(false);
+
   const fetchModels = async () => {
     try {
       setLoading(true);
@@ -40,7 +43,11 @@ export default function ModelsPage() {
   };
 
   useEffect(() => {
-    fetchModels();
+    // Only fetch if we haven't already fetched
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      fetchModels();
+    }
   }, []);
 
   const handleEnquiry = async (productId: string, modelId: string) => {

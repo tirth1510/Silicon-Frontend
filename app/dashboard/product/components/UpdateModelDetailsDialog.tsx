@@ -73,6 +73,8 @@ export default function UpdateModelDetailsDialog({
     warranty: [],
   });
 
+  const [saving, setSaving] = useState(false);
+
   /* ---------- INIT STATE ---------- */
   useEffect(() => {
     setData({
@@ -118,11 +120,15 @@ export default function UpdateModelDetailsDialog({
   /* ---------- SAVE (SECTION BASED) ---------- */
 
   const handleSave = async () => {
+    if (saving) return;
+
     try {
+      setSaving(true);
       const section = activeSection;
       const current = data[section] || [];
       const original = modelDetails[section] || [];
 
+      // Filter out empty items
       let filtered: any[] = [];
 
       if (section === "specifications" || section === "warranty") {
@@ -135,6 +141,7 @@ export default function UpdateModelDetailsDialog({
         );
       }
 
+      // Check if there are actual changes
       const hasChanges =
         filtered.length !== original.length ||
         filtered.some((item, i) => {
@@ -149,30 +156,68 @@ export default function UpdateModelDetailsDialog({
         });
 
       if (!hasChanges) {
-        alert("No changes detected");
+        alert("ℹ️ No changes detected");
+        setSaving(false);
         return;
       }
+
+      // If user deleted all items, confirm the action
+      if (filtered.length === 0 && original.length > 0) {
+        const confirmDelete = confirm(
+          `⚠️ Are you sure you want to delete all items from ${section}?\n\nThis will remove all entries from this section.`
+        );
+        if (!confirmDelete) {
+          setSaving(false);
+          return;
+        }
+      }
+
+      // Handle empty array - send at least one empty item to avoid API rejection
+      const dataToSend = filtered.length === 0
+        ? (section === "specifications" || section === "warranty"
+          ? [{ points: "" }]
+          : [{ key: "", value: "" }])
+        : filtered;
 
       await updateModelDetailsBySection({
         productId,
         modelId,
         section,
-        data: filtered,
+        data: dataToSend,
       });
 
-      alert("Updated successfully!");
+      alert("✅ Updated successfully!");
       onSuccess();
       onClose();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Update failed:", err);
-      alert("Failed to update");
+
+      // Better error message
+      const errorMessage = err?.response?.data?.message || err?.message || "Failed to update";
+      alert(`❌ Update Failed: ${errorMessage}\n\nPlease try again or contact support if the issue persists.`);
+    } finally {
+      setSaving(false);
     }
   };
 
   /* ---------- RENDER LIST ---------- */
 
-  const renderList = (field: SectionKey) =>
-    (data[field] || []).map((item: any, index: number) => (
+  const renderList = (field: SectionKey) => {
+    const items = data[field] || [];
+
+    if (items.length === 0) {
+      return (
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+            <Plus className="w-8 h-8 text-gray-400" />
+          </div>
+          <p className="text-sm text-gray-500 mb-1">No items yet</p>
+          <p className="text-xs text-gray-400">Click "Add New Item" below to get started</p>
+        </div>
+      );
+    }
+
+    return items.map((item: any, index: number) => (
       <div
         key={item._id || index}
         className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 mb-3 bg-gray-50 p-2 sm:p-3 rounded"
@@ -219,6 +264,7 @@ export default function UpdateModelDetailsDialog({
         </Button>
       </div>
     ));
+  };
 
   /* ---------- UI ---------- */
 
@@ -274,11 +320,27 @@ export default function UpdateModelDetailsDialog({
         </Tabs>
 
         <div className="flex justify-end gap-2 sm:gap-3 mt-4 sm:mt-6 pt-4 border-t shrink-0">
-          <Button variant="outline" onClick={onClose} className="text-xs sm:text-sm px-3 sm:px-4">
+          <Button
+            variant="outline"
+            onClick={onClose}
+            className="text-xs sm:text-sm px-3 sm:px-4"
+            disabled={saving}
+          >
             Cancel
           </Button>
-          <Button onClick={handleSave} className="bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm px-3 sm:px-4">
-            Save Changes
+          <Button
+            onClick={handleSave}
+            className="bg-blue-600 hover:bg-blue-700 text-xs sm:text-sm px-3 sm:px-4"
+            disabled={saving}
+          >
+            {saving ? (
+              <>
+                <span className="animate-spin mr-2">⏳</span>
+                Saving...
+              </>
+            ) : (
+              "Save Changes"
+            )}
           </Button>
         </div>
       </DialogContent>

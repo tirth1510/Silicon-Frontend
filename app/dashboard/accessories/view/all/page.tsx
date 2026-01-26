@@ -1,7 +1,7 @@
 // pages/accessories/AccessoriesPage.tsx
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import AccessoriesTable from "./table";
 import { getAllAccessoriesService } from "@/services/accessory.service";
 import { Product } from "@/types/accessory";
@@ -10,10 +10,17 @@ export default function AccessoriesPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Prevent duplicate API calls in React Strict Mode
+  const hasFetchedRef = useRef(false);
+
   useEffect(() => {
-    getAllAccessoriesService()
-      .then(setProducts)
-      .finally(() => setLoading(false));
+    // Only fetch if we haven't already fetched
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      getAllAccessoriesService()
+        .then(setProducts)
+        .finally(() => setLoading(false));
+    }
   }, []);
 
   if (loading) {
