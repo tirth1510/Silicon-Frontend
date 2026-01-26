@@ -192,7 +192,7 @@ export default function ShopPage() {
                           <div className="flex gap-2 mt-auto">
                             <button
                               onClick={() =>
-                                router.push(`/products/product/${model.modelId}`)
+                                router.push(`/products/${model.modelId}`)
                               }
                               className="flex-1 px-4 py-2.5 bg-blue-900 text-white text-xs font-semibold rounded-lg
                                        hover:bg-blue-800 transition-all duration-200 flex items-center justify-center gap-1.5

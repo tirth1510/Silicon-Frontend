@@ -394,10 +394,19 @@ export default function Navbar() {
                     </p>
                   </div>
                 </div>
-                <div className="flex gap-2">
-                  <Button className="flex items-center">
-                    <HomeIcon className="h-4 w-4 mr-2" />
-                    Dashboard
+                <div className="flex flex-col gap-2">
+                  <Button asChild className="flex items-center w-full bg-blue-700 hover:bg-blue-800 text-white">
+                    <Link href="/dashboard">
+                      <HomeIcon className="h-4 w-4 mr-2" />
+                      Dashboard
+                    </Link>
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    onClick={handleLogout}
+                    className="w-full"
+                  >
+                    Logout
                   </Button>
                 </div>
               </div>
@@ -426,6 +435,14 @@ export default function Navbar() {
                     </p>
                   </div>
                 </div>
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  onClick={handleLogout}
+                  className="w-full"
+                >
+                  Logout
+                </Button>
               </div>
             ) : (
               <div className="px-4 py-3 mb-2 bg-blue-50 border-y border-blue-100">
@@ -452,16 +469,21 @@ export default function Navbar() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <Button className="flex-1 bg-blue-700 hover:bg-blue-800 text-white text-sm py-2">
-                    <LogIn className="h-4 w-4 mr-1" />
-                    Login
+                  <Button asChild className="flex-1 bg-blue-700 hover:bg-blue-800 text-white text-sm py-2">
+                    <Link href="/login">
+                      <LogIn className="h-4 w-4 mr-1" />
+                      Login
+                    </Link>
                   </Button>
                   <Button
+                    asChild
                     variant="outline"
                     className="flex-1 text-sm py-2 border-blue-700 text-blue-700 hover:bg-blue-50"
                   >
-                    <UserPlus className="h-4 w-4 mr-1" />
-                    Sign Up
+                    <Link href="/signup">
+                      <UserPlus className="h-4 w-4 mr-1" />
+                      Sign Up
+                    </Link>
                   </Button>
                 </div>
               </div>

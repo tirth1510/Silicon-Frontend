@@ -314,7 +314,7 @@ export default function ProductDetailsPage() {
             </div>
 
             {/* Price Section */}
-            {activePrice && (
+            {/* {activePrice && (
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-900 rounded-xl p-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
@@ -353,7 +353,7 @@ export default function ProductDetailsPage() {
                   Free delivery in 3–5 business days
                 </div>
               </div>
-            )}
+            )} */}
 
             {/* Available Colors */}
             {activeModel.colors && activeModel.colors.length > 0 && (

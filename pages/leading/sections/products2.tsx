@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/purity */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
@@ -224,25 +225,7 @@ Product Image: ${selectedProduct.image}
                   {product.modelName}
                 </h3>
 
-                {/* Price */}
-                <div className="mb-4">
-                  <div className="flex items-center gap-2">
-                    <p className="text-xl font-bold text-blue-900">
-                      ₹{product.price.toLocaleString("en-IN")}
-                    </p>
-                    {product.discount > 0 && (
-                      <p className="text-sm text-gray-500 line-through">
-                        ₹{product.originalPrice.toLocaleString("en-IN")}
-                      </p>
-                    )}
-                  </div>
-                  {product.discount > 0 && (
-                    <p className="text-xs text-green-700 font-semibold">
-                      Save ₹{(product.originalPrice - product.price).toLocaleString("en-IN")}
-                    </p>
-                  )}
-                </div>
-
+               
                 {/* Action Buttons */}
                 <div className="flex gap-2">
                   <button

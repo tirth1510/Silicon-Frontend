@@ -26,7 +26,7 @@ export default function ConditionalLayout({
   return (
     <>
       <Navbar />
-      <main className="min-h-auto">{children}</main>
+      <main className="">{children}</main>
       <Footer />
     </>
   );

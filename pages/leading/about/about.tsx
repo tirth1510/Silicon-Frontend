@@ -4,7 +4,6 @@ import { Award, CheckCircle, Settings, Target, Users, Heart, Sparkles, TrendingU
 import FAQ from "./faq";
 import Category from "@/pages/leading/sections/category";
 import Achivments from "./achiments";
-import LimitedDeals from "../sections/limitedDeal";
 import Ceo from "./ceo";
 import { Providers } from "@/providers/providers";
 
@@ -188,7 +187,6 @@ export function About() {
       </div>
 
       <Ceo />
-      <LimitedDeals />
       <Category />
       <FAQ />
     </div>

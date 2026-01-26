@@ -1,12 +1,10 @@
 "use client";
 
-import { ArrowRight, Award, CheckCircle, Zap, Shield, TrendingUp, Star, Users } from "lucide-react";
+import React from "react";
+import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay";
-import * as React from "react";
-import ProductsPage from "./products2";
-import Accessories from "./accessories";
-import LimitedTimeDeal from "./limitedDeal"
-import Category from "./category";
+import { ArrowRight, Star, Award, ShieldCheck, Truck, Clock } from "lucide-react";
+
 import {
   Carousel,
   CarouselContent,
@@ -14,236 +12,211 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import Image from "next/image";
-import Sell from "./sell"
-type HeroSliderProps = {
-  setCurrentSection?: (
-    section: "home" | "portfolio" | "shop" | "about" | "contact"
-  ) => void;
-};
+import { Button } from "@/components/ui/button";
 
-const slides = [
-  {
-    badge: "✨ Trusted by 500+ Healthcare Facilities",
-    title: "Advanced Medical Technology",
-    subtitle: "for Better Healthcare",
-    description:
-      "Empowering healthcare professionals with cutting-edge equipment and innovative solutions.",
-    image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=1200&h=800&fit=crop&q=80",
-  },
-  {
-    badge: "🔥 Top Selling Products",
-    title: "Reliable Equipment",
-    subtitle: "for Modern Hospitals",
-    description: "Precision instruments designed for accuracy, durability and exceptional performance.",
-    image: "https://images.unsplash.com/photo-1631815588090-d4bfec5b1ccb?w=1200&h=800&fit=crop&q=80",
-  },
-  {
-    badge: "💎 Premium Quality",
-    title: "Innovation That",
-    subtitle: "Saves Lives",
-    description: "Smart medical devices built for real-world healthcare needs and patient care excellence.",
-    image: "https://images.unsplash.com/photo-1584982751601-97dcc096659c?w=1200&h=800&fit=crop&q=80",
-  },
-];
+// Import existing sections
+import ProductCategorySection from "@/pages/leading/sections/category";
+import AccessoriesPage from "@/pages/leading/sections/accessories";
+import PremiumProductsPage from "@/pages/leading/sections/products2";
 
-const stats = [
-  { icon: Users, value: "500+", label: "Healthcare Facilities" },
-  { icon: Award, value: "98%", label: "Customer Satisfaction" },
-  { icon: TrendingUp, value: "50K+", label: "Products Delivered" },
-  { icon: Shield, value: "ISO", label: "Certified Quality" },
-];
-
-const features = [
-  { icon: CheckCircle, text: "FDA Approved Equipment" },
-  { icon: Zap, text: "24/7 Technical Support" },
-  { icon: Shield, text: "Warranty Protection" },
-];
-
-export default function HeroSlider({ setCurrentSection }: HeroSliderProps) {
+export default function LandingPage() {
   const autoplay = React.useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: false })
+    Autoplay({ delay: 5000, stopOnInteraction: true })
   );
 
-  const [currentSlide, setCurrentSlide] = React.useState(0);
-  const [api, setApi] = React.useState<unknown>();
+  const slides = [
+    {
+      id: 1,
+      badge: "New Arrival",
+      title: "Advanced Medical",
+      subtitle: "Technology Solutions",
+      description: "Equipping healthcare professionals with state-of-the-art medical instruments and diagnostic tools for better patient care.",
+      image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop",
+      cta: "Explore Products",
+    },
+    {
+      id: 2,
+      badge: "Best Seller",
+      title: "Precision & Accuracy",
+      subtitle: "In Every Diagnosis",
+      description: "Our range of diagnostic equipment ensures high precision and reliability, trusted by top hospitals worldwide.",
+      image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2080&auto=format&fit=crop",
+      cta: "View Catalog",
+    },
+    {
+      id: 3,
+      badge: "Trusted Quality",
+      title: "Healthcare Excellence",
+      subtitle: "Delivered Globally",
+      description: "We are committed to providing superior quality medical supplies with global standards and certifications.",
+      image: "https://images.unsplash.com/photo-1584036561566-b93a50208c3c?q=80&w=2070&auto=format&fit=crop",
+      cta: "Contact Sales",
+    },
+  ];
 
-  React.useEffect(() => {
-    if (!api) {
-      return;
-    }
-
-    setCurrentSlide(api.selectedScrollSnap());
-
-    api.on("select", () => {
-      setCurrentSlide(api.selectedScrollSnap());
-    });
-  }, [api]);
+  const features = [
+    {
+      icon: ShieldCheck,
+      title: "Certified Quality",
+      desc: "ISO 9001:2015 Certified Products",
+    },
+    {
+      icon: Truck,
+      title: "Global Shipping",
+      desc: "Reliable delivery to 50+ countries",
+    },
+    {
+      icon: Clock,
+      title: "24/7 Support",
+      desc: "Expert technical assistance anytime",
+    },
+    {
+      icon: Award,
+      title: "Industry Leader",
+      desc: "15+ Years of Healthcare Excellence",
+    },
+  ];
 
   return (
-    <div className="bg-white">
-      <section className="relative bg-white">
+    <div className="flex flex-col w-full">
+      {/* HERO SECTION */}
+      <section className="relative w-full bg-gray-50 pt-20 lg:pt-0">
         <Carousel
           plugins={[autoplay.current]}
           className="w-full"
-          onMouseEnter={autoplay.current.stop}
-          onMouseLeave={autoplay.current.reset}
-          setApi={setApi}
+          opts={{
+            loop: true,
+          }}
         >
           <CarouselContent>
-            {slides.map((slide, index) => (
-              <CarouselItem key={index}>
-                {/* FULL SECTION SLIDE */}
-                <section className="relative bg-white sm:py-16 py-10 ">
-                  <div className="max-w-7xl mx-auto px-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center min-h-[600px]">
-                      {/* LEFT CONTENT */}
-                      <div className="space-y-6">
-                        {/* Badge */}
-                        <span className="inline-flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full text-blue-900 text-sm font-medium border border-blue-200">
-                          <Star className="w-4 h-4 fill-blue-900 text-blue-900" />
-                          {slide.badge}
-                        </span>
+            {slides.map((slide) => (
+              <CarouselItem key={slide.id}>
+                <div className="relative w-full min-h-[600px] lg:h-[35vh] flex items-center">
+                  {/* Background Image with Overlay */}
+                  <div className="absolute inset-0 z-0">
+                    <Image
+                      src={slide.image}
+                      alt={slide.title}
+                      fill
+                      className="object-cover"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent lg:via-white/60"></div>
+                  </div>
 
-                        {/* Title */}
-                        <div>
-                          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
-                            {slide.title}
-                          </h1>
-                          <h1 className="text-4xl lg:text-5xl font-bold text-blue-900 leading-tight">
-                            {slide.subtitle}
-                          </h1>
-                        </div>
-
-                        {/* Description */}
-                        <p className="text-lg text-gray-600 leading-relaxed">
-                          {slide.description}
-                        </p>
-
-                        {/* Features List */}
-                        <div className="flex flex-wrap gap-3">
-                          {features.map((feature, idx) => (
-                            <div
-                              key={idx}
-                              className="flex items-center gap-2 bg-gray-50 px-4 py-2 rounded-lg border border-gray-200"
-                            >
-                              <feature.icon className="w-4 h-4 text-blue-900" />
-                              <span className="text-sm font-medium text-gray-700">
-                                {feature.text}
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Buttons */}
-                        <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                          <button
-                            onClick={() => setCurrentSection?.("shop")}
-                            className="group bg-blue-900 text-white px-8 py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-blue-800 transition-all duration-300 font-semibold"
-                          >
-                            Browse Products
-                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                          </button>
-
-                          <button
-                            onClick={() => setCurrentSection?.("portfolio")}
-                            className="group bg-white text-blue-900 px-8 py-3 rounded-lg hover:bg-gray-50 transition-all duration-300 font-semibold border-2 border-blue-900"
-                          >
-                            View Portfolio
-                          </button>
-                        </div>
+                  {/* Content */}
+                  <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+                    <div className="max-w-2xl space-y-6 animate-in fade-in slide-in-from-left-8 duration-700">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-semibold border border-blue-200 w-fit">
+                        <Star className="w-4 h-4 fill-blue-800" />
+                        {slide.badge}
+                      </div>
+                      
+                      <div className="space-y-2">
+                        <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
+                          {slide.title}
+                        </h1>
+                        <h2 className="text-5xl lg:text-7xl font-bold text-blue-900 leading-tight tracking-tight">
+                          {slide.subtitle}
+                        </h2>
                       </div>
 
-                      {/* RIGHT IMAGE */}
-                      <div className="relative">
-                        {/* Main Image Container */}
-                        <div className="relative w-full h-[450px] rounded-2xl overflow-hidden shadow-xl border border-gray-200">
-                          <Image
-                            src={slide.image}
-                            alt={slide.title}
-                            fill
-                            className="object-cover"
-                            priority={index === 0}
-                          />
+                      <p className="text-lg text-gray-700 leading-relaxed max-w-lg">
+                        {slide.description}
+                      </p>
 
-                          {/* Floating Badge */}
-                          <div className="absolute top-6 right-6 bg-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-2 border border-gray-200">
-                            <Award className="w-5 h-5 text-blue-900" />
-                            <div>
-                              <p className="text-xs text-gray-600">Quality</p>
-                              <p className="text-sm font-bold text-blue-900">Certified</p>
-                            </div>
-                          </div>
-                        </div>
+                      <div className="flex flex-wrap gap-4 pt-4">
+                        <Button 
+                          size="lg" 
+                          className="bg-blue-900 hover:bg-blue-800 text-white px-8 h-14 text-lg rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
+                        >
+                          {slide.cta}
+                          <ArrowRight className="ml-2 w-5 h-5" />
+                        </Button>
+                        <Button 
+                          size="lg" 
+                          variant="outline"
+                          className="border-2 border-blue-900 text-blue-900 hover:bg-blue-50 px-8 h-14 text-lg rounded-full"
+                        >
+                          Learn More
+                        </Button>
                       </div>
                     </div>
                   </div>
-                </section>
+                </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-
-          {/* CUSTOM ARROWS */}
-          <CarouselPrevious className="left-8 bg-white hover:bg-gray-100 shadow-lg border border-gray-200 w-12 h-12" />
-          <CarouselNext className="right-8 bg-white hover:bg-gray-100 shadow-lg border border-gray-200 w-12 h-12" />
+          
+          <div className="hidden lg:block absolute bottom-8 right-12 z-20 flex gap-2">
+            <CarouselPrevious className="static translate-y-0 bg-white/80 hover:bg-white border-none shadow-md h-12 w-12" />
+            <CarouselNext className="static translate-y-0 bg-white/80 hover:bg-white border-none shadow-md h-12 w-12" />
+          </div>
         </Carousel>
-
-        {/* PROGRESS INDICATOR */}
-        <div className="flex justify-center gap-3 mt-8 pb-8">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => api?.scrollTo(index)}
-              className={`transition-all duration-300 rounded-full ${currentSlide === index
-                ? "w-12 h-3 bg-blue-900"
-                : "w-3 h-3 bg-gray-300 hover:bg-gray-400"
-                }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
-        </div>
       </section>
 
-      {/* STATS SECTION */}
-      <section className="py-16 bg-white border-y border-gray-200">
+      {/* FEATURES STRIP */}
+      <section className="bg-blue-900 py-12 text-white">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="text-center"
-              >
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-900 rounded-xl mb-4 shadow-md">
-                  <stat.icon className="w-8 h-8 text-white" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {features.map((feature, idx) => (
+              <div key={idx} className="flex items-center gap-4 p-4 rounded-xl bg-blue-800/50 border border-blue-700/50 hover:bg-blue-800 transition-colors">
+                <div className="p-3 bg-white/10 rounded-lg">
+                  <feature.icon className="w-8 h-8 text-blue-200" />
                 </div>
-                <h3 className="text-3xl font-bold text-blue-900 mb-1">
-                  {stat.value}
-                </h3>
-                <p className="text-sm text-gray-600 font-medium">{stat.label}</p>
+                <div>
+                  <h3 className="font-bold text-lg">{feature.title}</h3>
+                  <p className="text-blue-200 text-sm">{feature.desc}</p>
+                </div>
               </div>
             ))}
           </div>
         </div>
       </section>
+
+      {/* CATEGORIES */}
+      <ProductCategorySection />
+
       
-      <section>
-        <LimitedTimeDeal />
-      </section>
+      {/* CURATED SELECTION 
+      <CuratedShopPage />*/}
 
-      <section className="bg-white">
-        <Category />
-      </section>
+      {/* PREMIUM PRODUCTS */}
+      <PremiumProductsPage />
 
-      <section>
-        <Sell />
-      </section>
+      {/* ACCESSORIES */}
+      <AccessoriesPage />
 
-      <section className="bg-white">
-        <ProductsPage />
-      </section>
+      {/* NEWSLETTER / CTA SECTION */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="bg-blue-900 rounded-3xl p-8 lg:p-16 relative overflow-hidden text-center lg:text-left">
+            {/* Background Pattern */}
+            <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
+              <div className="absolute right-0 top-0 w-96 h-96 bg-white rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
+              <div className="absolute left-0 bottom-0 w-64 h-64 bg-blue-400 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
+            </div>
 
-      <section className="bg-white">
-        <Accessories />
+            <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
+              <div className="max-w-2xl space-y-4">
+                <h2 className="text-3xl lg:text-4xl font-bold text-white">
+                  Ready to Upgrade Your Medical Equipment?
+                </h2>
+                <p className="text-blue-100 text-lg">
+                  Join thousands of healthcare providers who trust Silicon Meditech for their equipment needs. Get exclusive offers and updates.
+                </p>
+              </div>
+              <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+                <Button size="lg" className="bg-white text-blue-900 hover:bg-gray-100 h-14 px-8 text-lg font-semibold rounded-full">
+                  Get Started
+                </Button>
+                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 h-14 px-8 text-lg font-semibold rounded-full bg-transparent">
+                  Contact Sales
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
       </section>
     </div>
   );

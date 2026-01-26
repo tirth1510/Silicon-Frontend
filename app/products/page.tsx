@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, Suspense } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { ShoppingBag, Eye, MessageCircle, X } from "lucide-react";
@@ -58,7 +58,7 @@ type ProductForList = {
 };
 
 /* ---------- COMPONENT ---------- */
-export default function AllProductsPage() {
+function ProductsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const categorySlug = searchParams?.get("category") || null;
@@ -238,7 +238,7 @@ Product Image: ${selectedProduct.image}
               No products found in this category
             </h3>
             <p className="text-gray-600 mb-4">
-              We couldn't find any products matching "{category.categoryName}"
+              &quot;We couldn&apos;t find any products matching {category.categoryName}&quot;
             </p>
             <button
               onClick={clearCategoryFilter}
@@ -436,3 +436,16 @@ Product Image: ${selectedProduct.image}
   );
 }
 
+export default function AllProductsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex justify-center items-center min-h-screen">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900"></div>
+        </div>
+      }
+    >
+      <ProductsContent />
+    </Suspense>
+  );
+}
