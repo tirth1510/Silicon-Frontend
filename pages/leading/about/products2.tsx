@@ -69,7 +69,7 @@ export default function ShopPage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/demo/products-with-models");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo/products-with-models`);
 
         if (!res.ok) {
           console.error(`API Error: ${res.status} ${res.statusText}`);

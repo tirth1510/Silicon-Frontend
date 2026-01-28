@@ -86,7 +86,7 @@ function ProductsContent() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/demo/products-with-models");
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo/products-with-models`);
 
         if (!res.ok) {
           console.error(`API Error: ${res.status} ${res.statusText}`);
@@ -277,14 +277,14 @@ Product Image: ${selectedProduct.image}
                   </div>
 
                   {/* Discount Badge */}
-                  {product.discount > 0 && (
+                  {/* {product.discount > 0 && (
                     <div className="absolute top-2 right-2">
                       <span className="inline-block px-2.5 py-1 text-[10px] font-semibold text-white bg-red-600 
                                    rounded-md shadow-md">
                         {product.discount}% OFF
                       </span>
                     </div>
-                  )}
+                  )} */}
                 </div>
 
                 {/* Content Section */}
@@ -294,7 +294,7 @@ Product Image: ${selectedProduct.image}
                     {product.modelName}
                   </h3>
 
-                  {/* Price */}
+                  {/* Price
                   <div className="mb-4">
                     <div className="flex items-center gap-2">
                       <p className="text-xl font-bold text-blue-900">
@@ -311,7 +311,7 @@ Product Image: ${selectedProduct.image}
                         Save ₹{(product.originalPrice - product.price).toLocaleString("en-IN")}
                       </p>
                     )}
-                  </div>
+                  </div> */}
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
@@ -369,7 +369,7 @@ Product Image: ${selectedProduct.image}
                       </span>
                     )}
                   </div>
-                  {selectedProduct.discount > 0 && (
+                  {/* {selectedProduct.discount > 0 && (
                     <>
                       <p className="text-sm text-gray-500 line-through">
                         ₹{selectedProduct.originalPrice.toLocaleString("en-IN")}
@@ -378,7 +378,7 @@ Product Image: ${selectedProduct.image}
                         You save ₹{(selectedProduct.originalPrice - selectedProduct.price).toLocaleString("en-IN")}
                       </p>
                     </>
-                  )}
+                  )} */}
                 </div>
               </div>
 

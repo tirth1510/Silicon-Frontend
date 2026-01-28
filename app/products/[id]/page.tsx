@@ -113,7 +113,7 @@ export default function ProductDetailsPage() {
       setLoading(true);
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/demo/products/model/${modelId}`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo/products/model/${modelId}`
         );
 
         if (res.data?.success) {

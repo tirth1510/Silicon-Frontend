@@ -102,13 +102,12 @@ Product Image: ${selectedProduct.productImage}
     setOpen(false);
   };
 
-  const visibleProducts = products;
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get<ProductsAPIResponse>(
-          "http://localhost:5000/api/accessorize/all",
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accessorize/all`,
           { timeout: 10000 }
         );
 
