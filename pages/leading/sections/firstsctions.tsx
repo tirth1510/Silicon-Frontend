@@ -2,171 +2,264 @@
 
 import React from "react";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import Autoplay from "embla-carousel-autoplay";
-import { ArrowRight, Star, Award, ShieldCheck, Truck, Clock } from "lucide-react";
+import {
+  Award,
+  ShieldCheck,
+  Globe,
+  Zap,
+  Truck,
+  ChevronDown,
+  TrendingUp,
+  Shield,
+} from "lucide-react";
 
 import {
   Carousel,
   CarouselContent,
   CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
 } from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 
-// Import existing sections
 import ProductCategorySection from "@/pages/leading/sections/category";
 import AccessoriesPage from "@/pages/leading/sections/accessories";
 import PremiumProductsPage from "@/pages/leading/sections/products2";
 
+// Local imports
+import Iso from "@/public/iso.png";
+import Global from "@/public/gobal.png";
+import Company from "@/public/company.png";
+import Cdsco from "@/public/cdsco.png";
+import Panters from "@/public/panters.png";
+import Care from "@/public/care.png";
 export default function LandingPage() {
   const autoplay = React.useRef(
-    Autoplay({ delay: 5000, stopOnInteraction: true })
+    Autoplay({ delay: 6000, stopOnInteraction: true }),
   );
+
+  const heroContainerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.15, delayChildren: 0.3 },
+    },
+  };
+
+  const heroItemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
+  };
 
   const slides = [
     {
       id: 1,
-      badge: "New Arrival",
-      title: "Advanced Medical",
-      subtitle: "Technology Solutions",
-      description: "Equipping healthcare professionals with state-of-the-art medical instruments and diagnostic tools for better patient care.",
-      image: "https://images.unsplash.com/photo-1516549655169-df83a0774514?q=80&w=2070&auto=format&fit=crop",
-      cta: "Explore Products",
+      title: "Healthcare Excellence",
+      subtitle: "Silicon Meditech",
+      description:
+        "Setting the gold standard in medical supply chain management with precision and global reach.",
+      image: Company,
+      cta: "Work With Us",
     },
     {
       id: 2,
-      badge: "Best Seller",
-      title: "Precision & Accuracy",
-      subtitle: "In Every Diagnosis",
-      description: "Our range of diagnostic equipment ensures high precision and reliability, trusted by top hospitals worldwide.",
-      image: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2080&auto=format&fit=crop",
-      cta: "View Catalog",
-    },
-    {
-      id: 3,
-      badge: "Trusted Quality",
-      title: "Healthcare Excellence",
-      subtitle: "Delivered Globally",
-      description: "We are committed to providing superior quality medical supplies with global standards and certifications.",
-      image: "https://images.unsplash.com/photo-1584036561566-b93a50208c3c?q=80&w=2070&auto=format&fit=crop",
-      cta: "Contact Sales",
+      title: "The Future of",
+      subtitle: "Surgical Tech",
+      description:
+        "Equipping the world's leading surgeons with AI-driven diagnostics and robotic assistance.",
+      image:
+        "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2080&auto=format&fit=crop",
+      cta: "Learn More",
     },
   ];
 
   const features = [
     {
+      title: "Global Supply",
+      desc: "Seamless logistics across 50+ countries with real-time tracking.",
+      iconBg: "bg-sky-500",
+      icon: Globe,
+      imgSrc: Global,
+    },
+    {
+      title: "Market Leader",
+      desc: "15+ Years of excellence in pioneering medical technology.",
+      icon: Zap,
+      imgSrc: Panters,
+      iconBg: "bg-cyan-600",
+    },
+    {
+      title: "ISO 9001:2015",
+      desc: "Certified Quality Management ensuring global safety standards.",
+      imgSrc: Iso,
       icon: ShieldCheck,
-      title: "Certified Quality",
-      desc: "ISO 9001:2015 Certified Products",
+      iconBg: "bg-blue-600",
     },
     {
-      icon: Truck,
-      title: "Global Shipping",
-      desc: "Reliable delivery to 50+ countries",
+      title: "CDSCO Approved",
+      desc: "Compliant with India's top medical regulatory standards.",
+      imgSrc: Cdsco,
+      icon: TrendingUp,
+      iconBg: "bg-green-600",
     },
+
     {
-      icon: Clock,
-      title: "24/7 Support",
-      desc: "Expert technical assistance anytime",
-    },
-    {
-      icon: Award,
-      title: "Industry Leader",
-      desc: "15+ Years of Healthcare Excellence",
+      title: "24/7 Availability",
+      desc: "Around-the-clock customer service for urgent medical supply needs.",
+      imgSrc: Care,
+      icon: ShieldCheck,
+      iconBg: "bg-green-600",
     },
   ];
 
   return (
-    <div className="flex flex-col w-full">
-      {/* HERO SECTION */}
-      <section className="relative w-full bg-gray-50 pt-20 lg:pt-0">
+    <div className="flex flex-col w-full bg-white overflow-x-hidden">
+      <section className="relative w-full">
         <Carousel
           plugins={[autoplay.current]}
           className="w-full"
-          opts={{
-            loop: true,
-          }}
+          opts={{ loop: true }}
         >
           <CarouselContent>
             {slides.map((slide) => (
               <CarouselItem key={slide.id}>
-                <div className="relative w-full min-h-[600px] lg:h-[35vh] flex items-center">
-                  {/* Background Image with Overlay */}
+                <div className="relative w-full h-[800px] flex flex-col items-center justify-center py-12 md:py-20 px-4 md:px-6 overflow-hidden">
                   <div className="absolute inset-0 z-0">
                     <Image
                       src={slide.image}
                       alt={slide.title}
                       fill
-                      className="object-cover"
+                      className="object-cover scale-105"
                       priority
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent lg:via-white/60"></div>
+                    <div className="absolute inset-0 bg-blue-950/75" />
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_0%,_rgba(10,25,47,0.8)_100%)]" />
                   </div>
 
-                  {/* Content */}
-                  <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
-                    <div className="max-w-2xl space-y-6 animate-in fade-in slide-in-from-left-8 duration-700">
-                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-sm font-semibold border border-blue-200 w-fit">
-                        <Star className="w-4 h-4 fill-blue-800" />
-                        {slide.badge}
+                  <motion.div
+                    className="relative z-10 w-full flex flex-col items-center text-center"
+                    variants={heroContainerVariants}
+                    initial="hidden"
+                    whileInView="visible"
+                    viewport={{ once: true }}
+                  >
+                    <motion.div
+                      variants={heroItemVariants}
+                      className="mb-10 md:mb-16"
+                    >
+                      <div className="relative group">
+                        <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-cyan-400 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000" />
+                        <div className="relative bg-white/95 backdrop-blur-sm p-4 px-8 rounded-2xl border border-white/20 shadow-2xl">
+                          <Image
+                            src={"/logo.png"}
+                            alt={"Siliconmeditech"}
+                            width={250}
+                            height={150}
+                            priority
+                          />
+                        </div>
                       </div>
-                      
-                      <div className="space-y-2">
-                        <h1 className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight tracking-tight">
-                          {slide.title}
-                        </h1>
-                        <h2 className="text-5xl lg:text-7xl font-bold text-blue-900 leading-tight tracking-tight">
+                    </motion.div>
+
+                    <motion.div variants={heroItemVariants}>
+                      <h1 className="text-4xl sm:text-5xl lg:text-7xl font-extrabold tracking-tighter leading-tight text-white">
+                        {slide.title}
+                        <span className="block mt-1 md:mt-2 font-bold italic text-3xl sm:text-5xl lg:text-6xl text-blue-400">
                           {slide.subtitle}
-                        </h2>
-                      </div>
+                        </span>
+                      </h1>
+                    </motion.div>
 
-                      <p className="text-lg text-gray-700 leading-relaxed max-w-lg">
-                        {slide.description}
-                      </p>
+                    <motion.p
+                      variants={heroItemVariants}
+                      className="mt-6 md:mt-8 text-lg md:text-xl max-w-3xl leading-relaxed font-medium px-2 text-blue-50/90"
+                    >
+                      {slide.description}
+                    </motion.p>
 
-                      <div className="flex flex-wrap gap-4 pt-4">
-                        <Button 
-                          size="lg" 
-                          className="bg-blue-900 hover:bg-blue-800 text-white px-8 h-14 text-lg rounded-full shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
-                        >
-                          {slide.cta}
-                          <ArrowRight className="ml-2 w-5 h-5" />
-                        </Button>
-                        <Button 
-                          size="lg" 
-                          variant="outline"
-                          className="border-2 border-blue-900 text-blue-900 hover:bg-blue-50 px-8 h-14 text-lg rounded-full"
-                        >
-                          Learn More
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
+                    <motion.div
+                      variants={heroItemVariants}
+                      className="flex flex-col sm:flex-row gap-3 md:gap-5 mt-8 md:mt-12 w-full sm:w-auto"
+                    >
+                      <Button
+                        size="lg"
+                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 md:px-12 h-14 md:h-16 text-base md:text-lg font-bold rounded-full"
+                      >
+                        {slide.cta}
+                      </Button>
+                      <Button
+                        size="lg"
+                        variant="outline"
+                        className="h-14 md:h-16 px-8 md:px-12 text-base md:text-lg font-bold rounded-full border-2 border-white text-white hover:bg-white hover:text-blue-900 bg-transparent"
+                      >
+                        Contact
+                      </Button>
+                    </motion.div>
+                  </motion.div>
+
+                  <motion.div
+                    animate={{ y: [0, 10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                    className="absolute bottom-8 z-20"
+                  >
+                    <ChevronDown className="w-10 h-10 text-white/50" />
+                  </motion.div>
                 </div>
               </CarouselItem>
             ))}
           </CarouselContent>
-          
-          <div className="hidden lg:block absolute bottom-8 right-12 z-20 flex gap-2">
-            <CarouselPrevious className="static translate-y-0 bg-white/80 hover:bg-white border-none shadow-md h-12 w-12" />
-            <CarouselNext className="static translate-y-0 bg-white/80 hover:bg-white border-none shadow-md h-12 w-12" />
-          </div>
         </Carousel>
       </section>
 
-      {/* FEATURES STRIP */}
-      <section className="bg-blue-900 py-12 text-white">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, idx) => (
-              <div key={idx} className="flex items-center gap-4 p-4 rounded-xl bg-blue-800/50 border border-blue-700/50 hover:bg-blue-800 transition-colors">
-                <div className="p-3 bg-white/10 rounded-lg">
-                  <feature.icon className="w-8 h-8 text-blue-200" />
+      {/* FEATURES SECTION */}
+      <section className="bg-slate-50 py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="text-center mb-14">
+           <Image src="/logo.png" alt="Features" width={300} height={100} className="mx-auto" />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 items-stretch">
+            {features.map((item, idx) => (
+              <div
+                key={idx}
+                className="
+        group bg-white rounded-2xl
+        shadow-md hover:shadow-xl
+        transition-all duration-300
+        overflow-hidden
+        border border-slate-100
+        flex flex-col h-full
+        hover:-translate-y-1
+      "
+              >
+                {/* Image */}
+                <div className="relative h-48 p-5 w-full overflow-hidden shrink-0">
+                  <Image
+                    src={item.imgSrc}
+                    alt={item.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
                 </div>
-                <div>
-                  <h3 className="font-bold text-lg">{feature.title}</h3>
-                  <p className="text-blue-200 text-sm">{feature.desc}</p>
+
+                {/* Content */}
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1">
+                    {item.title}
+                  </h3>
+
+                  <p className="text-slate-500 text-xs leading-relaxed line-clamp-3">
+                    {item.desc}
+                  </p>
+
+                  {/* Optional CTA pinned to bottom */}
+                  {/* <button className="mt-auto pt-4 text-sm font-semibold text-blue-600 hover:underline">
+          Learn more →
+        </button> */}
                 </div>
               </div>
             ))}
@@ -174,50 +267,13 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CATEGORIES */}
-      <ProductCategorySection />
-
-      
-      {/* CURATED SELECTION 
-      <CuratedShopPage />*/}
-
-      {/* PREMIUM PRODUCTS */}
-      <PremiumProductsPage />
-
-      {/* ACCESSORIES */}
-      <AccessoriesPage />
-
-      {/* NEWSLETTER / CTA SECTION */}
-      <section className="py-20 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="bg-blue-900 rounded-3xl p-8 lg:p-16 relative overflow-hidden text-center lg:text-left">
-            {/* Background Pattern */}
-            <div className="absolute top-0 right-0 w-full h-full opacity-10 pointer-events-none">
-              <div className="absolute right-0 top-0 w-96 h-96 bg-white rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
-              <div className="absolute left-0 bottom-0 w-64 h-64 bg-blue-400 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
-            </div>
-
-            <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10">
-              <div className="max-w-2xl space-y-4">
-                <h2 className="text-3xl lg:text-4xl font-bold text-white">
-                  Ready to Upgrade Your Medical Equipment?
-                </h2>
-                <p className="text-blue-100 text-lg">
-                  Join thousands of healthcare providers who trust Silicon Meditech for their equipment needs. Get exclusive offers and updates.
-                </p>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-                <Button size="lg" className="bg-white text-blue-900 hover:bg-gray-100 h-14 px-8 text-lg font-semibold rounded-full">
-                  Get Started
-                </Button>
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 h-14 px-8 text-lg font-semibold rounded-full bg-transparent">
-                  Contact Sales
-                </Button>
-              </div>
-            </div>
-          </div>
+      <div className="text-center w-full overflow-hidden">
+        <ProductCategorySection />
+        <div className="bg-white py-12 md:py-20">
+          <PremiumProductsPage />
         </div>
-      </section>
+        <AccessoriesPage />
+      </div>
     </div>
   );
 }

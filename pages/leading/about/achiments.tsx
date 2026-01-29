@@ -1,77 +1,106 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Building2, Users, Award, Globe } from "lucide-react";
+import { Building2, Users, Award, Globe, Plus, ArrowRight, ShieldCheck, Microscope } from "lucide-react";
+import Image from "next/image";
 
-const achievements = [
-  { id: 1, icon: Building2, value: "500+", label: "Healthcare Facilities Served" },
-  { id: 2, icon: Users, value: "10,000+", label: "Satisfied Customers" },
-  { id: 3, icon: Award, value: "15+ Years", label: "Industry Experience" },
-  { id: 4, icon: Globe, value: "25+ Cities", label: "Pan India Presence" },
+interface Achievement {
+  id: number;
+  icon: any;
+  value: string;
+  label: string;
+  theme: string;
+}
+
+const achievements: Achievement[] = [
+  { id: 1, icon: Building2, value: "500+", label: "Healthcare Facilities", theme: "bg-[#00B5AD]" },
+  { id: 2, icon: Users, value: "10k+", label: "Happy Customers", theme: "bg-[#FFB800]" },
+  { id: 3, icon: Award, value: "15+", label: "Years Experience", theme: "bg-[#3B82F6]" },
+  { id: 4, icon: Globe, value: "25+", label: "Cities Covered", theme: "bg-[#DBE3ED]" },
 ];
 
 export default function AboutAchievementsSection() {
   return (
-    <section className="relative w-full py-24 overflow-hidden">
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-          {/* LEFT – ABOUT */}
-          <div>
-            <div className="inline-block mb-6 px-8 py-2 rounded-full border border-blue-300 bg-white/50 backdrop-blur shadow-lg">
-              <h2 className="text-blue-700 font-semibold tracking-wide">About Us</h2>
-            </div>
+    <section className="relative w-full py-10 bg-white overflow-hidden">
+      
+      {/* --- ENHANCED BACKGROUND --- */}
+      <div className="absolute inset-0 z-0">
+        <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none" 
+             style={{ backgroundImage: `radial-gradient(circle at 2px 2px, #1e3a8a 1px, transparent 0)`, backgroundSize: '48px 48px' }} />
+        <div className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-blue-100 rounded-full blur-[120px] opacity-50" />
+        <div className="absolute bottom-0 -right-20 w-[500px] h-[500px] bg-teal-50 rounded-full blur-[120px] opacity-50" />
+      </div>
 
-            <h3 className="text-3xl md:text-4xl font-bold text-blue-900 mb-6 leading-tight">
-              Trusted Medical Technology Partner
-              <br className="hidden sm:block" />
-              Across India
-            </h3>
-
-            <div className="space-y-5 text-blue-900 text-lg leading-relaxed">
-              <p>
-                <span className="font-semibold">
-                  Silicon Meditech Private Limited Medicorp
-                </span>{" "}
-                is a reputed manufacturer and supplier of advanced medical
-                equipment, hospital furniture, and healthcare consumables.
-              </p>
-              <p>
-                Founded in 2013 in Surat, we have built a strong reputation for
-                delivering reliable, affordable, and clinically effective
-                solutions to hospitals and healthcare professionals.
-              </p>
-              <p>
-                Our commitment to quality, innovation, and long-term
-                partnerships has enabled us to establish a strong pan-India
-                presence.
-              </p>
-            </div>
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* --- TOP: COMPANY INTRODUCTION --- */}
+        <div className="text-center max-w-4xl mx-auto mb-20 space-y-8">
+          <div className="inline-flex items-center gap-3 px-6 pb-10 shadow-sm">
+             <Image src="/logo.png" alt="Silicon Meditech Logo" width={440} height={106} className="inline-block mr-1" />
           </div>
 
-          {/* RIGHT – ACHIEVEMENTS */}
-          <div className="flex flex-col justify-center bg-gray-100 p-8 rounded-3xl space-y-6 shadow-lg">
-            {achievements.map((item) => {
-              const Icon = item.icon;
-              return (
-                <div
-                  key={item.id}
-                  className="flex items-center bg-white/50 rounded-2xl p-5
-                             border border-blue-900 shadow-md hover:shadow-xl transition"
-                >
-                  {/* Icon on Left */}
-                  <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center rounded-full bg-blue-100 mr-5">
-                    <Icon className="text-blue-900" size={32} />
-                  </div>
+          <h2 className="text-5xl md:text-6xl font-black text-slate-900 leading-[1] tracking-tighter">
+            Pioneering the Future of <br />
+            <span className="text-blue-600">Medical Technology.</span>
+          </h2>
 
-                  {/* Text on Right */}
-                  <div className="flex flex-col">
-                    <span className="text-2xl font-bold text-blue-900">{item.value}</span>
-                    <span className="text-blue-700 text-sm">{item.label}</span>
-                  </div>
-                </div>
-              );
-            })}
+          <p className="text-xl md:text-2xl font-medium text-slate-600 leading-relaxed">
+            <span className="text-slate-900 font-black">Silicon Meditech</span> is a premier manufacturer based in Surat, 
+            dedicated to crafting advanced clinical solutions that empower healthcare 
+            professionals and transform patient outcomes across the nation.
+          </p>
+          
+          <div className="pt-4">
+            <button className="group inline-flex items-center gap-4 px-10 py-5 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-700 transition-all shadow-2xl active:scale-95">
+              Learn More About Us
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
+            </button>
           </div>
         </div>
+
+        {/* --- MIDDLE: ACHIEVEMENT BOXES --- */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-24">
+          {achievements.map((item) => {
+            const Icon = item.icon;
+            const isDark = item.theme !== "bg-[#DBE3ED]";
+            
+            return (
+              <div
+                key={item.id}
+                className={`relative ${item.theme} rounded-[3rem] p-10 h-[280px] flex flex-col justify-between 
+                           transition-all duration-500 hover:shadow-2xl hover:-translate-y-3 group overflow-hidden shadow-xl shadow-black/5`}
+              >
+                {/* Background Decor */}
+                <div className="absolute -right-6 -top-6 opacity-10 group-hover:scale-125 transition-transform duration-700">
+                  <Icon size={160} className={isDark ? "text-white" : "text-blue-900"} strokeWidth={1} />
+                </div>
+
+                <div className="p-4 w-fit rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 shadow-sm">
+                  <Icon className={isDark ? "text-white" : "text-blue-900"} size={32} />
+                </div>
+
+                <div className="relative z-10">
+                  <div className={`text-6xl font-black tracking-tighter mb-2 ${isDark ? "text-white" : "text-slate-900"}`}>
+                    {item.value}
+                  </div>
+                  <div className={`text-[11px] font-black uppercase tracking-[0.25em] opacity-80 ${isDark ? "text-white" : "text-blue-900"}`}>
+                    {item.label}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* --- BOTTOM: PARTNER LOGOS --- */}
+        <div className="pt-16 border-t border-slate-100 text-center">
+          <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 mb-12">
+            Trusted by the Best in Healthcare
+          </h4>
+          
+         
+        </div>
+
       </div>
     </section>
   );

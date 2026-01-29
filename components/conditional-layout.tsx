@@ -12,7 +12,6 @@ export default function ConditionalLayout({
   children,
 }: ConditionalLayoutProps) {
   const pathname = usePathname() || ""; // fallback to empty string
-
   const isDashboard = pathname.startsWith("/dashboard");
   const isunAuthorized = pathname.startsWith("/unauthorized");
 
@@ -20,7 +19,7 @@ export default function ConditionalLayout({
   const isRegister = pathname.startsWith("/signup");
 
   // Dashboard pages: no navbar/footer
-  if (isDashboard || isLogin || isRegister || isunAuthorized) return <>{children}</>;
+  if (isDashboard || isLogin || isRegister  || isunAuthorized) return <>{children}</>;
 
   // Regular pages: with navbar and footer
   return (

@@ -1,11 +1,26 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import { Award, CheckCircle, Settings, Target, Users, Heart, Sparkles, TrendingUp, Shield } from "lucide-react";
+import {
+  Award,
+  CheckCircle,
+  Settings,
+  Target,
+  Users,
+  Heart,
+  Sparkles,
+  TrendingUp,
+  Shield,
+  Plus,
+  Quote,
+  ShieldCheck,
+} from "lucide-react";
 import FAQ from "./faq";
 import Category from "@/pages/leading/sections/category";
 import Achivments from "./achiments";
 import Ceo from "./ceo";
 import { Providers } from "@/providers/providers";
+import ReviewsSection from "./review";
 
 export function About() {
   return (
@@ -24,54 +39,113 @@ export function About() {
             </div>
             <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
               Transforming Healthcare with
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent"> Innovation & Excellence</span>
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                {" "}
+                Innovation & Excellence
+              </span>
             </h1>
             <p className="text-gray-600 text-xl leading-relaxed">
-              Silicon Meditech Private Limited Medicorp are one of the Exalted
-              Manufacturers and Suppliers of Medical Equipment, Hospital Furniture
-              & Consumables in India. Founded in 2013, we have grown to become a
-              recognized name in the healthcare industry.
+              Silicon Meditech Private Limited are one of the Exalted
+              Manufacturers and Suppliers of Medical Equipment, Hospital
+              Furniture & Consumables in India. Founded in 2013, we have grown
+              to become a recognized name in the healthcare industry.
             </p>
           </div>
 
-          {/* Stats Section */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
-            {[
-              { label: "Years of Excellence", value: "11+", icon: TrendingUp },
-              { label: "Happy Clients", value: "500+", icon: Users },
-              { label: "Products Range", value: "1000+", icon: Shield },
-              { label: "Service Cities", value: "50+", icon: Target },
-            ].map((stat, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-blue-200 hover:scale-105">
-                <div className="flex items-center justify-center mb-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                    <stat.icon className="w-6 h-6 text-blue-600" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+            <div>
+              <div className="bg-white border-2 border-blue-900 p-8 rounded-3xl text-center hover:shadow-xl transition-all duration-300 hover:border-blue-600">
+                <div className="flex justify-center mb-4">
+                  <div className="bg-gradient-to-br from-blue-900 to-blue-700 rounded-2xl p-4 shadow-lg">
+                    <Settings size={40} className="text-white" />
                   </div>
                 </div>
-                <div className="text-3xl font-bold text-gray-900 text-center mb-1">{stat.value}</div>
-                <div className="text-gray-600 text-sm text-center">{stat.label}</div>
+                <h5 className="text-gray-900 mb-4 font-bold text-2xl">
+                  Professional Services
+                </h5>
+                <p className="text-blue-900 leading-relaxed max-w-3xl mx-auto text-lg">
+                  Biomedical services include equipment repair, preventive
+                  maintenance, performance calibration, and safety checks. Our
+                  expert BE-Biomedical engineering team ensures minimal
+                  downtime.
+                </p>
               </div>
-            ))}
-          </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            {/* CEO Image + Achievement Card */}
-            <div className="relative h-[600px] rounded-3xl overflow-hidden shadow-2xl group">
-              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/60 via-blue-900/20 to-transparent"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-600/10 to-purple-600/10"></div>
-
-              <div className="absolute -bottom-6 -right-6 bg-white p-6 rounded-2xl shadow-2xl max-w-xs transform group-hover:scale-105 transition-transform duration-300">
-                <div className="flex items-center space-x-4">
-                  <div className="w-14 h-14 bg-gradient-to-br from-purple-100 to-blue-100 rounded-full flex items-center justify-center">
-                    <Award className="w-7 h-7 text-purple-600" />
+              {/* QUOTE */}
+              {/* Container to keep cards side-by-side without increasing height */}
+              <div className=" md:flex-row my-9">
+                {/* Card 1: Teal/Medical Banner St-4 yle */}
+                <div className="group relative mb-10 flex-1 bg-[#00B5AD] p-8 rounded-[2.5rem] shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                  {/* Decorative Elements */}
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-white/20 transition-colors"></div>
+                  <div className="absolute bottom-4 right-8 opacity-10">
+                    <Quote className="w-20 h-20 text-white fill-current" />
                   </div>
-                  <div>
-                    <div className="text-gray-900 font-semibold text-lg">Healthcare Leader 2024</div>
-                    <div className="text-gray-500">Global Recognition</div>
+
+                  <div className="relative z-10 flex flex-col h-full justify-between">
+                    <div>
+                      <div className="w-10 h-1 rounded-full bg-white/40 mb-4"></div>
+                      <p className="text-white text-base md:text-lg italic font-medium leading-relaxed mb-6">
+                        "Our mission is to make advanced medical technology
+                        accessible to every healthcare facility."
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <div className="h-10 w-10 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center">
+                        <span className="text-white font-black text-xs">
+                          KA
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-white font-black text-sm tracking-tight">
+                          - Mr. Krunal Adiyecha
+                        </p>
+                        <p className="text-white/70 text-[10px] font-bold uppercase tracking-widest">
+                          Founder & CEO
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card 2: Blue/Professional Banner Style */}
+                <div className="group relative flex-1 bg-[#3B82F6] p-8 rounded-[2.5rem] shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                  {/* Decorative Elements */}
+                  <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -ml-10 -mb-10 group-hover:bg-white/20 transition-colors"></div>
+                  <div className="absolute top-4 right-8 opacity-10">
+                    <Plus className="w-16 h-16 text-white" strokeWidth={5} />
+                  </div>
+
+                  <div className="relative z-10 flex flex-col h-full justify-between">
+                    <div>
+                      <div className="w-10 h-1 rounded-full bg-white/40 mb-4"></div>
+                      <p className="text-white text-base md:text-lg italic font-medium leading-relaxed mb-6">
+                        "Innovation should serve humanity. We are committed to
+                        technological excellence in India."
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <div className="h-10 w-10 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center">
+                        <span className="text-white font-black text-xs">
+                          NA
+                        </span>
+                      </div>
+                      <div>
+                        <p className="text-white font-black text-sm tracking-tight">
+                          - Mr. Nirmal Patel
+                        </p>
+                        <p className="text-blue-100/70 text-[10px] font-bold uppercase tracking-widest">
+                          Excellence Since 2013
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            {/* CEO Image + Achievement Card */}
 
             {/* Info Section */}
             <div className="space-y-8">
@@ -97,49 +171,125 @@ export function About() {
                     "Customer Satisfaction",
                     "Affordable Price with Low Maintenance",
                   ].map((item, idx) => (
-                    <li key={idx} className="flex items-center gap-3 bg-white/60 p-3 rounded-xl hover:bg-white transition-colors duration-200">
-                      <CheckCircle className="text-blue-700 shrink-0" size={22} />
+                    <li
+                      key={idx}
+                      className="flex items-center gap-3 bg-white/60 p-3 rounded-xl hover:bg-white transition-colors duration-200"
+                    >
+                      <CheckCircle
+                        className="text-blue-700 shrink-0"
+                        size={22}
+                      />
                       <span className="font-medium">{item}</span>
                     </li>
                   ))}
                 </ul>
                 <p className="text-blue-900 text-center mt-6 max-w-4xl mx-auto leading-relaxed font-medium">
-                  We believe our clients&apos; success is our success. Contact us to
-                  explore our products and build a long-term partnership.
+                  We believe our clients&apos; success is our success. Contact
+                  us to explore our products and build a long-term partnership.
                 </p>
               </div>
 
               {/* SERVICE */}
-              <div className="bg-white border-2 border-blue-900 p-8 rounded-3xl text-center hover:shadow-xl transition-all duration-300 hover:border-blue-600">
-                <div className="flex justify-center mb-4">
-                  <div className="bg-gradient-to-br from-blue-900 to-blue-700 rounded-2xl p-4 shadow-lg">
-                    <Settings size={40} className="text-white" />
-                  </div>
-                </div>
-                <h5 className="text-gray-900 mb-4 font-bold text-2xl">
-                  Professional Services
-                </h5>
-                <p className="text-blue-900 leading-relaxed max-w-3xl mx-auto text-lg">
-                  Biomedical services include equipment repair, preventive
-                  maintenance, performance calibration, and safety checks. Our
-                  expert BE-Biomedical engineering team ensures minimal downtime.
-                </p>
-              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-              {/* QUOTE */}
-              <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 p-8 rounded-3xl shadow-xl overflow-hidden">
-                <div className="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -mr-20 -mt-20"></div>
-                <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full -ml-16 -mb-16"></div>
-                <div className="relative">
-                  <div className="text-6xl text-white/30 mb-4"></div>
-                  <p className="text-white text-lg italic mb-4 leading-relaxed">
-                    Our mission is to make advanced medical technology accessible to
-                    every healthcare facility. Innovation should serve humanity.
+      {/* Our Values Section */}
+      <div className="py-24 bg-white relative overflow-hidden">
+        {/* Background Decoration */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-[0.02] pointer-events-none">
+          <div className="absolute top-10 left-10 w-64 h-64 border-4 border-blue-900 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-10 right-10 w-96 h-96 border-4 border-teal-500 rounded-full blur-3xl"></div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-5xl font-black text-slate-900 mb-4 tracking-tighter">
+              Our Core <span className="text-blue-600">Values</span>
+            </h2>
+            <p className="text-slate-500 font-bold uppercase tracking-[0.3em] text-xs">
+              The principles that guide our excellence
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* 1. Quality First - Professional Teal Style */}
+            <div className="group relative bg-[#00B5AD] rounded-[2.5rem] p-10 h-[380px] flex flex-col justify-between overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2">
+              <div className="absolute -right-6 -top-6 opacity-10 group-hover:scale-110 transition-transform duration-700">
+                <ShieldCheck
+                  size={200}
+                  className="text-white"
+                  strokeWidth={1}
+                />
+              </div>
+              <div className="relative z-10 w-16 h-16 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/30 shadow-sm">
+                <ShieldCheck className="text-white" size={32} />
+              </div>
+              <div className="relative z-10 space-y-4">
+                <h3 className="text-3xl font-black text-white tracking-tight leading-none uppercase">
+                  Quality First
+                </h3>
+                <p className="text-white/80 text-sm font-medium leading-relaxed">
+                  We never compromise on the quality of our medical equipment
+                  and ensure every product meets international standards.
+                </p>
+                <div className="w-12 h-1 bg-white/40 rounded-full"></div>
+              </div>
+            </div>
+
+            {/* 2. Innovation - Deep Blue Modern Style */}
+            <div className="group relative bg-[#1E3A8A] rounded-[2.5rem] p-10 h-[380px] flex flex-col justify-center overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 text-center border-b-8 border-blue-400">
+              <div className="absolute inset-0 opacity-5">
+                <div
+                  className="absolute top-0 left-0 w-full h-full"
+                  style={{
+                    backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+                    backgroundSize: "24px 24px",
+                  }}
+                ></div>
+              </div>
+              <div className="relative z-10 flex flex-col items-center space-y-6">
+                <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center shadow-inner group-hover:rotate-12 transition-transform duration-500">
+                  <Sparkles className="text-white" size={40} />
+                </div>
+                <div className="space-y-3">
+                  <h3 className="text-3xl font-black text-white tracking-tight uppercase">
+                    Innovation
+                  </h3>
+                  <p className="text-blue-100/80 text-sm font-medium leading-relaxed">
+                    Constantly evolving with the latest medical technology to
+                    provide cutting-edge solutions to healthcare providers.
                   </p>
-                  <p className="text-white font-bold text-xl">
-                    - Mr. Krunal Adiyecha
-                  </p>
-                  <p className="text-blue-100 text-sm mt-1">Founder & CEO</p>
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Customer Care - Clean Pop-out Style */}
+            <div className="group relative bg-slate-50 border-2 border-slate-100 rounded-[2.5rem] p-10 h-[380px] flex flex-col transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 overflow-hidden">
+              <div className="absolute bottom-0 right-0 p-8 opacity-5">
+                <Heart size={150} className="text-blue-900" />
+              </div>
+              <div className="mb-8">
+                <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-xl font-black text-xs uppercase tracking-widest">
+                  <Heart size={14} fill="currentColor" /> Priority
+                </div>
+              </div>
+              <div className="mt-auto space-y-4">
+                <h3 className="text-3xl font-black text-slate-900 tracking-tight leading-none uppercase">
+                  Customer <span className="text-blue-600">Care</span>
+                </h3>
+                <p className="text-slate-500 text-sm font-bold leading-relaxed italic">
+                  "Building lasting relationships through exceptional service,
+                  timely delivery, and comprehensive support."
+                </p>
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <div
+                      key={i}
+                      className="w-2 h-2 rounded-full bg-blue-600"
+                    ></div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -147,48 +297,8 @@ export function About() {
         </div>
       </div>
 
-      {/* Our Values Section */}
-      <div className="py-16 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold text-gray-900 mb-4">Our Core Values</h2>
-            <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-              The principles that guide everything we do
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Quality First",
-                desc: "We never compromise on the quality of our medical equipment and ensure every product meets international standards.",
-                gradient: "from-blue-500 to-blue-600"
-              },
-              {
-                title: "Innovation",
-                desc: "Constantly evolving with the latest medical technology to provide cutting-edge solutions to healthcare providers.",
-                gradient: "from-purple-500 to-purple-600"
-              },
-              {
-                title: "Customer Care",
-                desc: "Building lasting relationships through exceptional service, timely delivery, and comprehensive support.",
-                gradient: "from-pink-500 to-pink-600"
-              },
-            ].map((value, idx) => (
-              <div key={idx} className="bg-gradient-to-br from-gray-50 to-white p-8 rounded-3xl border border-gray-200 hover:border-gray-300 hover:shadow-xl transition-all duration-300 group">
-                <div className={`w-16 h-16 bg-gradient-to-br ${value.gradient} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
-                  <CheckCircle className="text-white" size={32} />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{value.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{value.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       <Ceo />
-      <Category />
-      <FAQ />
+      <ReviewsSection />
     </div>
   );
 }
