@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import Autoplay from "embla-carousel-autoplay";
 import {
   Award,
@@ -38,7 +38,7 @@ export default function LandingPage() {
     Autoplay({ delay: 6000, stopOnInteraction: true }),
   );
 
-  const heroContainerVariants = {
+  const heroContainerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -46,7 +46,7 @@ export default function LandingPage() {
     },
   };
 
-  const heroItemVariants = {
+  const heroItemVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
       opacity: 1,
