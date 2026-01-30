@@ -59,7 +59,6 @@ export default function ProductCategorySection() {
             {apiCategories.map((item, index) => {
               const theme = medicalThemes[index % medicalThemes.length];
               const Icon = getIconComponent(item.icon);
-              const displayImage = item.categoryImage || defaultImg;
 
               return (
                 <div
@@ -99,12 +98,7 @@ export default function ProductCategorySection() {
 
                   {/* RIGHT CONTENT: Image Pop-out */}
                   <div className="absolute -right-4 bottom-0 w-[48%] h-[115%] flex items-end justify-end pointer-events-none">
-                    <img
-                      src={displayImage}
-                      alt={item.categoryName}
-                      className="object-contain w-full h-full drop-shadow-[-20px_10px_30px_rgba(0,0,0,0.15)] 
-                                 transition-transform duration-700 group-hover:scale-110 group-hover:-rotate-3"
-                    />
+
                   </div>
                 </div>
               );
