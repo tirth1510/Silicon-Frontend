@@ -22,34 +22,34 @@ const achievements: Achievement[] = [
 export default function AboutAchievementsSection() {
   return (
     <section className="relative w-full py-10 bg-white overflow-hidden">
-      
+
       {/* --- ENHANCED BACKGROUND --- */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none" 
-             style={{ backgroundImage: `radial-gradient(circle at 2px 2px, #1e3a8a 1px, transparent 0)`, backgroundSize: '48px 48px' }} />
+        <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none"
+          style={{ backgroundImage: `radial-gradient(circle at 2px 2px, #1e3a8a 1px, transparent 0)`, backgroundSize: '48px 48px' }} />
         <div className="absolute top-1/4 -left-20 w-[500px] h-[500px] bg-blue-100 rounded-full blur-[120px] opacity-50" />
         <div className="absolute bottom-0 -right-20 w-[500px] h-[500px] bg-teal-50 rounded-full blur-[120px] opacity-50" />
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* --- TOP: COMPANY INTRODUCTION --- */}
         <div className="text-center max-w-4xl mx-auto mb-20 space-y-8">
           <div className="inline-flex items-center gap-3 px-6 pb-10 shadow-sm">
-             <Image src="/logo.png" alt="Silicon Meditech Logo" width={440} height={106} className="inline-block mr-1" />
+            <Image src="/logo.png" alt="Silicon Meditech Logo" width={440} height={106} className="inline-block mr-1" />
           </div>
 
           <h2 className="text-5xl md:text-6xl font-black text-slate-900 leading-[1] tracking-tighter">
             Pioneering the Future of <br />
-            <span className="text-blue-600">Medical Technology.</span>
+            <span className="text-blue-900">Medical Technology.</span>
           </h2>
 
           <p className="text-xl md:text-2xl font-medium text-slate-600 leading-relaxed">
-            <span className="text-slate-900 font-black">Silicon Meditech</span> is a premier manufacturer based in Surat, 
-            dedicated to crafting advanced clinical solutions that empower healthcare 
+            <span className="text-slate-900 font-black">Silicon Meditech</span> is a premier manufacturer based in Surat,
+            dedicated to crafting advanced clinical solutions that empower healthcare
             professionals and transform patient outcomes across the nation.
           </p>
-          
+
           <div className="pt-4">
             <button className="group inline-flex items-center gap-4 px-10 py-5 bg-slate-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-blue-700 transition-all shadow-2xl active:scale-95">
               Learn More About Us
@@ -63,7 +63,7 @@ export default function AboutAchievementsSection() {
           {achievements.map((item) => {
             const Icon = item.icon;
             const isDark = item.theme !== "bg-[#DBE3ED]";
-            
+
             return (
               <div
                 key={item.id}
@@ -97,8 +97,8 @@ export default function AboutAchievementsSection() {
           <h4 className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400 mb-12">
             Trusted by the Best in Healthcare
           </h4>
-          
-         
+
+
         </div>
 
       </div>

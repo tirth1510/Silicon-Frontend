@@ -102,7 +102,7 @@ export default function ContactForm() {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-md border border-gray-100 overflow-hidden">
+    <div className="bg-white rounded-4xl shadow-md border border-gray-100 overflow-hidden">
       {/* Form Header */}
       <div className="bg-gradient-to-r from-blue-900 to-blue-800 p-6">
         <h2 className="text-2xl font-bold text-white mb-1">
@@ -114,7 +114,7 @@ export default function ContactForm() {
       </div>
 
       <form onSubmit={handleSubmit} className="p-6 sm:p-8 space-y-6">
-        
+
         {/* PERSONAL INFO */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-blue-900 uppercase tracking-wide border-b border-gray-200 pb-2">

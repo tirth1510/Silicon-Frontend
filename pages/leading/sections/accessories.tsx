@@ -51,9 +51,6 @@ type ProductForList = {
   id: string;
   productname: string;
   category: string;
-  price: number;
-  finalPrice: number;
-  discount: number;
   productImage: string;
   color?: string;
 };
@@ -124,29 +121,13 @@ Product Image: ${selectedProduct.productImage}
             id?: string;
             productTitle: string;
             productCategory: string;
-            price?: number;
-            discount?: number;
-            finalPrice?: number;
-            priceDetails?: {
-              price: number;
-              discount?: number;
-              finalPrice?: number;
-            };
             productImages?: { url: string; }[];
             galleryImages?: { url: string; }[];
           }, index: number) => {
-            // Handle both direct price fields and priceDetails object
-            const price = product.price ?? product.priceDetails?.price ?? 0;
-            const discount = product.discount ?? product.priceDetails?.discount ?? 0;
-            const finalPrice = product.finalPrice ?? product.priceDetails?.finalPrice ?? price;
-
             return {
               id: product._id || product.id || `fallback-${index}-${Date.now()}`,
               productname: product.productTitle,
               category: product.productCategory || "Accessories",
-              price: price,
-              finalPrice: finalPrice,
-              discount: discount,
               productImage:
                 product.productImages?.[0]?.url ??
                 "https://via.placeholder.com/400x400?text=No+Image",
@@ -264,43 +245,14 @@ Product Image: ${selectedProduct.productImage}
                       {product.category}
                     </span>
                   </div>
-
-                  {/* Discount Badge */}
-                  {product.discount > 0 && (
-                    <div className="absolute top-2 right-2">
-                      <span className="inline-block px-2.5 py-1 text-[10px] font-semibold text-white bg-red-600 
-                                     rounded-md shadow-md">
-                        {product.discount}% OFF
-                      </span>
-                    </div>
-                  )}
                 </div>
 
                 {/* Content Section */}
                 <div className="p-4">
                   {/* Title */}
-                  <h3 className="text-sm font-bold text-gray-900 mb-2 line-clamp-2 h-10">
+                  <h3 className="text-sm font-bold text-gray-900 mb-4 line-clamp-2 h-10">
                     {product.productname}
                   </h3>
-
-                  {/* Price */}
-                  <div className="mb-4">
-                    <div className="flex items-center gap-2">
-                      <p className="text-xl font-bold text-blue-900">
-                        ₹{product.finalPrice.toLocaleString("en-IN")}
-                      </p>
-                      {product.discount > 0 && (
-                        <p className="text-sm text-gray-500 line-through">
-                          ₹{product.price.toLocaleString("en-IN")}
-                        </p>
-                      )}
-                    </div>
-                    {product.discount > 0 && (
-                      <p className="text-xs text-green-700 font-semibold">
-                        Save ₹{(product.price - product.finalPrice).toLocaleString("en-IN")}
-                      </p>
-                    )}
-                  </div>
 
                   {/* Action Buttons */}
                   <div className="flex gap-2">
@@ -366,9 +318,6 @@ Product Image: ${selectedProduct.productImage}
                 <p className="text-sm text-gray-600 mb-1">Product</p>
                 <p className="font-bold text-blue-900">
                   {selectedProduct.productname}
-                </p>
-                <p className="text-xl font-bold text-blue-900 mt-2">
-                  ₹{selectedProduct.price}
                 </p>
               </div>
 

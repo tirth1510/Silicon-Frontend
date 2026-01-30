@@ -37,7 +37,7 @@ export default function Footer() {
           <div className="space-y-4">
             <h2 className="text-3xl md:text-4xl font-black text-slate-900 leading-tight tracking-tighter">
               Ready to upgrade your <br />
-              <span className="text-blue-600">Medical Infrastructure?</span>
+              <span className="text-blue-900">Medical Infrastructure?</span>
             </h2>
             <p className="text-slate-500 font-medium">
               Join 500+ healthcare facilities across India using our solutions.
@@ -48,13 +48,13 @@ export default function Footer() {
             {/* Button click par navigate karne ke liye router.push ka use */}
             <button
               onClick={() => navigateTo("/products")}
-              className="flex items-center justify-center gap-2 px-8 py-4 bg-white border border-blue-700 text-blue-700  rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-900 transition-all shadow-lg active:scale-95"
+              className="flex items-center justify-center gap-2 px-8 py-4 bg-white border border-blue-900 text-blue-900 hover:text-white  rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-900 transition-all shadow-lg active:scale-95"
             >
               Product&apos;s <ArrowRight className="w-4 h-4" />
             </button>
             <button
               onClick={() => navigateTo("/contact")}
-              className="flex items-center justify-center gap-2 px-8 py-4 bg-blue-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-900 transition-all shadow-lg active:scale-95"
+              className="flex items-center justify-center gap-2 px-8 py-4 bg-blue-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-900 transition-all shadow-lg active:scale-95"
             >
               Contact Us <ArrowRight className="w-4 h-4" />
             </button>
@@ -124,7 +124,7 @@ export default function Footer() {
                 <li key={link.name}>
                   <Link
                     href={link.path}
-                    className="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors flex items-center gap-2 group"
+                    className="text-sm font-bold text-slate-500 hover:text-blue-900 transition-colors flex items-center gap-2 group"
                   >
                     <div className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-blue-600 transition-colors"></div>
                     {link.name}

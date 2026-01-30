@@ -32,13 +32,6 @@ type ProductSpecification = {
 };
 type ImageObj = { url: string; };
 
-type PriceDetails = {
-  currency?: string;
-  price: number;
-  discount: number;
-  finalPrice: number;
-};
-
 type Accessory = {
   _id?: string;
   id?: string;
@@ -46,11 +39,6 @@ type Accessory = {
   productCategory: string;
   description?: string;
   status?: string;
-  // Support both API structures
-  price?: number;
-  discount?: number;
-  finalPrice?: number;
-  priceDetails?: PriceDetails;
   stock?: number;
   productImages?: ImageObj[];
   productImageUrl?: ImageObj[];
@@ -107,25 +95,6 @@ export default function AccessoryDetailsPage() {
 
     fetchAccessory();
   }, [accessoryId]);
-
-  // Get price details - supports both API structures
-  const priceInfo = React.useMemo(() => {
-    if (!accessory) return null;
-
-    if (accessory.priceDetails) {
-      return {
-        price: accessory.priceDetails.price,
-        discount: accessory.priceDetails.discount,
-        finalPrice: accessory.priceDetails.finalPrice,
-      };
-    }
-
-    return {
-      price: accessory.price || 0,
-      discount: accessory.discount || 0,
-      finalPrice: accessory.finalPrice || accessory.price || 0,
-    };
-  }, [accessory]);
 
   // Get all images - supports both API structures
   const accessoryImages = React.useMemo(() => {
@@ -205,15 +174,6 @@ export default function AccessoryDetailsPage() {
                 unoptimized
                 className="object-contain p-4"
               />
-
-              {/* Discount Badge */}
-              {priceInfo && priceInfo.discount > 0 && (
-                <div className="absolute top-4 right-4">
-                  <span className="bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                    {priceInfo.discount}% OFF
-                  </span>
-                </div>
-              )}
             </div>
 
             {/* Thumbnail Images */}
@@ -288,48 +248,6 @@ export default function AccessoryDetailsPage() {
                 </div>
               )}
             </div>
-
-            {/* Price Section */}
-            {priceInfo && priceInfo.finalPrice !== undefined && (
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-900 rounded-xl p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Price</p>
-                    <p className="text-4xl font-bold text-blue-900">
-                      ₹ {priceInfo.finalPrice.toLocaleString("en-IN")}
-                    </p>
-                  </div>
-
-                  {priceInfo.discount > 0 && (
-                    <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                      Save {priceInfo.discount}%
-                    </span>
-                  )}
-                </div>
-
-                {priceInfo.discount > 0 && priceInfo.price !== undefined && (
-                  <div className="flex items-center gap-2 mb-4">
-                    <p className="text-sm text-gray-600">MRP:</p>
-                    <span className="text-lg text-gray-500 line-through">
-                      ₹ {priceInfo.price.toLocaleString("en-IN")}
-                    </span>
-                    <span className="text-sm text-green-700 font-semibold">
-                      You save ₹{(priceInfo.price - priceInfo.finalPrice).toLocaleString("en-IN")}
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex items-center gap-2 text-sm text-gray-700 pt-4 border-t border-blue-200">
-                  <Package className="w-4 h-4" />
-                  Stock: <span className="font-semibold">{accessory.stock || 0} units available</span>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm text-gray-700 mt-2">
-                  <Truck className="w-4 h-4" />
-                  Free delivery in 3–5 business days
-                </div>
-              </div>
-            )}
 
             {/* Product Specifications as Color Tags */}
             {accessory.productSpecifications && accessory.productSpecifications.length > 0 && (

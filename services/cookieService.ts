@@ -11,7 +11,16 @@ export const fetchProfile = async () => {
     );
     return res.data;
   } catch (err: any) {
-    console.error("Profile API error:", err.response?.data || err.message);
+    // Don't log errors for unauthenticated users (401/403)
+    // This is expected behavior when user is not logged in
+    const status = err.response?.status;
+    if (status !== 401 && status !== 403) {
+      console.error("Profile API error:", {
+        status,
+        data: err.response?.data,
+        message: err.message,
+      });
+    }
     return null;
   }
 };

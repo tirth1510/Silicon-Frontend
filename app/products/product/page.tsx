@@ -16,18 +16,10 @@ import {
 } from "@/components/ui/dialog";
 
 /* ---------- TYPES ---------- */
-type ColorPrice = {
-  currency: string;
-  price: number;
-  discount: number;
-  finalPrice: number;
-};
-
 type Color = {
   colorName: string;
   imageUrl?: string;
   productImageUrl?: { url: string; }[];
-  colorPrice?: ColorPrice[];
   stock?: number;
 };
 
@@ -50,9 +42,6 @@ type ProductForList = {
   title: string;
   modelName: string;
   category: string;
-  price: number;
-  originalPrice: number;
-  discount: number;
   image: string;
 };
 
@@ -93,7 +82,6 @@ export default function ShopPage() {
           const mapped = data.data.map((product: ProductFromAPI) => {
             // Get first color from productModelDetails
             const firstColor = product.productModelDetails?.colors?.[0];
-            const priceInfo = firstColor?.colorPrice?.[0];
 
             return {
               id: product._id,
@@ -101,12 +89,9 @@ export default function ShopPage() {
               title: product.productTitle,
               modelName: product.modelName,
               category: product.productCategory,
-              price: priceInfo?.finalPrice || 0,
-              originalPrice: priceInfo?.price || 0,
-              discount: priceInfo?.discount || 0,
-              image: firstColor?.imageUrl || 
-                     firstColor?.productImageUrl?.[0]?.url || 
-                     FALLBACK_IMAGE,
+              image: firstColor?.imageUrl ||
+                firstColor?.productImageUrl?.[0]?.url ||
+                FALLBACK_IMAGE,
             };
           });
 
@@ -200,43 +185,14 @@ Product Image: ${selectedProduct.image}
                     {product.category}
                   </span>
                 </div>
-
-                {/* Discount Badge */}
-                {product.discount > 0 && (
-                  <div className="absolute top-2 right-2">
-                    <span className="inline-block px-2.5 py-1 text-[10px] font-semibold text-white bg-red-600 
-                                   rounded-md shadow-md">
-                      {product.discount}% OFF
-                    </span>
-                  </div>
-                )}
               </div>
 
               {/* Content Section */}
               <div className="p-4">
                 {/* Model Name */}
-                <h3 className="text-sm font-bold text-gray-900 mb-2 line-clamp-2 h-10">
+                <h3 className="text-sm font-bold text-gray-900 mb-4 line-clamp-2 h-10">
                   {product.modelName}
                 </h3>
-
-                {/* Price */}
-                <div className="mb-4">
-                  <div className="flex items-center gap-2">
-                    <p className="text-xl font-bold text-blue-900">
-                      ₹{product.price.toLocaleString("en-IN")}
-                    </p>
-                    {product.discount > 0 && (
-                      <p className="text-sm text-gray-500 line-through">
-                        ₹{product.originalPrice.toLocaleString("en-IN")}
-                      </p>
-                    )}
-                  </div>
-                  {product.discount > 0 && (
-                    <p className="text-xs text-green-700 font-semibold">
-                      Save ₹{(product.originalPrice - product.price).toLocaleString("en-IN")}
-                    </p>
-                  )}
-                </div>
 
                 {/* Action Buttons */}
                 <div className="flex gap-2">
@@ -282,28 +238,6 @@ Product Image: ${selectedProduct.image}
               <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
                 <p className="text-sm text-gray-600 mb-1">Product Model</p>
                 <p className="font-bold text-blue-900">{selectedProduct.modelName}</p>
-                <div className="mt-2">
-                  <div className="flex items-center gap-2">
-                    <p className="text-xl font-bold text-blue-900">
-                      ₹{selectedProduct.price.toLocaleString("en-IN")}
-                    </p>
-                    {selectedProduct.discount > 0 && (
-                      <span className="text-xs bg-red-600 text-white px-2 py-0.5 rounded-full font-semibold">
-                        {selectedProduct.discount}% OFF
-                      </span>
-                    )}
-                  </div>
-                  {selectedProduct.discount > 0 && (
-                    <>
-                      <p className="text-sm text-gray-500 line-through">
-                        ₹{selectedProduct.originalPrice.toLocaleString("en-IN")}
-                      </p>
-                      <p className="text-xs text-green-700 font-semibold">
-                        You save ₹{(selectedProduct.originalPrice - selectedProduct.price).toLocaleString("en-IN")}
-                      </p>
-                    </>
-                  )}
-                </div>
               </div>
 
               {/* Form Fields */}

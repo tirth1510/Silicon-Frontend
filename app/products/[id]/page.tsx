@@ -24,19 +24,11 @@ import {
 
 type ImageObj = { url: string };
 
-type ColorPrice = {
-  currency: string;
-  price: number;
-  discount: number;
-  finalPrice: number;
-};
-
 type Color = {
   colorName: string;
   imageUrl: string;
   productImageUrl: ImageObj[];
   productGallery: ImageObj[];
-  colorPrice: ColorPrice[];
   stock: number;
 };
 
@@ -132,7 +124,6 @@ export default function ProductDetailsPage() {
 
   const activeModel = product?.productModelDetails;
   const activeColor = activeModel?.colors?.[activeColorIndex];
-  const activePrice = activeColor?.colorPrice?.[0];
 
   // Reset activeColorIndex if it's out of bounds
   useEffect(() => {
@@ -227,15 +218,6 @@ export default function ProductDetailsPage() {
                   </span>
                 )}
               </div>
-
-              {/* Discount Badge - Top Right */}
-              {activePrice && activePrice.discount > 0 && (
-                <div className="absolute top-4 right-4">
-                  <span className="bg-red-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
-                    {activePrice.discount}% OFF
-                  </span>
-                </div>
-              )}
             </div>
 
             {/* Thumbnail Images */}
@@ -312,48 +294,6 @@ export default function ProductDetailsPage() {
                 </div>
               )}
             </div>
-
-            {/* Price Section */}
-            {/* {activePrice && (
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 border-2 border-blue-900 rounded-xl p-6">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <p className="text-sm text-gray-600 mb-1">Price</p>
-                    <p className="text-4xl font-bold text-blue-900">
-                      ₹ {activePrice.finalPrice.toLocaleString("en-IN")}
-                    </p>
-                  </div>
-                  
-                  {activePrice.discount > 0 && (
-                    <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                      Save {activePrice.discount}%
-                    </span>
-                  )}
-                </div>
-
-                {activePrice.discount > 0 && (
-                  <div className="flex items-center gap-2 mb-4">
-                    <p className="text-sm text-gray-600">MRP:</p>
-                    <span className="text-lg text-gray-500 line-through">
-                      ₹ {activePrice.price.toLocaleString("en-IN")}
-                    </span>
-                    <span className="text-sm text-green-700 font-semibold">
-                      You save ₹{(activePrice.price - activePrice.finalPrice).toLocaleString("en-IN")}
-                    </span>
-                  </div>
-                )}
-
-                <div className="flex items-center gap-2 text-sm text-gray-700 pt-4 border-t border-blue-200">
-                  <Package className="w-4 h-4" />
-                  Stock: <span className="font-semibold">{activeColor.stock} units available</span>
-                </div>
-
-                <div className="flex items-center gap-2 text-sm text-gray-700 mt-2">
-                  <Truck className="w-4 h-4" />
-                  Free delivery in 3–5 business days
-                </div>
-              </div>
-            )} */}
 
             {/* Available Colors */}
             {activeModel.colors && activeModel.colors.length > 0 && (

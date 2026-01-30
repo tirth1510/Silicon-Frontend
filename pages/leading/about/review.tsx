@@ -31,7 +31,7 @@ const reviews: Review[] = [
     hospital: "City Care Hospital",
     text: "Finding affordable yet high-quality medical consumables in India was a challenge until we partnered with Silicon Meditech. Highly recommended.",
     rating: 5,
-    theme: "bg-[#3B82F6]", // Blue
+    theme: "bg-blue-900", // Blue
   },
   {
     id: 3,
@@ -53,7 +53,7 @@ export default function ReviewsSection() {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
+
         {/* HEADER */}
         <div className="flex flex-col md:flex-row items-end justify-between gap-6 mb-16">
           <div className="space-y-4">
@@ -62,8 +62,8 @@ export default function ReviewsSection() {
               <span className="text-xs font-black uppercase tracking-widest text-blue-900">Patient Safety First</span>
             </div>
             <h2 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none">
-              Trusted by the <br /> 
-              <span className="text-blue-600">Medical Fraternity.</span>
+              Trusted by the <br />
+              <span className="text-blue-900">Medical Fraternity.</span>
             </h2>
           </div>
           <p className="max-w-xs text-slate-500 font-bold text-sm leading-relaxed border-l-4 border-slate-100 pl-6 mb-2">
@@ -74,7 +74,7 @@ export default function ReviewsSection() {
         {/* REVIEWS GRID */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {reviews.map((review) => (
-            <div 
+            <div
               key={review.id}
               className="group relative bg-slate-50 rounded-[3rem] p-10 flex flex-col justify-between transition-all duration-500 hover:shadow-2xl hover:-translate-y-2 border border-slate-100 overflow-hidden"
             >
@@ -129,7 +129,7 @@ export default function ReviewsSection() {
           <div className="flex -space-x-4">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="w-12 h-12 rounded-full border-4 border-white bg-slate-200 flex items-center justify-center overflow-hidden">
-                 <User className="text-slate-400 w-6 h-6" />
+                <User className="text-slate-400 w-6 h-6" />
               </div>
             ))}
             <div className="w-12 h-12 rounded-full border-4 border-white bg-blue-600 flex items-center justify-center text-white text-xs font-black">

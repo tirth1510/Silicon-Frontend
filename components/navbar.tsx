@@ -107,9 +107,8 @@ export default function Navbar() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 w-full bg-white/98 backdrop-blur-sm transition-all duration-300 ${
-          scrolled ? "shadow-lg" : "shadow-md"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 w-full bg-white/98 backdrop-blur-sm transition-all duration-300 ${scrolled ? "shadow-lg" : "shadow-md"
+          }`}
       >
         {/* Main Navbar */}
         <nav className="w-full border-b border-gray-100">
@@ -135,22 +134,20 @@ export default function Navbar() {
               <div className="hidden md:flex items-center space-x-1 lg:space-x-2">
                 <Link
                   href="/"
-                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${
-                    isActive("/")
+                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${isActive("/")
                       ? "text-blue-700 bg-blue-50 font-semibold"
                       : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                  }`}
+                    }`}
                 >
                   Home
                 </Link>
 
                 <DropdownMenu>
                   <DropdownMenuTrigger
-                    className={`flex items-center gap-1 px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 outline-none ${
-                      isActive("/products")
+                    className={`flex items-center gap-1 px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 outline-none ${isActive("/products")
                         ? "text-blue-700 bg-blue-50 font-semibold"
                         : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                    }`}
+                      }`}
                   >
                     Products
                     <ChevronDown className="h-3 w-3 lg:h-4 lg:w-4" />
@@ -174,22 +171,20 @@ export default function Navbar() {
 
                 <Link
                   href="/about"
-                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${
-                    isActive("/about")
+                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${isActive("/about")
                       ? "text-blue-700 bg-blue-50 font-semibold"
                       : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                  }`}
+                    }`}
                 >
                   About
                 </Link>
 
                 <Link
                   href="/contact"
-                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${
-                    isActive("/contact")
+                  className={`px-2 lg:px-4 py-2 text-sm lg:text-base font-medium rounded-lg transition-all duration-200 ${isActive("/contact")
                       ? "text-blue-700 bg-blue-50 font-semibold"
                       : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                  }`}
+                    }`}
                 >
                   Contact - US
                 </Link>
@@ -217,11 +212,10 @@ export default function Navbar() {
                 {/* Search Icon - Mobile/Tablet */}
                 <button
                   onClick={() => setSearchOpen(!searchOpen)}
-                  className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${
-                    searchOpen
+                  className={`lg:hidden p-2 rounded-lg transition-all duration-200 ${searchOpen
                       ? "bg-blue-700 text-white"
                       : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                  }`}
+                    }`}
                   aria-label="Toggle search"
                 >
                   {searchOpen ? (
@@ -346,9 +340,8 @@ export default function Navbar() {
 
       {/* Mobile Menu Drawer */}
       <aside
-        className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out ${
-          mobileMenu ? "translate-x-0" : "translate-x-full"
-        }`}
+        className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-out ${mobileMenu ? "translate-x-0" : "translate-x-full"
+          }`}
       >
         <div className="flex flex-col h-full">
           {/* Mobile Menu Header */}
@@ -491,11 +484,10 @@ export default function Navbar() {
             <div className="px-2">
               <Link
                 href="/"
-                className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${
-                  isActive("/")
+                className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${isActive("/")
                     ? "text-blue-700 bg-blue-50 font-semibold"
                     : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                }`}
+                  }`}
                 onClick={() => setMobileMenu(false)}
               >
                 <Home className="h-5 w-5" />
@@ -506,20 +498,18 @@ export default function Navbar() {
               <div className="mt-1">
                 <div className="px-4 py-2">
                   <p
-                    className={`text-xs font-semibold uppercase tracking-wide ${
-                      isActive("/products") ? "text-blue-700" : "text-gray-500"
-                    }`}
+                    className={`text-xs font-semibold uppercase tracking-wide ${isActive("/products") ? "text-blue-700" : "text-gray-500"
+                      }`}
                   >
                     Products
                   </p>
                 </div>
                 <Link
                   href="/products"
-                  className={`flex items-center gap-3 px-4 py-3 text-base rounded-lg transition-all duration-200 ${
-                    pathname === "/products"
+                  className={`flex items-center gap-3 px-4 py-3 text-base rounded-lg transition-all duration-200 ${pathname === "/products"
                       ? "text-blue-700 bg-blue-50 font-semibold"
                       : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                  }`}
+                    }`}
                   onClick={() => setMobileMenu(false)}
                 >
                   <Phone className="h-5 w-5" />
@@ -527,11 +517,10 @@ export default function Navbar() {
                 </Link>
                 <Link
                   href="/products/accessories"
-                  className={`flex items-center gap-3 px-4 py-3 text-base rounded-lg transition-all duration-200 ${
-                    pathname === "/products/accessories"
+                  className={`flex items-center gap-3 px-4 py-3 text-base rounded-lg transition-all duration-200 ${pathname === "/products/accessories"
                       ? "text-blue-700 bg-blue-50 font-semibold"
                       : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                  }`}
+                    }`}
                   onClick={() => setMobileMenu(false)}
                 >
                   <Headphones className="h-5 w-5" />
@@ -541,11 +530,10 @@ export default function Navbar() {
 
               <Link
                 href="/about"
-                className={`flex items-center gap-3 px-4 py-3 mt-1 text-base font-medium rounded-lg transition-all duration-200 ${
-                  isActive("/about")
+                className={`flex items-center gap-3 px-4 py-3 mt-1 text-base font-medium rounded-lg transition-all duration-200 ${isActive("/about")
                     ? "text-blue-700 bg-blue-50 font-semibold"
                     : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                }`}
+                  }`}
                 onClick={() => setMobileMenu(false)}
               >
                 <Info className="h-5 w-5" />
@@ -554,11 +542,10 @@ export default function Navbar() {
 
               <Link
                 href="/contact"
-                className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${
-                  isActive("/contact")
+                className={`flex items-center gap-3 px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${isActive("/contact")
                     ? "text-blue-700 bg-blue-50 font-semibold"
                     : "text-gray-700 hover:text-blue-700 hover:bg-blue-50"
-                }`}
+                  }`}
                 onClick={() => setMobileMenu(false)}
               >
                 <Mail className="h-5 w-5" />
@@ -592,7 +579,7 @@ export default function Navbar() {
       </aside>
 
       {/* Spacer to prevent content from going under fixed navbar */}
-      <div className="h-20 sm:h-22 lg:h-24" />
+      {/* <div className="h-20 sm:h-22 lg:h-24" /> */}
     </>
   );
 }

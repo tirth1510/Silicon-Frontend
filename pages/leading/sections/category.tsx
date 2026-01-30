@@ -34,6 +34,10 @@ const iconMap: Record<string, LucideIcon> = {
   'circle-dot': CircleDot,
 };
 
+// Default image for category card header (media section)
+const DEFAULT_CATEGORY_IMAGE =
+  "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&auto=format&fit=crop";
+
 // Helper function to get icon component
 const getIconComponent = (iconName?: string): LucideIcon => {
   if (!iconName) return Package; // Default icon
@@ -91,11 +95,18 @@ export default function ProductCategorySection() {
                                  transition-all duration-500 overflow-hidden flex flex-col
                                  group-hover:shadow-2xl group-hover:-translate-y-1">
 
-                    {/* Blue Header Section */}
-                    <div className="relative bg-blue-900 px-6 pt-8 pb-20 
-                                    transition-all duration-500 group-hover:pb-24 shrink-0">
+                    {/* Media / Header Section with background image */}
+                    <div
+                      className="relative px-6 pt-8 pb-20 bg-cover bg-center
+                                    transition-all duration-500 group-hover:pb-24 shrink-0"
+                      style={{
+                        backgroundImage: `url(${DEFAULT_CATEGORY_IMAGE})`,
+                      }}
+                    >
+                      {/* Dark overlay for readability */}
+                      <div className="absolute inset-0 bg-blue-900/70" aria-hidden />
                       {/* Decorative Dots */}
-                      <div className="absolute top-4 right-4 flex gap-1.5">
+                      <div className="absolute top-4 right-4 flex gap-1.5 z-10">
                         <div className="w-1.5 h-1.5 rounded-full bg-white/30"></div>
                         <div className="w-1.5 h-1.5 rounded-full bg-white/30"></div>
                         <div className="w-1.5 h-1.5 rounded-full bg-white/50"></div>
@@ -112,8 +123,8 @@ export default function ProductCategorySection() {
                         </div>
                       </div>
 
-                      {/* Background Pattern */}
-                      <div className="absolute inset-0 opacity-10">
+                      {/* Subtle light orbs */}
+                      <div className="absolute inset-0 opacity-10 pointer-events-none z-0">
                         <div className="absolute top-0 right-0 w-32 h-32 
                                         bg-white rounded-full blur-2xl transform translate-x-8 -translate-y-8"></div>
                         <div className="absolute bottom-0 left-0 w-24 h-24 

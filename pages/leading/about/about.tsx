@@ -39,7 +39,7 @@ export function About() {
             </div>
             <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
               Transforming Healthcare with
-              <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <span className="text-blue-900">
                 {" "}
                 Innovation & Excellence
               </span>
@@ -56,7 +56,7 @@ export function About() {
             <div>
               <div className="bg-white border-2 border-blue-900 p-8 rounded-3xl text-center hover:shadow-xl transition-all duration-300 hover:border-blue-600">
                 <div className="flex justify-center mb-4">
-                  <div className="bg-gradient-to-br from-blue-900 to-blue-700 rounded-2xl p-4 shadow-lg">
+                  <div className="bg-gradient-to-br from-blue-900 to-blue-900 rounded-2xl p-4 shadow-lg">
                     <Settings size={40} className="text-white" />
                   </div>
                 </div>
@@ -110,7 +110,7 @@ export function About() {
                 </div>
 
                 {/* Card 2: Blue/Professional Banner Style */}
-                <div className="group relative flex-1 bg-[#3B82F6] p-8 rounded-[2.5rem] shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
+                <div className="group relative flex-1 bg-blue-900 p-8 rounded-[2.5rem] shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:-translate-y-1">
                   {/* Decorative Elements */}
                   <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-2xl -ml-10 -mb-10 group-hover:bg-white/20 transition-colors"></div>
                   <div className="absolute top-4 right-8 opacity-10">
@@ -151,7 +151,7 @@ export function About() {
             <div className="space-y-8">
               {/* WHY US */}
               <div className="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-3xl border-2 border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300">
-                <div className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-full mb-6 w-fit mx-auto font-semibold">
+                <div className="flex items-center justify-center gap-2 bg-blue-900 text-white px-6 py-3 rounded-full mb-6 w-fit mx-auto font-semibold">
                   <Heart size={18} />
                   <span>Why Choose Us?</span>
                 </div>
@@ -206,7 +206,7 @@ export function About() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <h2 className="text-5xl font-black text-slate-900 mb-4 tracking-tighter">
-              Our Core <span className="text-blue-600">Values</span>
+              Our Core <span className="text-blue-900">Values</span>
             </h2>
             <p className="text-slate-500 font-bold uppercase tracking-[0.3em] text-xs">
               The principles that guide our excellence
