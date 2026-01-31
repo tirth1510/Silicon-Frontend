@@ -2,11 +2,11 @@ import { useEffect, useState } from "react";
 import { fetchProfile } from "@/services/cookieService";
 
 const GUEST_PROFILE = {
-  id: "guest",
+  id: "",
   googleId:"",
-  username: "Guest",
+  username: "",
   email: "",
-  role: "guest",
+  role: "",
   imageUrl: "/default-avatar.png",
   isVerified: ""
 };
