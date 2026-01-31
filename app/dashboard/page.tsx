@@ -1,290 +1,281 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { Card } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
-import {
-  Package,
-  ShoppingBag,
-  TrendingUp,
-  Eye,
-} from "lucide-react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "sonner";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { 
+  Loader2, 
+  Reply, 
+  Send, 
+  RefreshCw, 
+  Eye, 
+  Mail, 
+  Phone, 
+  Calendar,
+  User
+} from "lucide-react";
 
-interface DashboardStats {
-  totalProducts: number;
-  totalAccessories: number;
-  liveSales: number;
-  viewSales: number;
+interface Contact {
+  _id: string;
+  contactId: string;
+  name: string;
+  email: string;
+  phone: string;
+  messageTitle?: string;
+  message: string;
+  createdAt: string;
 }
 
-export default function Dashboard() {
-  const [stats, setStats] = useState<DashboardStats>({
-    totalProducts: 0,
-    totalAccessories: 0,
-    liveSales: 0,
-    viewSales: 0,
-  });
+export default function ContactDashboardPage() {
+  const [contacts, setContacts] = useState<Contact[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedContact, setSelectedContact] = useState<Contact | null>(null);
+  
+  // Dialog States
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [isReplyOpen, setIsReplyOpen] = useState(false);
+  
+  const [responseMessage, setResponseMessage] = useState("");
+  const [sending, setSending] = useState(false);
 
-  // Prevent duplicate API calls in React Strict Mode
-  const hasFetchedRef = useRef(false);
+  const fetchContacts = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get("http://localhost:5000/api/contact/all");
+      if (res.data.success) {
+        setContacts(res.data.data);
+      }
+    } catch (error) {
+      toast.error("Failed to fetch messages");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setLoading(true);
+    fetchContacts();
+  }, []);
 
-        // Fetch all data in parallel to optimize performance - ONLY ONCE
-        const [productsRes, accessoriesRes, salesRes] = await Promise.all([
-          // Use correct products-with-models API
-          axios.get("http://localhost:5000/api/demo/products-with-models").catch(() => ({ 
-            data: { success: false, data: [] } 
-          })),
-          // Accessories API
-          axios.get("http://localhost:5000/api/accessorize/all").catch(() => ({ 
-            data: { success: false, products: [] } 
-          })),
-          // Sales scheme API
-          axios.get("http://localhost:5000/api/demo/products/scheme/all").catch(() => ({ 
-            data: { success: false, data: [] } 
-          })),
-        ]);
+  const handleOpenView = (contact: Contact) => {
+    setSelectedContact(contact);
+    setIsViewOpen(true);
+  };
 
-        // Get products data - use count from API response
-        const totalProducts = productsRes.data.count || (productsRes.data.data || []).length;
+  const handleOpenReply = (contact: Contact) => {
+    setSelectedContact(contact);
+    setResponseMessage(`Hello ${contact.name},\n\nThank you for reaching out to Silicon Meditech regarding "${contact.messageTitle || 'your inquiry'}". \n\n`);
+    setIsReplyOpen(true);
+  };
 
-        // Get accessories data - use count from API or array length
-        const totalAccessories = accessoriesRes.data.count || (accessoriesRes.data.products || accessoriesRes.data.data || []).length;
-
-        // Get sales data from scheme API
-        const salesData = salesRes.data.data || [];
-        
-        // Count live sales and view sales by iterating through all models
-        let liveSalesCount = 0;
-        let viewSalesCount = 0;
-
-        // The API returns array of models with schem data
-        salesData.forEach((model: any) => {
-          const schem = model.productModelDetails?.schem || {};
-          
-          // Count live sales (saleProduct)
-          if (schem.saleProduct === true) {
-            liveSalesCount++;
-          }
-          
-          // Count view sales (other scheme types)
-          if (
-            schem.tradingProduct === true ||
-            schem.recommendedProduct === true ||
-            schem.companyProduct === true ||
-            schem.valuableProduct === true
-          ) {
-            viewSalesCount++;
-          }
-        });
-
-        setStats({
-          totalProducts,
-          totalAccessories,
-          liveSales: liveSalesCount,
-          viewSales: viewSalesCount,
-        });
-      } catch (error) {
-        console.error("Error fetching dashboard data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // Only fetch if we haven't already fetched
-    if (!hasFetchedRef.current) {
-      hasFetchedRef.current = true;
-      fetchDashboardData();
+  const handleSendResponse = async () => {
+    if (!selectedContact || !responseMessage.trim()) {
+      toast.error("Please type a message");
+      return;
     }
-  }, []); // Empty dependency array ensures this runs only once
 
-  const statsCards = [
-    {
-      title: "Products",
-      value: stats.totalProducts,
-      icon: Package,
-      iconBg: "bg-gradient-to-br from-blue-100 to-indigo-100",
-      iconColor: "text-blue-600",
-      gradient: "from-blue-500 to-indigo-600",
-      link: "/dashboard/product",
-    },
-    {
-      title: "Accessories",
-      value: stats.totalAccessories,
-      icon: ShoppingBag,
-      iconBg: "bg-gradient-to-br from-green-100 to-emerald-100",
-      iconColor: "text-green-600",
-      gradient: "from-green-500 to-emerald-600",
-      link: "/dashboard/accessories",
-    },
-    {
-      title: "Live Sales",
-      value: stats.liveSales,
-      icon: TrendingUp,
-      iconBg: "bg-gradient-to-br from-orange-100 to-red-100",
-      iconColor: "text-orange-600",
-      gradient: "from-orange-500 to-red-600",
-      link: "/dashboard/sales/all",
-    },
-    {
-      title: "View Sales",
-      value: stats.viewSales,
-      icon: Eye,
-      iconBg: "bg-gradient-to-br from-indigo-100 to-purple-100",
-      iconColor: "text-indigo-600",
-      gradient: "from-indigo-500 to-purple-600",
-      link: "/dashboard/sales/view",
-    },
-  ];
+    try {
+      setSending(true);
+      const payload = {
+        contactId: selectedContact.contactId,
+        responseMessage: responseMessage,
+      };
 
-  if (loading) {
-    return (
-      <div className="min-h-full flex items-center justify-center bg-gray-50">
-        <div className="text-center">
-          <div className="relative inline-block">
-            <Spinner className="w-16 h-16" />
-            <div className="absolute inset-0 animate-ping opacity-20">
-              <Spinner className="w-16 h-16" />
-            </div>
-          </div>
-          <p className="mt-6 text-xl font-semibold text-gray-700">Loading Dashboard...</p>
-          <p className="mt-2 text-sm text-gray-500">Fetching your data</p>
-        </div>
-      </div>
-    );
-  }
+      const res = await axios.post("http://localhost:5000/api/contact/send-response", payload);
+      
+      if (res.data.success) {
+        toast.success("Response sent successfully via Email");
+        setIsReplyOpen(false);
+        setResponseMessage("");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to send response");
+    } finally {
+      setSending(false);
+    }
+  };
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="p-8 space-y-8 bg-slate-50 min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-            Dashboard
-          </h1>
-          <p className="text-sm text-gray-600 mt-2 flex items-center gap-2">
-            <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            Welcome back! Here&apos;s what&apos;s happening today.
-          </p>
+          <h1 className="text-4xl font-extrabold text-blue-900 tracking-tight">Customer Inquiries</h1>
+          <p className="text-slate-500 mt-1 font-medium">Manage and respond to Silicon Meditech inquiries.</p>
         </div>
-        <button
-          onClick={() => window.location.reload()}
-          className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl"
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
-            />
-          </svg>
-          Refresh
-        </button>
+        <Button onClick={fetchContacts} variant="secondary" className="bg-white border shadow-sm text-blue-900 hover:bg-blue-50">
+          <RefreshCw className={`mr-2 h-4 w-4 ${loading ? "animate-spin" : ""}`} />
+          Refresh Data
+        </Button>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {statsCards.map((stat, index) => {
-            const Icon = stat.icon;
-            return (
-              <Card
-                key={index}
-                onClick={() => (window.location.href = stat.link)}
-                className="relative overflow-hidden bg-white border-0 shadow-xl hover:shadow-2xl transition-all duration-500 group cursor-pointer transform hover:-translate-y-2"
-              >
-                {/* Animated Gradient Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white opacity-50" />
-                <div
-                  className={`absolute top-0 right-0 w-64 h-64 bg-gradient-to-br ${stat.gradient} opacity-5 rounded-full -mr-32 -mt-32 group-hover:scale-150 group-hover:opacity-10 transition-all duration-700`}
-                />
-
-                <div className="relative p-8">
-                  {/* Icon with animated background */}
-                  <div className="flex items-start justify-between mb-6">
-                    <div
-                      className={`${stat.iconBg} p-5 rounded-3xl shadow-lg group-hover:shadow-2xl group-hover:scale-110 transition-all duration-500`}
-                    >
-                      <Icon className={`w-10 h-10 ${stat.iconColor}`} />
+      {/* Table Section */}
+      <div className="bg-white border-none rounded-2xl shadow-xl shadow-blue-900/5 overflow-hidden">
+        <Table>
+          <TableHeader className="bg-blue-900">
+            <TableRow className="hover:bg-transparent">
+              <TableHead className="text-blue-50 font-bold py-5 pl-6">Date</TableHead>
+              <TableHead className="text-blue-50 font-bold">Customer</TableHead>
+              <TableHead className="text-blue-50 font-bold">Inquiry Title</TableHead>
+              <TableHead className="text-blue-50 font-bold text-center">Status</TableHead>
+              <TableHead className="text-blue-50 font-bold text-right pr-6">Actions</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {loading ? (
+              <TableRow><TableCell colSpan={5} className="h-64 text-center"><Loader2 className="animate-spin h-8 w-8 mx-auto text-blue-900" /></TableCell></TableRow>
+            ) : contacts.length === 0 ? (
+              <TableRow><TableCell colSpan={5} className="h-64 text-center text-slate-400">No active inquiries found.</TableCell></TableRow>
+            ) : (
+              contacts.map((contact) => (
+                <TableRow key={contact._id} className="hover:bg-blue-50/30 transition-colors border-b border-slate-100">
+                  <TableCell className="pl-6 py-4">
+                    <div className="flex items-center gap-2 text-slate-500 font-medium">
+                      <Calendar className="h-4 w-4" /> {new Date(contact.createdAt).toLocaleDateString()}
                     </div>
-                    
-                    {/* Arrow icon */}
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <svg
-                        className="w-6 h-6 text-gray-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M9 5l7 7-7 7"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-
-                  {/* Value and Title */}
-                  <div className="space-y-2">
-                    <h3
-                      className={`text-6xl font-black bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent transform group-hover:scale-105 transition-transform duration-300`}
+                  </TableCell>
+                  <TableCell>
+                    <div className="font-bold text-slate-900">{contact.name}</div>
+                    <div className="text-xs text-blue-600 font-medium">{contact.email}</div>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary" className="bg-slate-100 text-slate-700 hover:bg-slate-200 border-none px-3">
+                      {contact.messageTitle || "General Inquiry"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-center">
+                    <Badge className="bg-emerald-50 text-emerald-700 border-emerald-100">Received</Badge>
+                  </TableCell>
+                  <TableCell className="text-right pr-6 space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleOpenView(contact)}
+                      className="border-blue-200 text-blue-700 hover:bg-blue-50 rounded-xl"
                     >
-                      {stat.value}
-                    </h3>
-                    <p className="text-base font-bold text-gray-600 tracking-wide uppercase">
-                      {stat.title}
-                    </p>
-                  </div>
-
-                  {/* Bottom Accent Bar */}
-                  <div className="absolute bottom-0 left-0 right-0">
-                    <div
-                      className={`h-2 bg-gradient-to-r ${stat.gradient} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`}
-                    />
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
+                      <Eye className="h-4 w-4 mr-1.5" /> View
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => handleOpenReply(contact)}
+                      className="bg-blue-900 hover:bg-blue-800 rounded-xl"
+                    >
+                      <Reply className="h-4 w-4 mr-1.5" /> Reply
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
       </div>
 
-      {/* Info Section */}
-      <div className="p-6 bg-white rounded-2xl shadow-lg border border-blue-100">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center">
-            <svg
-              className="w-6 h-6 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
+      {/* VIEW DIALOG */}
+      <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
+        <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden rounded-3xl border-none">
+          <div className="bg-blue-900 p-6 text-white flex items-center justify-between">
+            <div className="flex items-center gap-3">
+               <div className="bg-white/20 p-2 rounded-xl"><Eye className="h-6 w-6" /></div>
+               <DialogTitle className="text-xl font-bold">Inquiry Details</DialogTitle>
+            </div>
+            <Badge className="bg-white text-blue-900">Ref: {selectedContact?._id.slice(-6).toUpperCase()}</Badge>
           </div>
-          <h3 className="text-2xl font-bold text-gray-900">Quick Info</h3>
-        </div>
-        <p className="text-gray-600 text-lg leading-relaxed">
-          Click on any card above to navigate to the respective section. The data is fetched in real-time from your database and updated automatically.
-        </p>
-      </div>
+
+          <div className="p-8 space-y-6">
+            <div className="grid grid-cols-2 gap-6 pb-6 border-b border-slate-100">
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Customer</p>
+                <div className="flex items-center gap-2 font-bold text-blue-900"><User className="h-4 w-4" /> {selectedContact?.name}</div>
+              </div>
+              <div className="space-y-1">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Phone</p>
+                <div className="flex items-center gap-2 font-bold text-slate-700"><Phone className="h-4 w-4" /> {selectedContact?.phone}</div>
+              </div>
+              <div className="col-span-2 space-y-1">
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Email Address</p>
+                <div className="flex items-center gap-2 font-bold text-blue-600"><Mail className="h-4 w-4" /> {selectedContact?.email}</div>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-sm font-bold text-slate-700">Message Content</p>
+              <ScrollArea className="h-40 bg-slate-50 p-4 rounded-2xl border border-slate-200">
+                <p className="text-slate-600 leading-relaxed font-medium">
+                  {selectedContact?.message}
+                </p>
+              </ScrollArea>
+            </div>
+          </div>
+          
+          <DialogFooter className="p-6 bg-slate-50 border-t flex justify-end">
+            <Button onClick={() => setIsViewOpen(false)} className="bg-blue-900 rounded-xl px-10">
+              Close
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* REPLY DIALOG */}
+      <Dialog open={isReplyOpen} onOpenChange={setIsReplyOpen}>
+        <DialogContent className="sm:max-w-[550px] rounded-3xl p-0 overflow-hidden border-none">
+          <DialogHeader className="bg-blue-900 p-6 text-white">
+            <DialogTitle className="text-xl font-bold">Official Response</DialogTitle>
+            <DialogDescription className="text-blue-100">
+              Replying to: <span className="font-bold text-white">{selectedContact?.name}</span>
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="p-6 space-y-4">
+            <div className="bg-slate-50 p-4 rounded-2xl border-l-4 border-blue-900 italic text-slate-600 text-sm">
+              "{selectedContact?.message}"
+            </div>
+            
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">Message Body</label>
+              <Textarea
+                value={responseMessage}
+                onChange={(e) => setResponseMessage(e.target.value)}
+                placeholder="Type your reply here..."
+                className="min-h-[200px] rounded-2xl border-slate-200 focus:ring-blue-900 resize-none p-4"
+              />
+            </div>
+          </div>
+
+          <DialogFooter className="p-6 flex gap-3">
+            <Button variant="ghost" onClick={() => setIsReplyOpen(false)} disabled={sending} className="rounded-xl">
+              Discard
+            </Button>
+            <Button 
+              onClick={handleSendResponse} 
+              disabled={sending} 
+              className="bg-blue-900 hover:bg-blue-800 rounded-xl px-8 flex-1 sm:flex-none"
+            >
+              {sending ? <Loader2 className="animate-spin h-4 w-4" /> : <><Send className="mr-2 h-4 w-4" /> Send Email</>}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

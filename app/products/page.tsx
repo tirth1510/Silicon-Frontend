@@ -1,11 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useEffect, useState, useMemo, Suspense } from "react";
+import { useEffect, useState, useMemo, Suspense, useRef } from "react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ShoppingBag, Eye, MessageCircle, X } from "lucide-react";
-import { useCategoryBySlug } from "@/hooks/useCategories";
+import { 
+  ShoppingBag, Eye, MessageCircle, X, Search, 
+  LayoutGrid, List, ChevronRight, Filter, ChevronDown,
+  Loader2, SendHorizontal
+} from "lucide-react";
+import { toast } from "sonner";
+import axios from "axios";
+import { useCategoryBySlug, useCategories } from "@/hooks/useCategories";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,28 +21,9 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 /* ---------- TYPES ---------- */
-type Color = {
-  colorName: string;
-  imageUrl?: string;
-  productImageUrl?: { url: string }[];
-  stock?: number;
-};
-
-type ProductModelDetails = {
-  colors: Color[];
-};
-
-type ProductFromAPI = {
-  _id: string;
-  modelId: string;
-  productTitle: string;
-  modelName: string;
-  productCategory: string;
-  productModelDetails?: ProductModelDetails;
-};
-
 type ProductForList = {
   id: string;
   modelId: string;
@@ -46,349 +33,332 @@ type ProductForList = {
   image: string;
 };
 
-/* ---------- COMPONENT ---------- */
 function ProductsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const categorySlug = searchParams?.get("category") || null;
 
   const [products, setProducts] = useState<ProductForList[]>([]);
+  const [layout, setLayout] = useState<"grid" | "list">("grid");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const [open, setOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<ProductForList | null>(
-    null,
-  );
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<ProductForList | null>(null);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "" });
+  const [submitting, setSubmitting] = useState(false);
+  
+  // Ref for handling clicks outside the search area
+  const searchContainerRef = useRef<HTMLDivElement>(null);
 
-  const [form, setForm] = useState({
-    name: "",
-    address: "",
-  });
+  const { category, loading: categoryLoading } = useCategoryBySlug(categorySlug || undefined);
+  const { categories } = useCategories();
 
-  const WHATSAPP_NUMBER = "918160496588"; // with country code
+  const FALLBACK_IMAGE = "https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg";
 
-  // Static fallback image when API doesn't provide one
-  const FALLBACK_IMAGE =
-    "https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg";
-
-  // Fetch category info if category slug is provided
-  const { category, loading: categoryLoading } = useCategoryBySlug(
-    categorySlug || undefined,
-  );
-
-  /* ---------- FETCH PRODUCTS ---------- */
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo/products-with-models`,
-        );
-
-        if (!res.ok) {
-          console.error(`API Error: ${res.status} ${res.statusText}`);
-          return;
-        }
-
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo/products-with-models`);
         const data = await res.json();
-
         if (data.success && Array.isArray(data.data)) {
-          const mapped = data.data.map((product: ProductFromAPI) => {
-            // Get first color from productModelDetails
-            const firstColor = product.productModelDetails?.colors?.[0];
-
-            return {
-              id: product._id,
-              modelId: product.modelId,
-              title: product.productTitle,
-              modelName: product.modelName,
-              category: product.productCategory,
-              image:
-                firstColor?.imageUrl ||
-                firstColor?.productImageUrl?.[0]?.url ||
-                FALLBACK_IMAGE,
-            };
-          });
-
+          const mapped = data.data.map((product: any) => ({
+            id: product._id,
+            modelId: product.modelId,
+            title: product.productTitle,
+            modelName: product.modelName,
+            category: product.productCategory,
+            image: product.productModelDetails?.colors?.[0]?.imageUrl || 
+                   product.productModelDetails?.colors?.[0]?.productImageUrl?.[0]?.url || 
+                   FALLBACK_IMAGE,
+          }));
           setProducts(mapped);
-        } else {
-          console.error("Invalid API response format:", data);
         }
       } catch (error) {
         console.error("Failed to fetch products:", error);
       }
     };
-
     fetchProducts();
   }, []);
 
-  /* ---------- WHATSAPP SEND ---------- */
-  const sendWhatsApp = () => {
-    if (!selectedProduct) return;
+  // Close suggestions when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target as Node)) {
+        setShowSuggestions(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
-    const message = `
-Hello Meditech,
+  // Filter Logic for Main Content
+  const filteredProducts = useMemo(() => {
+    let result = products;
+    if (categorySlug && category) {
+      result = result.filter((p) => String(p.category) === String(category.categoryId));
+    }
+    if (searchQuery) {
+      result = result.filter((p) => 
+        p.modelName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        p.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    return result;
+  }, [products, category, categorySlug, searchQuery]);
 
-Client Name: ${form.name}
-Address: ${form.address}
+  // Logic for the Suggestions Dropdown
+  const searchSuggestions = useMemo(() => {
+    if (!searchQuery.trim()) return [];
+    return products
+      .filter(p => p.modelName.toLowerCase().includes(searchQuery.toLowerCase()))
+      .slice(0, 5); // Show top 5 matches
+  }, [searchQuery, products]);
 
-Product Model: ${selectedProduct.modelName}
-Product Image: ${selectedProduct.image}
-    `;
+  const groupedProducts = useMemo(() => {
+    const groups: Record<string, ProductForList[]> = {};
+    filteredProducts.forEach((p) => {
+      if (!groups[p.title]) groups[p.title] = [];
+      groups[p.title].push(p);
+    });
+    return groups;
+  }, [filteredProducts]);
 
-    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-      message,
-    )}`;
-
-    window.open(url, "_blank");
-    setOpen(false);
-  };
-
-  // Filter products by category
-  const visibleProducts = useMemo(() => {
-    if (!categorySlug || !category) {
-      return products; // Show all products if no category filter
+  const handleSubmitEnquiry = async () => {
+    if (!form.name || !form.phone || !form.email) {
+      toast.error("Please fill in all required fields");
+      return;
     }
 
-    // Filter products where productCategory matches categoryId
-    // Convert both to strings for comparison to handle any type mismatches
-    return products.filter(
-      (product) => String(product.category) === String(category.categoryId),
-    );
-  }, [products, category, categorySlug]);
+    try {
+      setSubmitting(true);
 
-  // Clear category filter
-  const clearCategoryFilter = () => {
-    router.push("/products");
+      const payload = {
+        productTitle: selectedProduct?.modelName,
+        modelName: selectedProduct?.modelName,
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        messageTitle: `Enquiry for ${selectedProduct?.modelName}`,
+        message: `${form.address}`,
+        enquiryType: "Product",
+        productImageUrl: selectedProduct?.image || FALLBACK_IMAGE,
+      };
+
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/product-enquiry`,
+        payload,
+      );
+
+      if (res.data.success) {
+        toast.success("Enquiry sent! Our team will contact you soon.");
+        setOpen(false);
+        setForm({ name: "", email: "", phone: "", address: "" });
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to send enquiry");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
-    <section className="relative bg-white py-20 overflow-hidden min-h-screen">
-      {/* Subtle Background Pattern */}
-      <div className="absolute inset-0 opacity-[0.03]">
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, rgb(30 58 138) 1px, transparent 0)`,
-            backgroundSize: "40px 40px",
-          }}
-        ></div>
-      </div>
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
-        {/* SECTION HEADER */}
-        <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg mb-5 border border-blue-100">
-            <ShoppingBag className="w-4 h-4 text-blue-900" />
-            <span className="text-sm font-semibold text-blue-900">
-              {category ? category.categoryName : "Complete Collection"}
-            </span>
-          </div>
-
-          <h2 className="text-4xl sm:text-5xl font-bold text-blue-900 mb-4">
-            {category ? category.categoryName : "All Medical Equipment"}
-          </h2>
-
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {category
-              ? category.categoryDescription ||
-                "Browse products in this category"
-              : "Browse our complete range of high-quality medical equipment and devices"}
-          </p>
+    <section className="bg-slate-50 min-h-screen pb-20 pt-28">
+      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div className="mb-8">
+            <h1 className="text-3xl font-bold text-blue-900 mb-2 capitalize">
+                {category ? category.categoryName : "Medical Equipment Catalog"}
+            </h1>
+            <p className="text-slate-500 text-sm italic">Showing {filteredProducts.length} items</p>
         </div>
 
-        {/* Active Category Filter Badge */}
-        {category && (
-          <div className="mb-6 flex justify-center items-center gap-4">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-900 text-white rounded-lg shadow-md">
-              <span className="text-sm font-semibold">
-                Filtered by: {category.categoryName}
-              </span>
-              <button
-                onClick={clearCategoryFilter}
-                className="ml-2 p-1 hover:bg-blue-800 rounded transition-colors"
-                aria-label="Clear filter"
-              >
-                <X className="w-4 h-4" />
-              </button>
+        {/* TOP TOOLBAR */}
+        <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-6 flex flex-col gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            
+            {/* SEARCH BAR WITH SUGGESTION DROPDOWN */}
+            <div className="relative flex-1 min-w-[280px]" ref={searchContainerRef}>
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Input 
+                  placeholder="Search by model name..." 
+                  className="pl-10 border-none bg-slate-50 focus:ring-blue-900 rounded-xl"
+                  value={searchQuery}
+                  onFocus={() => setShowSuggestions(true)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setShowSuggestions(true);
+                  }}
+                />
+
+                {/* SUGGESTIONS DROPDOWN */}
+                {showSuggestions && searchSuggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-100 shadow-xl rounded-2xl z-[100] overflow-hidden animate-in fade-in slide-in-from-top-2">
+                    <div className="px-4 py-2 bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                      Suggested Results
+                    </div>
+                    {searchSuggestions.map((item) => (
+                      <button
+                        key={item.id}
+                        className="w-full flex items-center gap-4 px-4 py-3 hover:bg-blue-50 transition-colors text-left border-b border-slate-50 last:border-none"
+                        onClick={() => {
+                          setSearchQuery(item.modelName);
+                          setShowSuggestions(false);
+                        }}
+                      >
+                        <div className="relative w-10 h-10 bg-slate-100 rounded-lg overflow-hidden shrink-0">
+                          <Image src={item.image} alt="" fill className="object-contain p-1" unoptimized />
+                        </div>
+                        <div className="flex-1 overflow-hidden">
+                          <p className="text-sm font-bold text-blue-900 truncate">{item.modelName}</p>
+                          <p className="text-[10px] text-slate-400 uppercase">{item.title}</p>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-slate-300" />
+                      </button>
+                    ))}
+                  </div>
+                )}
             </div>
-            <div className="text-sm text-gray-600 font-medium">
-              {visibleProducts.length}{" "}
-              {visibleProducts.length === 1 ? "product" : "products"} found
+
+            <div className="flex items-center gap-2">
+                <Button 
+                    variant="outline" 
+                    className={cn("rounded-xl gap-2 border-slate-200", isFilterOpen && "bg-blue-50 border-blue-200 text-blue-900")}
+                    onClick={() => setIsFilterOpen(!isFilterOpen)}
+                >
+                    <Filter className="w-4 h-4" />
+                    Filter Categories
+                    <ChevronDown className={cn("w-4 h-4 transition-transform", isFilterOpen && "rotate-180")} />
+                </Button>
+
+                <div className="flex bg-slate-100 p-1 rounded-xl">
+                    <button onClick={() => setLayout("grid")} className={cn("p-2 rounded-lg", layout === "grid" ? "bg-white shadow-sm text-blue-900" : "text-slate-500")}>
+                        <LayoutGrid className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => setLayout("list")} className={cn("p-2 rounded-lg", layout === "list" ? "bg-white shadow-sm text-blue-900" : "text-slate-500")}>
+                        <List className="w-4 h-4" />
+                    </button>
+                </div>
             </div>
           </div>
-        )}
 
-        {/* Loading State for Category */}
-        {categoryLoading && categorySlug && (
-          <div className="flex justify-center items-center py-10">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900"></div>
-          </div>
-        )}
-
-        {/* No Products Found */}
-        {!categoryLoading &&
-          categorySlug &&
-          category &&
-          visibleProducts.length === 0 && (
-            <div className="text-center py-20">
-              <ShoppingBag className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-2">
-                No products found in this category
-              </h3>
-              <p className="text-gray-600 mb-4">
-                &quot;We couldn&apos;t find any products matching{" "}
-                {category.categoryName}&quot;
-              </p>
-              <button
-                onClick={clearCategoryFilter}
-                className="px-6 py-2 bg-blue-900 text-white rounded-lg hover:bg-blue-800 transition-colors font-semibold"
-              >
-                View All Products
-              </button>
+          {/* COLLAPSIBLE CATEGORIES */}
+          {isFilterOpen && (
+            <div className="pt-4 border-t border-slate-100 flex flex-wrap gap-2 animate-in fade-in slide-in-from-top-2">
+                <Button 
+                    variant={!categorySlug ? "default" : "outline"} 
+                    className={cn("rounded-full px-5 text-xs h-8", !categorySlug ? "bg-blue-900" : "border-slate-200 text-slate-600")}
+                    onClick={() => router.push("/products")}
+                >
+                    All Collection
+                </Button>
+                {categories?.map((cat: any) => (
+                    <Button 
+                        key={cat._id}
+                        variant={categorySlug === cat.categorySlug ? "default" : "outline"} 
+                        className={cn("rounded-full px-5 text-xs h-8", categorySlug === cat.categorySlug ? "bg-blue-900" : "border-slate-200 text-slate-600")}
+                        onClick={() => router.push(`/products?category=${cat.categorySlug}`)}
+                    >
+                        {cat.categoryName}
+                    </Button>
+                ))}
             </div>
           )}
+        </div>
 
-        {/* ---------- PRODUCT GRID ---------- */}
-        {!categoryLoading && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {visibleProducts.map((product, index) => (
-              <div
-                key={`${product.id}-${index}`}
-                className="group bg-white rounded-xl overflow-hidden border border-gray-200 
-                         hover:border-blue-900 hover:shadow-lg transition-all duration-300"
-              >
-                {/* Image Section */}
-                <div className="relative h-48 bg-gray-50 overflow-hidden">
-                  <Image
-                    src={product.image || FALLBACK_IMAGE}
-                    alt={product.title}
-                    fill
-                    unoptimized
-                    className="object-contain p-2 group-hover:scale-110 transition-transform duration-300"
-                  />
-
-                  {/* Category Badge */}
-                  <div className="absolute top-2 left-2">
-                    <span
-                      className="inline-block px-2.5 py-1 text-[10px] font-semibold text-white bg-blue-900 
-                                 rounded-md shadow-md"
-                    >
-                      {product.category}
+        {/* MAIN CONTENT AREA */}
+        <div className="w-full">
+            {Object.keys(groupedProducts).length > 0 ? (
+                Object.entries(groupedProducts).map(([title, items]) => (
+                <div key={title} className="mb-12">
+                    <div className="flex items-center gap-3 mb-6">
+                    <h2 className="text-xl font-bold text-blue-900 uppercase tracking-tight">{title}</h2>
+                    <div className="h-[1px] flex-1 bg-slate-200" />
+                    <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                        {items.length} MODELS
                     </span>
-                  </div>
-                </div>
+                    </div>
 
-                {/* Content Section */}
-                <div className="p-4">
-                  {/* Model Name */}
-                  <h3 className="text-sm font-semibold text-gray-900 mb-1 line-clamp-2 h-10">
-                    {product.title}
-                  </h3>
-                  <h3 className="py-1 font-bold  text-blue-900">
-                    {product.modelName}
-                  </h3>
-
-                  {/* Action Buttons */}
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() =>
-                        router.push(`/products/${product.modelId}`)
-                      }
-                      className="flex-1 px-3 py-2 bg-blue-900 text-white text-xs font-semibold rounded-lg
-                             hover:bg-blue-800 transition-all duration-200 flex items-center justify-center gap-1.5"
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>View</span>
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setSelectedProduct(product);
-                        setOpen(true);
-                      }}
-                      className="flex-1 px-3 py-2 border-2 border-blue-900 text-blue-900 text-xs font-semibold rounded-lg
-                             hover:bg-blue-900 hover:text-white transition-all duration-200 flex items-center justify-center gap-1.5"
-                    >
-                      <MessageCircle className="w-3.5 h-3.5" />
-                      <span>Contact</span>
-                    </button>
-                  </div>
+                    <div className={cn(
+                    layout === "grid" 
+                        ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
+                        : "space-y-4"
+                    )}>
+                    {items.map((product) => (
+                        <ProductCard 
+                        key={product.id} 
+                        product={product} 
+                        layout={layout} 
+                        onContact={() => { setSelectedProduct(product); setOpen(true); }}
+                        router={router}
+                        />
+                    ))}
+                    </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+                ))
+            ) : (
+                <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
+                <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-slate-600 tracking-tight">No equipment found matching your criteria</h3>
+                </div>
+            )}
+        </div>
       </div>
 
-      {/* ---------- CONTACT DIALOG ---------- */}
+      {/* ENQUIRY DIALOG */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-md rounded-xl border border-gray-200 shadow-xl">
-          <DialogHeader className="pb-4">
-            <DialogTitle className="text-2xl font-bold text-blue-900">
-              Product Enquiry
-            </DialogTitle>
+        <DialogContent className="sm:max-w-md rounded-3xl border-none shadow-2xl">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold text-blue-900">Enquire for Equipment</DialogTitle>
           </DialogHeader>
-
           {selectedProduct && (
-            <div className="space-y-4">
-              {/* Product Info */}
-              <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                <p className="text-sm text-gray-600 mb-1">Product Model</p>
-                <p className="font-bold text-blue-900">
-                  {selectedProduct.modelName}
-                </p>
-              </div>
-
-              {/* Form Fields */}
-              <div className="space-y-3">
-                <div>
-                  <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
-                    Name
-                  </label>
-                  <Input
-                    placeholder="Your name"
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    className="border-gray-300 focus:border-blue-900"
-                  />
+            <div className="space-y-4 mt-2">
+                <div className="flex items-center gap-4 bg-blue-50 p-3 rounded-2xl border border-blue-100">
+                    <div className="relative w-16 h-16 bg-white rounded-xl overflow-hidden shrink-0 border border-blue-100">
+                        <Image src={selectedProduct.image} alt="" fill className="object-contain p-1" unoptimized />
+                    </div>
+                    <div>
+                        <p className="text-[10px] font-bold text-blue-600 uppercase">Product Details</p>
+                        <h4 className="font-bold text-blue-900">{selectedProduct.modelName}</h4>
+                        <p className="text-xs text-slate-500">{selectedProduct.title}</p>
+                    </div>
                 </div>
-
-                <div>
-                  <label className="text-sm font-semibold text-gray-700 mb-1.5 block">
-                    Address
-                  </label>
-                  <Textarea
-                    placeholder="Your address"
-                    rows={3}
-                    onChange={(e) =>
-                      setForm({ ...form, address: e.target.value })
-                    }
-                    className="border-gray-300 focus:border-blue-900 resize-none"
-                  />
+                
+                <div className="space-y-3">
+                    <Input 
+                        placeholder="Full Name" 
+                        onChange={(e) => setForm({...form, name: e.target.value})} 
+                        className="rounded-xl border-slate-200 focus:ring-blue-900"
+                    />
+                    <Input 
+                        placeholder="Email Address" 
+                        type="email"
+                        value={form.email}
+                        onChange={(e) => setForm({...form, email: e.target.value})} 
+                        className="rounded-xl border-slate-200 focus:ring-blue-900"
+                    />
+                    <Input 
+                        placeholder="Phone Number" 
+                        value={form.phone}
+                        onChange={(e) => setForm({...form, phone: e.target.value})} 
+                        className="rounded-xl border-slate-200 focus:ring-blue-900"
+                    />
+                    <Textarea 
+                        placeholder="Delivery Address / Additional Requirements" 
+                        rows={3} 
+                        value={form.address}
+                        onChange={(e) => setForm({...form, address: e.target.value})} 
+                        className="rounded-xl border-slate-200 focus:ring-blue-900 resize-none"
+                    />
                 </div>
-              </div>
-
-              {/* Action Buttons */}
-              <div className="flex flex-col gap-2 pt-2">
-                <Button
-                  onClick={sendWhatsApp}
-                  className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-5 rounded-lg transition-all duration-200 flex items-center justify-center gap-2"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                  </svg>
-                  Send on WhatsApp
+                <Button className="w-full bg-blue-900 hover:bg-blue-800 py-6 rounded-2xl font-bold gap-2 text-md" onClick={handleSubmitEnquiry} disabled={submitting}>
+                    {submitting ? (
+                      <Loader2 className="animate-spin h-5 w-5" />
+                    ) : (
+                      <SendHorizontal className="w-5 h-5" />
+                    )}
+                    {submitting ? "Sending..." : "Submit Enquiry"}
                 </Button>
-
-                <Button
-                  variant="outline"
-                  onClick={() => setOpen(false)}
-                  className="w-full border-2 border-gray-300 hover:border-blue-900 hover:bg-blue-50 text-gray-700 hover:text-blue-900 font-semibold py-5 rounded-lg transition-all duration-200"
-                >
-                  Cancel
-                </Button>
-              </div>
             </div>
           )}
         </DialogContent>
@@ -397,15 +367,54 @@ Product Image: ${selectedProduct.image}
   );
 }
 
+function ProductCard({ product, layout, onContact, router }: any) {
+  if (layout === "list") {
+    return (
+      <div className="group bg-white p-4 rounded-2xl border border-slate-200 hover:border-blue-900 flex flex-col sm:flex-row items-center gap-6 transition-all shadow-sm hover:shadow-md">
+        <div className="relative w-24 h-24 bg-slate-50 rounded-xl shrink-0 overflow-hidden">
+          <Image src={product.image} alt={product.modelName} fill className="object-contain p-2" unoptimized />
+        </div>
+        <div className="flex-1 text-center sm:text-left">
+          <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{product.title}</p>
+          <h4 className="font-bold text-blue-900 text-lg leading-tight">{product.modelName}</h4>
+        </div>
+        <div className="flex gap-2 w-full sm:w-auto">
+          <Button variant="outline" className="flex-1 rounded-xl border-slate-200 h-10" onClick={() => router.push(`/products/${product.modelId}`)}>
+            Details
+          </Button>
+          <Button className="flex-1 bg-blue-900 rounded-xl h-10 px-6 font-bold" onClick={onContact}>
+            Get Enquiry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200 hover:shadow-xl hover:border-blue-900 transition-all duration-300">
+      <div className="relative h-52 bg-white overflow-hidden">
+        <Image src={product.image} alt={product.modelName} fill className="object-contain p-6 group-hover:scale-105 transition-transform duration-500" unoptimized />
+      </div>
+      <div className="p-5 border-t border-slate-50">
+        <p className="text-[10px] uppercase tracking-widest text-blue-600 font-bold mb-1">{product.title}</p>
+        <h4 className="text-md font-bold text-blue-900 mb-4 h-10 line-clamp-2 leading-tight">{product.modelName}</h4>
+        <div className="flex flex-col gap-2">
+          <Button className="w-full bg-blue-900 hover:bg-blue-800 h-9 text-xs font-bold rounded-xl" onClick={() => router.push(`/products/${product.modelId}`)}>
+            View Details
+          </Button>
+          <Button variant="ghost" className="w-full h-9 text-blue-900 text-xs font-bold bg-blue-50 hover:bg-blue-100 rounded-xl gap-2" onClick={onContact}>
+            <MessageCircle className="w-4 h-4" />
+            Get Enquiry
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AllProductsPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="flex justify-center items-center min-h-screen">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900"></div>
-        </div>
-      }
-    >
+    <Suspense fallback={<div className="flex justify-center items-center min-h-screen"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900" /></div>}>
       <ProductsContent />
     </Suspense>
   );

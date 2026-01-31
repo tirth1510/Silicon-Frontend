@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable react/jsx-no-undef */
 /* eslint-disable react/no-unescaped-entities */
 "use client";
@@ -6,7 +7,6 @@ import { useState, useEffect } from "react";
 import {
   Search,
   X,
-  User,
   ChevronDown,
   Package,
   LogIn,
@@ -17,14 +17,13 @@ import {
   LayoutDashboard,
   LogOut,
   MoreVertical,
+  Layers,
 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
@@ -97,6 +96,28 @@ export default function Navbar() {
                 <Link href="/" className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all ${isActive("/") ? "bg-white text-blue-700 shadow-sm" : "text-gray-600 hover:text-blue-600"}`}>
                   Home
                 </Link>
+
+                {/* Simplified Products Dropdown */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger className={`flex items-center gap-1 px-4 py-2 text-sm font-semibold rounded-xl transition-all outline-none ${isActive("/products") ? "bg-white text-blue-700 shadow-sm" : "text-gray-600 hover:text-blue-600"}`}>
+                    Products <ChevronDown className="h-3.5 w-3.5" />
+                  </DropdownMenuTrigger>
+                  
+                  <DropdownMenuContent align="start" className="w-48 rounded-xl shadow-xl p-2 bg-white border border-gray-100">
+                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer py-2 px-3">
+                      <Link href="/products" className="w-full font-medium flex items-center gap-2">
+                        <Package className="w-4 h-4 text-blue-600" /> All Products
+                      </Link>
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer py-2 px-3">
+                      <Link href="/products/accessories" className="w-full font-medium flex items-center gap-2">
+                        <Layers className="w-4 h-4 text-blue-600" /> Accessories
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
                 <Link href="/about" className={`px-4 py-2 text-sm font-semibold rounded-xl transition-all ${isActive("/about") ? "bg-white text-blue-700 shadow-sm" : "text-gray-600 hover:text-blue-600"}`}>
                   About
                 </Link>
@@ -111,7 +132,6 @@ export default function Navbar() {
                   <SearchProducts />
                 </div>
 
-                {/* Desktop Account Logic */}
                 <div className="hidden sm:flex items-center">
                   {loading ? (
                     <NavbarLoader />
@@ -125,14 +145,12 @@ export default function Navbar() {
                         <ChevronDown className="h-3.5 w-3.5 text-blue-400" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-56 mt-2 rounded-2xl shadow-xl p-2">
-                        <DropdownMenuLabel className="text-xs font-bold text-gray-400 uppercase px-2">Account Settings</DropdownMenuLabel>
                         {profile?.role === "admin" && (
                           <DropdownMenuItem onClick={() => router.push("/dashboard")} className="rounded-lg py-2.5 cursor-pointer">
                             <LayoutDashboard className="h-4 w-4 mr-2" /> Dashboard
                           </DropdownMenuItem>
                         )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={handleLogout} className="text-red-600 rounded-lg py-2.5 font-semibold cursor-pointer focus:bg-red-50 focus:text-red-700">
+                        <DropdownMenuItem onClick={handleLogout} className="text-red-600 rounded-lg py-2.5 font-semibold cursor-pointer">
                           <LogOut className="h-4 w-4 mr-2" /> Logout
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -153,12 +171,11 @@ export default function Navbar() {
                   )}
                 </div>
 
-                {/* Mobile Toggle Icons */}
                 <div className="flex md:hidden items-center gap-2">
-                  <button onClick={() => { setSearchOpen(!searchOpen); setMobileMenu(false); }} className={`p-2 rounded-xl transition-all ${searchOpen ? 'bg-blue-700 text-white shadow-md' : 'bg-gray-100 text-gray-600'}`}>
+                  <button onClick={() => { setSearchOpen(!searchOpen); setMobileMenu(false); }} className={`p-2 rounded-xl transition-all ${searchOpen ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-600'}`}>
                     {searchOpen ? <X size={20} /> : <Search size={20} />}
                   </button>
-                  <button onClick={() => { setMobileMenu(!mobileMenu); setSearchOpen(false); }} className={`p-2 rounded-xl transition-all ${mobileMenu ? 'bg-blue-700 text-white shadow-md' : 'bg-gray-100 text-gray-600'}`}>
+                  <button onClick={() => { setMobileMenu(!mobileMenu); setSearchOpen(false); }} className={`p-2 rounded-xl transition-all ${mobileMenu ? 'bg-blue-700 text-white' : 'bg-gray-100 text-gray-600'}`}>
                     {mobileMenu ? <X size={20} /> : <MoreVertical size={20} />}
                   </button>
                 </div>
@@ -169,71 +186,38 @@ export default function Navbar() {
 
         {/* Mobile Search Overlay */}
         {searchOpen && (
-          <div className="md:hidden border-t border-gray-100 bg-white p-4 animate-in slide-in-from-top duration-300">
+          <div className="md:hidden border-t border-gray-100 bg-white p-4">
             <SearchProducts />
           </div>
         )}
 
         {/* Mobile Menu Overlay */}
         {mobileMenu && (
-          <div className="md:hidden border-t border-gray-100 bg-white animate-in slide-in-from-top duration-300 shadow-2xl">
-            <div className="p-4 space-y-4">
-              {isAuthenticated ? (
-                <div className="flex items-center gap-3 p-4 bg-blue-50 rounded-2xl">
-                  <div className="h-12 w-12 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold text-lg uppercase">
-                    {profile?.username?.charAt(0)}
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-blue-900 leading-tight">{profile?.username}</p>
-                    <p className="text-[10px] text-blue-600 font-bold uppercase tracking-wider">{profile?.role}</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-4 bg-gray-50 rounded-2xl text-center border border-dashed border-gray-200">
-                   <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">Welcome Guest</p>
+          <div className="md:hidden border-t border-gray-100 bg-white shadow-2xl">
+            <div className="p-4 space-y-2">
+              <Link href="/" onClick={() => setMobileMenu(false)} className={`flex items-center gap-3 p-3 rounded-xl font-medium ${isActive("/") ? "bg-blue-50 text-blue-700" : "text-gray-700"}`}>
+                <Home size={18} /> Home
+              </Link>
+              <Link href="/products" onClick={() => setMobileMenu(false)} className={`flex items-center gap-3 p-3 rounded-xl font-medium ${isActive("/products") ? "bg-blue-50 text-blue-700" : "text-gray-700"}`}>
+                <Package size={18} /> Products
+              </Link>
+              <Link href="/products/accessories" onClick={() => setMobileMenu(false)} className={`flex items-center gap-3 p-3 rounded-xl font-medium ${isActive("/products/accessories") ? "bg-blue-50 text-blue-700" : "text-gray-700"}`}>
+                <Layers size={18} /> Accessories
+              </Link>
+              <Link href="/about" onClick={() => setMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl font-medium text-gray-700">
+                <Info size={18} /> About Us
+              </Link>
+              <Link href="/contact" onClick={() => setMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl font-medium text-gray-700">
+                <Mail size={18} /> Contact Us
+              </Link>
+              
+              {!isAuthenticated && (
+                <div className="pt-4 border-t border-gray-100 flex gap-2">
+                   <Button asChild className="flex-1 bg-blue-700 rounded-xl">
+                      <Link href="/login" onClick={() => setMobileMenu(false)}>Login</Link>
+                   </Button>
                 </div>
               )}
-
-              <div className="grid grid-cols-1 gap-1">
-                <Link href="/" onClick={() => setMobileMenu(false)} className={`flex items-center gap-3 p-3 rounded-xl font-medium ${isActive("/") ? "bg-blue-50 text-blue-700" : "text-gray-700"}`}>
-                  <Home size={18} /> Home
-                </Link>
-                <Link href="/products" onClick={() => setMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl font-medium text-gray-700 hover:bg-gray-50">
-                  <Package size={18} /> Products
-                </Link>
-                <Link href="/about" onClick={() => setMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl font-medium text-gray-700 hover:bg-gray-50">
-                  <Info size={18} /> About Us
-                </Link>
-                <Link href="/contact" onClick={() => setMobileMenu(false)} className="flex items-center gap-3 p-3 rounded-xl font-medium text-gray-700 hover:bg-gray-50">
-                  <Mail size={18} /> Contact Us
-                </Link>
-                {profile?.role === "admin" && (
-                  <Link href="/dashboard" onClick={() => setMobileMenu(false)} className="flex items-center gap-3 p-3 bg-blue-900 text-white rounded-xl font-bold shadow-sm transition-all hover:bg-blue-950">
-                    <LayoutDashboard size={18} /> Admin Dashboard
-                  </Link>
-                )}
-              </div>
-
-              <div className="pt-4 border-t border-gray-100">
-                {isAuthenticated ? (
-                  <Button onClick={handleLogout} variant="destructive" className="w-full rounded-xl py-6 font-bold text-base shadow-sm">
-                    <LogOut className="h-5 w-5 mr-2" /> Logout
-                  </Button>
-                ) : (
-                  <div className="flex gap-3">
-                    <Button asChild className="flex-1 bg-blue-700 hover:bg-blue-800 rounded-xl py-6 font-bold shadow-md">
-                      <Link href="/login" onClick={() => setMobileMenu(false)}>
-                        <LogIn className="h-5 w-5 mr-2" /> Login
-                      </Link>
-                    </Button>
-                    <Button asChild variant="outline" className="flex-1 border-blue-700 text-blue-700 hover:bg-blue-50 rounded-xl py-6 font-bold">
-                      <Link href="/signup" onClick={() => setMobileMenu(false)}>
-                        <UserPlus className="h-5 w-5 mr-2" /> Sign Up
-                      </Link>
-                    </Button>
-                  </div>
-                )}
-              </div>
             </div>
           </div>
         )}

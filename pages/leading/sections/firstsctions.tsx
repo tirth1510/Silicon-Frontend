@@ -59,7 +59,7 @@ export default function LandingPage() {
     {
       id: 1,
       title: "Healthcare Excellence",
-      subtitle: "Silicon Meditech",
+      subtitle: "Siliconmeditech.PVT.LTD",
       description:
         "Setting the gold standard in medical supply chain management with precision and global reach.",
       image: Company,
@@ -216,56 +216,68 @@ export default function LandingPage() {
       </section>
 
       {/* FEATURES SECTION */}
-      <section className="bg-slate-50 py-20">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="text-center mb-14">
-           <Image src="/logo.png" alt="Features" width={300} height={100} className="mx-auto" />
+     <section className="bg-slate-50 py-20">
+  <div className="max-w-7xl mx-auto px-4">
+    <div className="text-center mb-14">
+      <Image src="/logo.png" alt="Features" width={300} height={100} className="mx-auto" />
+    </div>
+
+    {/* CHANGE 1: Responsive Grid 
+      - Mobile: 1 col (full width cards)
+      - Tablet: 2 cols
+      - Desktop: 3 to 5 cols
+    */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 items-stretch">
+      {features.map((item, idx) => (
+        <div
+          key={idx}
+          className="
+            group bg-white rounded-2xl
+            shadow-md hover:shadow-xl
+            transition-all duration-300
+            overflow-hidden
+            border border-slate-100
+            flex flex-col h-full
+            hover:-translate-y-1
+            max-w-md mx-auto w-full 
+          "
+        >
+          {/* CHANGE 2: Responsive Image Height
+            - h-64 on mobile (much larger/taller)
+            - h-48 on desktop (keeps it compact for 5 cols)
+          */}
+          <div className="relative h-64 md:h-52 lg:h-48 w-full overflow-hidden shrink-0">
+            <Image
+              src={item.imgSrc}
+              alt={item.title}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-110"
+            />
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 items-stretch">
-            {features.map((item, idx) => (
-              <div
-                key={idx}
-                className="
-        group bg-white rounded-2xl
-        shadow-md hover:shadow-xl
-        transition-all duration-300
-        overflow-hidden
-        border border-slate-100
-        flex flex-col h-full
-        hover:-translate-y-1
-      "
-              >
-                {/* Image */}
-                <div className="relative h-48 p-5 w-full overflow-hidden shrink-0">
-                  <Image
-                    src={item.imgSrc}
-                    alt={item.title}
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                </div>
+          {/* Content */}
+          <div className="p-6 flex flex-col flex-1">
+            <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-2">
+              {item.title}
+            </h3>
 
-                {/* Content */}
-                <div className="p-6 flex flex-col flex-1">
-                  <h3 className="text-lg font-bold text-slate-900 mb-2 line-clamp-1">
-                    {item.title}
-                  </h3>
+            {/* CHANGE 3: Improved font size for mobile readability */}
+            <p className="text-slate-500 text-sm leading-relaxed line-clamp-4">
+              {item.desc}
+            </p>
 
-                  <p className="text-slate-500 text-xs leading-relaxed line-clamp-3">
-                    {item.desc}
-                  </p>
-
-                  {/* Optional CTA pinned to bottom */}
-                  {/* <button className="mt-auto pt-4 text-sm font-semibold text-blue-600 hover:underline">
-          Learn more →
-        </button> */}
-                </div>
-              </div>
-            ))}
+            {/* Optional CTA */}
+            <div className="mt-auto pt-6">
+               <span className="text-sm font-semibold text-blue-600 group-hover:translate-x-1 transition-transform inline-block">
+                 Learn more →
+               </span>
+            </div>
           </div>
         </div>
-      </section>
+      ))}
+    </div>
+  </div>
+</section>
 
       <div className="text-center w-full overflow-hidden">
         <ProductCategorySection />
