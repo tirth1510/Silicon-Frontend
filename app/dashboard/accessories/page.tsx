@@ -207,7 +207,6 @@ export default function AccessoriesPage() {
                 <TableHead className="w-28 text-center text-white font-bold text-sm uppercase tracking-wide py-4">Image</TableHead>
                 <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">Product Name</TableHead>
                 <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">Category</TableHead>
-                <TableHead className="w-32 text-center text-white font-bold text-sm uppercase tracking-wide py-4">Price</TableHead>
                 <TableHead className="w-24 text-center text-white font-bold text-sm uppercase tracking-wide py-4">Stock</TableHead>
                 <TableHead className="w-24 text-center text-white font-bold text-sm uppercase tracking-wide py-4">Status</TableHead>
                 <TableHead className="w-24 text-center text-white font-bold text-sm uppercase tracking-wide py-4">
@@ -309,15 +308,6 @@ export default function AccessoriesPage() {
                       </div>
                     </TableCell>
 
-                    <TableCell className="text-center">
-                      {accessory.finalPrice ? (
-                        <div className="font-bold text-blue-900">
-                          ₹{accessory.finalPrice.toLocaleString()}
-                        </div>
-                      ) : (
-                        <span className="text-gray-400 font-medium">-</span>
-                      )}
-                    </TableCell>
 
                     <TableCell className="text-center">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${(accessory.stock ?? 0) > 10

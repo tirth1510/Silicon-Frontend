@@ -219,7 +219,6 @@ export default function ProductsPage() {
                 <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">Product Name</TableHead>
                 <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">Model Name</TableHead>
                 <TableHead className="text-center text-white font-bold text-sm uppercase tracking-wide py-4">Category</TableHead>
-                <TableHead className="w-32 text-center text-white font-bold text-sm uppercase tracking-wide py-4">Price</TableHead>
                 <TableHead className="w-24 text-center text-white font-bold text-sm uppercase tracking-wide py-4">Stock</TableHead>
                 <TableHead className="w-24 text-center text-white font-bold text-sm uppercase tracking-wide py-4">Status</TableHead>
                 <TableHead className="w-24 text-center text-white font-bold text-sm uppercase tracking-wide py-4">
@@ -327,15 +326,7 @@ export default function ProductsPage() {
                       </div>
                     </TableCell>
 
-                    <TableCell className="text-center">
-                      {model.productModelDetails?.colors?.[0]?.colorPrice?.[0]?.finalPrice ? (
-                        <div className="font-bold text-blue-900">
-                          ₹{model.productModelDetails.colors[0].colorPrice[0].finalPrice.toLocaleString()}
-                        </div>
-                      ) : (
-                        <span className="text-gray-400 font-medium">-</span>
-                      )}
-                    </TableCell>
+                    
 
                     <TableCell className="text-center">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${(model.productModelDetails?.colors?.[0]?.stock ?? 0) > 10

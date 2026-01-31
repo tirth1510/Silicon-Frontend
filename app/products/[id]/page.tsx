@@ -5,85 +5,55 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
 import {
   ArrowLeft,
   ShieldCheck,
   Star,
-  Info,
-  Tag,
-  Package,
-  Truck,
   CheckCircle,
   Zap,
   Award,
+  Truck,
   FileText,
+  Loader2,
+  SendHorizontal,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 /* ================= TYPES ================= */
-
 type ImageObj = { url: string };
-
 type Color = {
   colorName: string;
   imageUrl: string;
   productImageUrl: ImageObj[];
-  productGallery: ImageObj[];
   stock: number;
 };
-
-type ProductFeature = {
-  key: string;
-  value: string;
-};
-
-type WarrantyItem = {
-  points: string;
-};
-
-type SpecificationItem = {
-  points: string;
-};
-
-type Schem = {
-  saleProduct: boolean;
-  tradingProduct: boolean;
-  companyProduct: boolean;
-  valuableProduct: boolean;
-  recommendedProduct: boolean;
-  _id?: string;
-};
-
+type ProductFeature = { key: string; value: string };
+type SpecificationItem = { points: string };
 type ProductModelDetails = {
   colors: Color[];
-  specifications: SpecificationItem[];
-  productSpecifications: any[];
   productFeatures: ProductFeature[];
-  productFeaturesIcons: any[];
-  standardParameters: any[];
-  optiomalParameters: any[];
-  warranty: WarrantyItem[];
-  schem: Schem;
+  specifications: SpecificationItem[];
+  schem: { saleProduct: boolean; recommendedProduct: boolean };
 };
-
-type ModelInfo = {
-  modelId: string;
-  modelName: string;
-};
-
 type Product = {
-  productId: string;
   productTitle: string;
-  description?: string;
-  productCategory: string;
-  modelId: string;
   modelName: string;
+  modelId: string;
   status: string;
+  productCategory: string;
+  description: string;
   productModelDetails: ProductModelDetails;
-  allModels?: ModelInfo[];
+  allModels?: { modelId: string; modelName: string }[];
 };
-
-/* ================= COMPONENT ================= */
 
 export default function ProductDetailsPage() {
   const router = useRouter();
@@ -93,328 +63,227 @@ export default function ProductDetailsPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [activeColorIndex, setActiveColorIndex] = useState(0);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
-  const [showRatingInfo, setShowRatingInfo] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  /* ================= API ================= */
+  const [open, setOpen] = useState(false);
+  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "" });
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (!modelId) return;
-
     const fetchProduct = async () => {
       setLoading(true);
       try {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/demo/products/model/${modelId}`
         );
-
         if (res.data?.success) {
           setProduct(res.data.data);
           setActiveColorIndex(0);
         }
       } catch (error) {
-        console.error("Failed to fetch product", error);
+        console.error("Error", error);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProduct();
   }, [modelId]);
 
   const activeModel = product?.productModelDetails;
   const activeColor = activeModel?.colors?.[activeColorIndex];
 
-  // Reset activeColorIndex if it's out of bounds
-  useEffect(() => {
-    if (activeModel?.colors && activeColorIndex >= activeModel.colors.length) {
-      setActiveColorIndex(0);
-    }
-  }, [activeModel, activeColorIndex]);
-
-  // Get product images from the active color
   const productImages = React.useMemo(() => {
     if (!activeColor) return ["/placeholder.png"];
-    
     const images: string[] = [];
-    
-    // Add main image
-    if (activeColor.imageUrl) {
-      images.push(activeColor.imageUrl);
-    }
-    
-    // Add product images
-    if (activeColor.productImageUrl?.length) {
-      activeColor.productImageUrl.forEach((img) => {
-        if (img.url && !images.includes(img.url)) {
-          images.push(img.url);
-        }
-      });
-    }
-    
-    // Add gallery images
-    if (activeColor.productGallery?.length) {
-      activeColor.productGallery.forEach((img) => {
-        if (img.url && !images.includes(img.url)) {
-          images.push(img.url);
-        }
-      });
-    }
-    
+    if (activeColor.imageUrl) images.push(activeColor.imageUrl);
+    if (activeColor.productImageUrl?.length)
+      activeColor.productImageUrl.forEach((img) => images.push(img.url));
     return images.length > 0 ? images : ["/placeholder.png"];
   }, [activeColor]);
 
-  useEffect(() => {
-    setActiveImageIndex(0);
-  }, [activeColorIndex]);
+  const handleSubmitEnquiry = async () => {
+    if (!form.name || !form.phone || !form.email) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+    try {
+      setSubmitting(true);
+      const payload = {
+        productTitle: product?.productTitle,
+        modelName: product?.modelName,
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+        messageTitle: `Enquiry for ${product?.modelName}`,
+        message: `${form.address}`,
+        enquiryType: "Product",
+        productImageUrl: productImages[0] || "",
+      };
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/product-enquiry`, payload);
+      if (res.data.success) {
+        toast.success("Enquiry sent successfully!");
+        setOpen(false);
+        setForm({ name: "", email: "", phone: "", address: "" });
+      }
+    } catch (error: any) {
+      toast.error("Failed to send enquiry");
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   if (loading || !product || !activeModel) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900 mx-auto mb-4"></div>
-          <p className="text-gray-500">Loading product details...</p>
-        </div>
+      <div className="h-screen flex items-center justify-center bg-white">
+        <Loader2 className="animate-spin h-10 w-10 text-blue-900" />
       </div>
     );
   }
 
-  /* ================= UI ================= */
-
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-7xl mx-auto px-4 pt-28 pb-14">
+    <div className="min-h-screen bg-white pb-20">
+      <div className="max-w-7xl mx-auto px-4 pt-28">
         <Button
           variant="link"
           onClick={() => router.push("/products")}
-          className="mb-6 text-blue-900 hover:text-blue-700"
+          className="mb-8 p-0 text-blue-900 hover:no-underline font-semibold"
         >
-          <ArrowLeft className="mr-2" /> Back to Products
+          <ArrowLeft className="mr-2 h-4 w-4" /> Back to Products
         </Button>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* LEFT - Image Gallery */}
-          <div className="space-y-6">
-            {/* Main Image */}
-            <div className="relative w-full h-[500px] bg-gray-50 rounded-xl overflow-hidden border border-gray-200">
-              <Image
-                src={productImages[activeImageIndex]}
-                alt={product.productTitle}
-                fill
-                unoptimized
-                className="object-contain p-4"
-              />
-              
-              {/* Badges */}
-              <div className="absolute top-4 left-4 flex flex-col gap-2">
-                {activeModel.schem.saleProduct && (
-                  <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                    On Sale
-                  </span>
-                )}
-                {activeModel.schem.recommendedProduct && (
-                  <span className="bg-blue-900 text-white px-3 py-1 rounded-full text-xs font-semibold">
-                    Recommended
-                  </span>
-                )}
+        {/* IMPORTANT: items-start prevents columns from stretching and breaking sticky */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          {/* LEFT COLUMN: Sticky Wrapper */}
+          <div className="lg:col-span-6 lg:sticky lg:top-32 z-10">
+            <div className="flex flex-col gap-6">
+              {/* Image Box */}
+              <div className="relative w-full h-[350px] md:h-[480px] bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden">
+                <Image
+                  src={productImages[activeImageIndex]}
+                  alt={product.productTitle}
+                  fill
+                  unoptimized
+                  className="object-contain p-8"
+                />
               </div>
-            </div>
 
-            {/* Thumbnail Images */}
-            <div className="flex gap-3 flex-wrap">
-              {productImages.map((img, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => setActiveImageIndex(idx)}
-                  className={`relative w-20 h-20 cursor-pointer rounded-lg overflow-hidden bg-white transition-all ${
-                    idx === activeImageIndex
-                      ? "ring-2 ring-blue-900 scale-105"
-                      : "ring-1 ring-gray-300 hover:ring-gray-400"
-                  }`}
-                >
-                  <Image 
-                    src={img} 
-                    alt={`Product view ${idx + 1}`} 
-                    fill 
-                    unoptimized
-                    className="object-contain p-1" 
-                  />
-                </div>
-              ))}
+              {/* Thumbnails */}
+              <div className="flex gap-3 overflow-x-auto pb-2 no-scrollbar justify-center">
+                {productImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`relative w-16 h-16 md:w-20 md:h-20 flex-shrink-0 rounded-xl border-2 transition-all bg-white ${
+                      idx === activeImageIndex ? "border-blue-900 shadow-md scale-105" : "border-transparent opacity-60"
+                    }`}
+                  >
+                    <Image src={img} alt="thumb" fill unoptimized className="object-contain p-2" />
+                  </button>
+                ))}
+              </div>
+
+              {/* Enquiry Button: Inside sticky wrapper so it scrolls WITH the image */}
+              <Button
+                onClick={() => setOpen(true)}
+                className="w-full h-16 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-bold text-lg shadow-xl"
+              >
+                Inquire Now
+              </Button>
             </div>
           </div>
 
-          {/* RIGHT - Product Details */}
-          <div className="space-y-6">
-            {/* Product Title & Model */}
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                {product.productTitle}
-              </h1>
-              <p className="text-lg text-gray-600 mb-2">Model: {product.modelName}</p>
-              {product.description && (
-                <p className="text-base text-gray-600 mb-3 italic">
-                  {product.description}
-                </p>
-              )}
-              <span className="inline-block mt-2 px-3 py-1 bg-blue-50 text-blue-900 text-sm font-semibold rounded-md">
-                Category: {product.productCategory}
-              </span>
-            </div>
-
-            {/* Status & Rating Section */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-xl p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                      <Star
-                        key={i}
-                        size={18}
-                        className={i <= 4 ? "fill-yellow-400 text-yellow-400" : "text-gray-300"}
-                      />
-                    ))}
-                  </div>
-                  <span className="text-sm text-gray-600">4.0 • 128 ratings</span>
-                  <button 
-                    onClick={() => setShowRatingInfo(!showRatingInfo)}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
-                    <Info size={16} />
-                  </button>
-                </div>
-                <span className="px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full">
+          {/* RIGHT COLUMN: Details */}
+          <div className="lg:col-span-6 space-y-8">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <span className="bg-blue-50 text-blue-900 text-[10px] font-bold uppercase px-2 py-1 rounded">
+                  {product.productCategory}
+                </span>
+                <span className="bg-green-100 text-green-700 text-[10px] font-bold uppercase px-2 py-1 rounded">
                   {product.status}
                 </span>
               </div>
+              <h1 className="text-3xl md:text-4xl font-bold text-slate-900 tracking-tight">
+                {product.productTitle}
+              </h1>
+              <div className="flex items-center gap-4 text-sm font-medium">
+                <div className="flex items-center text-amber-400 gap-1"><Star size={18} fill="currentColor" /> 4.0</div>
+                <span className="text-slate-300">|</span>
+                <span className="text-slate-500 underline underline-offset-4 cursor-pointer">128 Ratings</span>
+                <span className="text-slate-300">|</span>
+                <span className="text-slate-600 font-bold">{product.modelName}</span>
+              </div>
+            </div>
 
-              {showRatingInfo && (
-                <div className="bg-white border border-blue-200 rounded-lg p-3 text-sm text-gray-700">
-                  ⭐ Ratings are collected from verified buyers and healthcare professionals.
+            {/* Selection Grid */}
+            <div className="space-y-6">
+              {product.allModels && (
+                <div className="space-y-3">
+                  <p className="font-bold text-slate-900 text-sm">Available Models</p>
+                  <div className="flex flex-wrap gap-3">
+                    {product.allModels.map((m) => (
+                      <button 
+                        key={m.modelId} 
+                        onClick={() => router.push(`/products/${m.modelId}`)}
+                        className={`px-4 py-2 rounded-lg border-2 text-sm font-semibold transition-all ${m.modelId === product.modelId ? "bg-blue-900 text-white border-blue-900" : "border-gray-200 text-gray-700 hover:border-blue-900"}`}
+                      >
+                        {m.modelName}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Available Colors */}
-            {activeModel.colors && activeModel.colors.length > 0 && (
-              <div>
-                <p className="font-semibold text-gray-900 mb-3">Available Colors</p>
-                <div className="flex gap-3 flex-wrap">
-                  {activeModel.colors
-                    .filter((c) => c && c.colorName) // Filter out null/undefined colors
-                    .map((c, idx) => (
-                      <button
-                        key={c.colorName || idx}
-                        onClick={() => setActiveColorIndex(idx)}
-                        className={`px-5 py-2.5 rounded-lg border-2 font-medium transition-all ${
-                          idx === activeColorIndex
-                            ? "bg-blue-900 text-white border-blue-900 shadow-md"
-                            : "border-gray-300 text-gray-700 hover:border-blue-900 hover:text-blue-900"
-                        }`}
-                      >
-                        {c.colorName}
-                      </button>
-                    ))}
-                </div>
+            {/* Overview Box */}
+            <div className="pt-6 border-t border-slate-100 space-y-4">
+              <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                <FileText size={20} className="text-blue-900" /> Overview
+              </h3>
+              <div className="p-5 rounded-2xl bg-blue-50/50 border border-blue-100">
+                <p className="text-sm text-slate-700 leading-relaxed italic">&quot;{product.description}&quot;</p>
               </div>
-            )}
+            </div>
 
-            {/* Available Models */}
-            {product.allModels && product.allModels.length > 0 && (
-              <div>
-                <p className="font-semibold text-gray-900 mb-3">Available Models</p>
-                <div className="flex gap-3 flex-wrap">
-                  {product.allModels
-                    .filter((model) => model && model.modelId && model.modelName) // Filter out null/undefined models
-                    .map((model) => (
-                      <button
-                        key={model.modelId}
-                        onClick={() => router.push(`/products/${model.modelId}`)}
-                        className={`px-5 py-2.5 rounded-lg border-2 font-medium transition-all ${
-                          model.modelId === product.modelId
-                            ? "bg-blue-900 text-white border-blue-900 shadow-md"
-                            : "border-gray-300 text-gray-700 hover:border-blue-900 hover:text-blue-900"
-                        }`}
-                      >
-                        {model.modelName}
-                      </button>
-                    ))}
+            {/* Technical Details */}
+            {activeModel.productFeatures?.length > 0 && (
+              <div className="pt-6 space-y-4 border-t border-slate-100">
+                <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
+                  <Zap size={20} className="text-blue-900" /> Technical Details
+                </h3>
+                <div className="grid grid-cols-1 gap-2">
+                  {activeModel.productFeatures.map((f, i) => (
+                    <div key={i} className="flex justify-between items-center p-4 bg-white border border-slate-100 rounded-xl">
+                      <span className="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest">{f.key}</span>
+                      <span className="text-sm font-bold text-slate-900">{f.value}</span>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            )}
-
-            {/* Warranty */}
-            {activeModel.warranty && activeModel.warranty.length > 0 && (
-              <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-300 rounded-xl p-6 shadow-md">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-green-600 rounded-lg">
-                    <ShieldCheck className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="font-bold text-green-900 text-lg">Warranty Information</h3>
-                </div>
-                <ul className="space-y-3">
-                  {activeModel.warranty
-                    .filter((w) => w && w.points) // Filter out null/undefined items
-                    .map((w, i) => (
-                      <li key={w.points || i} className="flex items-center gap-3 text-base text-green-900 font-medium">
-                        <CheckCircle className="w-5 h-5 text-green-600" />
-                        {w.points}
-                      </li>
-                    ))}
-                </ul>
               </div>
             )}
           </div>
         </div>
-
-        {/* Product Features */}
-        {activeModel.productFeatures && activeModel.productFeatures.length > 0 && (
-          <div className="mt-12 bg-gradient-to-br from-blue-50 to-white border-2 border-blue-200 rounded-xl p-8 shadow-lg">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-blue-900 rounded-lg">
-                <Zap className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900">Technical Specifications</h3>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {activeModel.productFeatures
-                .filter((f) => f && f.key && f.value) // Filter out null/undefined items
-                .map((f, i) => (
-                  <div 
-                    key={f.key || i} 
-                    className="flex justify-between items-start p-4 bg-white rounded-lg border border-blue-200 hover:border-blue-400 transition-all shadow-sm hover:shadow-md"
-                  >
-                    <span className="font-semibold text-blue-900">{f.key}</span>
-                    <span className="text-gray-900 font-medium text-right ml-4">{f.value}</span>
-                  </div>
-                ))}
-            </div>
-          </div>
-        )}
-
-        {/* Product Specifications/Features List */}
-        {activeModel.specifications && activeModel.specifications.length > 0 && (
-          <div className="mt-8 bg-white border-2 border-gray-200 rounded-xl p-8 shadow-lg">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="p-2 bg-green-600 rounded-lg">
-                <Award className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900">Product Features & Description</h3>
-            </div>
-            <ul className="space-y-4">
-              {activeModel.specifications
-                .filter((spec) => spec && spec.points) // Filter out null/undefined items
-                .map((spec, i) => (
-                  <li key={spec.points || i} className="flex items-start gap-3 p-3 rounded-lg hover:bg-gray-50 transition-all">
-                    <CheckCircle className="w-5 h-5 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700 leading-relaxed">{spec.points}</span>
-                  </li>
-                ))}
-            </ul>
-          </div>
-        )}
       </div>
+
+      {/* Enquiry Modal */}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-md rounded-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-blue-900 font-bold">Product Enquiry</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input placeholder="Your Name" value={form.name} onChange={(e) => setForm({...form, name: e.target.value})} />
+            <Input placeholder="Email" value={form.email} onChange={(e) => setForm({...form, email: e.target.value})} />
+            <Input placeholder="Phone" value={form.phone} onChange={(e) => setForm({...form, phone: e.target.value})} />
+            <Textarea placeholder="Address / Message" value={form.address} onChange={(e) => setForm({...form, address: e.target.value})} />
+            <Button onClick={handleSubmitEnquiry} disabled={submitting} className="w-full bg-blue-900 py-6 rounded-2xl">
+              {submitting ? <Loader2 className="animate-spin" /> : <SendHorizontal className="mr-2" />}
+              {submitting ? "Sending..." : "Submit Enquiry"}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
-
