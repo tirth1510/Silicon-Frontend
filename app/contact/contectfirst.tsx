@@ -109,7 +109,7 @@ export default function ContactForm() {
           Send Us a Message
         </h2>
         <p className="text-blue-100 text-sm">
-          Fill out the form and we'll get back to you soon
+          Fill out the form and we&lsquo;ll get back to you soon
         </p>
       </div>
 

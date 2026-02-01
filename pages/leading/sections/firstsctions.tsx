@@ -59,7 +59,7 @@ export default function LandingPage() {
     {
       id: 1,
       title: "Healthcare Excellence",
-      subtitle: "Siliconmeditech.PVT.LTD",
+      subtitle: "Siliconmeditech.pvt.ltd",
       description:
         "Setting the gold standard in medical supply chain management with precision and global reach.",
       image: Company,
