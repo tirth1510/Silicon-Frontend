@@ -64,7 +64,7 @@ export default function ContactDashboardPage() {
   const fetchContacts = async () => {
     try {
       setLoading(true);
-      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/contact/all`);
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/all`);
       if (res.data.success) {
         setContacts(res.data.data);
       }
@@ -103,7 +103,7 @@ export default function ContactDashboardPage() {
         responseMessage: responseMessage,
       };
 
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/contact/send-response`, payload);
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/send-response`, payload);
       
       if (res.data.success) {
         toast.success("Response sent successfully via Email");
