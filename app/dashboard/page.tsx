@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -63,11 +64,11 @@ export default function ContactDashboardPage() {
   const fetchContacts = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:5000/api/contact/all");
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/contact/all`);
       if (res.data.success) {
         setContacts(res.data.data);
       }
-    } catch (error) {
+    } catch (err) {
       toast.error("Failed to fetch messages");
     } finally {
       setLoading(false);
@@ -102,7 +103,7 @@ export default function ContactDashboardPage() {
         responseMessage: responseMessage,
       };
 
-      const res = await axios.post("http://localhost:5000/api/contact/send-response", payload);
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/contact/send-response`, payload);
       
       if (res.data.success) {
         toast.success("Response sent successfully via Email");
