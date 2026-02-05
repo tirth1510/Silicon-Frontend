@@ -14,7 +14,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Phone, MessageCircle, Mail, Plus, ArrowRight, Award, UserCircle } from "lucide-react";
+import { Phone, MessageCircle, Mail, Plus, ArrowRight, Award, UserCircle, PhoneIcon } from "lucide-react";
 import Image from "next/image";
 
 type CEO = {
@@ -30,27 +30,28 @@ type CEO = {
 };
 
 const ceos: CEO[] = [
+ 
   {
-    name: "Mr. Krunal Adiyecha",
-    role: "Chief Executive Officer",
-    degree: "MBBS, MD",
-    image: "/care.ppg",
-    bio: "Mr. Krunal Adiyecha has over 20 years of experience in healthcare, leading Silicon Meditech Private Limited with vision and innovation.",
-    mobile: "+91 9876543210",
-    whatsapp: "+91 9876543210",
-    email: "krunal@siliconmeditech.com",
-    theme: "bg-[#00B5AD]", // Medical Teal
-  },
+   name: "Mr. Krunal Mistry",
+   role: "Managing director",
+   degree: "B.E. Biomedical Engineering",
+   image: "/ceo/image7.png",
+   bio: "Mr. Krunal Mistry has over 20 years of experience in healthcare, leading Silicon Meditech Private Limited with vision and innovation.",
+   mobile: "+91 9429554465",
+   whatsapp: "+919429554465",
+   email: "krunal@siliconmeditech.com",
+   theme: "bg-[#00B5AD]", 
+ },
   {
-    name: "Mr. Nirmal",
-    role: "Chief Operating Officer",
-    degree: "BDS, MBA",
-    image: "/care.png",
+    name: "Mr. Nirmal Patel",
+    role: "Managing director",
+    degree: "B.E. Biomedical Engineering",
+    image: "/ceo/nirmal2.png",
     bio: "Mr. Nirmal oversees global operations, ensuring high-quality medical equipment production and customer satisfaction across India.",
-    mobile: "+91 9123456780",
-    whatsapp: "+91 9123456780",
-    email: "nirmal@siliconmeditech.com",
-    theme: "bg-blue-900", // Health Blue
+    mobile: "+91 9601551892",
+    whatsapp: "+919601551892",
+    email: "nirmalpatel247@gmail.com",
+    theme: "bg-blue-900", 
   },
 ];
 
@@ -97,14 +98,18 @@ export default function CEOSection() {
                             <p className="text-sm font-bold text-white/80 italic">
                               {ceo.degree}
                             </p>
+                           <div className="space-y-2">
+                            <p className="text-sm font-bold text-white/80 italic">
+                              <PhoneIcon className="w-4 h-4 inline mr-1" /> {ceo.mobile}
+                            </p>
                           </div>
 
+                          </div>
                           <button className="flex items-center gap-2 w-fit px-6 py-3 bg-white text-slate-900 rounded-2xl font-black text-xs uppercase tracking-widest transition-all group-hover:bg-slate-900 group-hover:text-white">
                             View Profile <ArrowRight className="w-4 h-4" />
                           </button>
                         </div>
 
-                        {/* Image Pop-out (Right Side) */}
                         <div className="absolute -right-4 -bottom-2 w-[45%] h-[115%] flex items-end justify-end pointer-events-none">
                           <Image
                             src={ceo.image}
@@ -114,11 +119,12 @@ export default function CEOSection() {
                             className="object-cover w-full h-full rounded-[2.5rem] border-4 border-white shadow-2xl transition-transform duration-700 group-hover:scale-105"
                           />
                         </div>
+                        {/* Image Pop-out (Right Side) */}
                       </div>
                     </DialogTrigger>
                   </TooltipTrigger>
-                  <TooltipContent side="top" className="bg-slate-900 text-white font-bold text-xs border-none rounded-lg px-4 py-2">
-                    Open Leadership Profile
+                  <TooltipContent side="top" className="bg-blue-900 text-white font-bold text-xs border-none rounded-lg mx-2 py-2">
+                    {ceo.name}
                   </TooltipContent>
                 </Tooltip>
 
@@ -145,9 +151,7 @@ export default function CEOSection() {
                   </div>
 
                   <div className="p-10 bg-white">
-                    <DialogDescription className="text-slate-600 text-lg font-medium leading-relaxed">
-                      {ceo.bio}
-                    </DialogDescription>
+                    
 
                     {/* Contact info Icons */}
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-8">

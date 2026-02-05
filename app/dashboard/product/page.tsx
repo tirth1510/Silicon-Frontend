@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Plus, Search, Edit3, FileText, Palette, Trash2, Package, Sparkles } from "lucide-react";
+import { MoreHorizontal, Plus, Search, Edit3, FileText, Palette, Trash2, Package, Sparkles, Eye } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -44,7 +44,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
+import { useRouter } from "next/navigation";
 export default function ProductsPage() {
   const [models, setModels] = useState<ModelWithProductDTO[]>([]);
   const [filteredModels, setFilteredModels] = useState<ModelWithProductDTO[]>([]);
@@ -66,6 +66,7 @@ export default function ProductsPage() {
 
   // Prevent duplicate API calls in React Strict Mode
   const hasFetchedRef = useRef(false);
+const router = useRouter();
 
   const fetchData = async () => {
     try {
@@ -438,6 +439,19 @@ export default function ProductsPage() {
                                 <Palette className="h-4 w-4 text-cyan-600" />
                               </div>
                               <span className="font-medium text-gray-700">Edit Color Details</span>
+                            </div>
+                          </DropdownMenuItem>
+
+
+                           <DropdownMenuItem
+                            onClick={() => router.push(`/dashboard/product/${model.modelId}`)}
+                            className="rounded-lg p-3 cursor-pointer hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className="w-8 h-8 rounded-lg bg-cyan-100 flex items-center justify-center">
+                                <Eye className="h-4 w-4 text-cyan-600" />
+                              </div>
+                              <span className="font-medium text-gray-700">View Model Details</span>
                             </div>
                           </DropdownMenuItem>
 

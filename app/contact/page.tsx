@@ -7,31 +7,31 @@ export default function Contact() {
   const contactDetails = [
     {
       title: "Email Us",
-      info1: "info@meditech.com",
-      info2: "sales@meditech.com",
+      info1: "siliconmeditech@gmail.com",
       icon: Mail,
-      theme: "bg-[#00B5AD]", // Medical Teal
-      href1: "mailto:info@meditech.com",
-      href2: "mailto:sales@meditech.com"
+      theme: "bg-[#00B5AD]", 
+      href1: "siliconmeditech@gmail.com",
+     
+     
     },
     {
       title: "Call Us",
-      info1: "Sales: +1 (555) 123-4567",
-      info2: "Support: +1 (555) 123-4568",
+      info1: "+91 96015 51892",
+      info2: "+91 94295 54465",
       icon: Phone,
-      theme: "bg-[#FFB800]", // Care Yellow
-      href1: "tel:+15551234567",
-      href2: "tel:+15551234568"
+      theme: "bg-[#FFB800]", 
+      href1: "tel:+91 9429554465",
+      href2: "tel:+919601551892",
     },
     {
       title: "Visit Us",
-      info1: "123 Medical Boulevard",
-      info2: "New York, NY 10001",
+      info1: "09, Hariom Industrial Soc, Shantinath Mill Street, Navjivan Circle, Bhatar",
+      info2: "Surat, Gujarat- 395017",
       icon: MapPin,
-      theme: "bg-blue-900", // Health Blue
+      theme: "bg-blue-900", 
       href1: "#",
-      href2: "#"
-    }
+      href2: "#",
+    },
   ];
 
   return (
@@ -41,23 +41,22 @@ export default function Contact() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-10">
             <div className="space-y-6 max-w-2xl">
-              <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full text-blue-700 font-bold text-xs uppercase tracking-widest">
-                <Send className="w-4 h-4" />
-                Get in Touch
-              </div>
               <h1 className="text-5xl md:text-6xl font-black text-slate-900 leading-[1.1] tracking-tight">
                 How can we <span className="text-blue-900">help you?</span>
               </h1>
               <p className="text-lg text-slate-600 font-medium leading-relaxed">
-                Have questions about our medical equipment or services?
-                Our team of experts is ready to provide the right solution.
+                Have questions about our medical equipment or services? Our team
+                of experts is ready to provide the right solution.
               </p>
             </div>
 
             {/* Visual Decorative Element */}
             <div className="hidden lg:block relative">
               <div className="w-64 h-64 bg-blue-600 rounded-[3rem] rotate-12 flex items-center justify-center shadow-2xl">
-                <Plus className="text-white w-32 h-32 opacity-20" strokeWidth={4} />
+                <Plus
+                  className="text-white w-32 h-32 opacity-20"
+                  strokeWidth={4}
+                />
                 <Send className="absolute text-white w-20 h-20 -rotate-12" />
               </div>
             </div>
@@ -68,8 +67,6 @@ export default function Contact() {
       {/* MAIN CONTENT */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-
-          {/* LEFT SIDEBAR - CONTACT INFO */}
           <div className="lg:col-span-1 space-y-8">
             {contactDetails.map((item, idx) => (
               <div
@@ -86,33 +83,56 @@ export default function Contact() {
                     <item.icon className="text-white w-6 h-6" />
                   </div>
                   <div>
-                    <h3 className="text-2xl font-black text-white tracking-tight mb-2">{item.title}</h3>
+                    <h3 className="text-2xl font-black text-white tracking-tight mb-2">
+                      {item.title}
+                    </h3>
                     <div className="space-y-0.5">
-                      <a href={item.href1} className="block text-white/90 font-bold text-sm hover:underline">{item.info1}</a>
-                      <a href={item.href2} className="block text-white/90 font-bold text-sm hover:underline">{item.info2}</a>
+                      <a
+                        href={item.href1}
+                        className="block text-white/90 font-bold text-sm hover:underline"
+                      >
+                        {item.info1}
+                      </a>
+                      <a
+                        href={item.href2}
+                        className="block text-white/90 font-bold text-sm hover:underline"
+                      >
+                        {item.info2}
+                      </a>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
 
-            {/* BUSINESS HOURS - REDESIGNED */}
             <div className="bg-white rounded-[2.5rem] p-8 border border-slate-200 shadow-sm space-y-6">
               <div className="flex items-center gap-4">
                 <div className="bg-blue-50 p-3 rounded-2xl">
                   <Clock className="w-6 h-6 text-blue-600" />
                 </div>
-                <h3 className="text-xl font-black text-slate-900 tracking-tight">Business Hours</h3>
+                <h3 className="text-xl font-black text-slate-900 tracking-tight">
+                  Business Hours
+                </h3>
               </div>
               <div className="space-y-4">
                 {[
-                  { days: "Monday – Friday", time: "8:00 AM – 6:00 PM", color: "text-slate-900" },
-                  { days: "Saturday", time: "9:00 AM – 2:00 PM", color: "text-slate-900" },
-                  { days: "Sunday", time: "Closed", color: "text-red-600" }
+                  {
+                    days: "Monday – Saturday",
+                    time: "10:00 AM – 7:00 PM",
+                    color: "text-slate-900",
+                  },
+                  { days: "Sunday", time: "Closed", color: "text-red-600" },
                 ].map((row, i) => (
-                  <div key={i} className="flex justify-between items-center border-b border-slate-50 pb-2">
-                    <span className="text-sm font-bold text-slate-500">{row.days}</span>
-                    <span className={`text-sm font-black ${row.color}`}>{row.time}</span>
+                  <div
+                    key={i}
+                    className="flex justify-between items-center border-b border-slate-50 pb-2"
+                  >
+                    <span className="text-sm font-bold text-slate-500">
+                      {row.days}
+                    </span>
+                    <span className={`text-sm font-black ${row.color}`}>
+                      {row.time}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -123,7 +143,6 @@ export default function Contact() {
           <div className="lg:col-span-2">
             <ContactFirst />
           </div>
-
         </div>
 
         {/* MAP SECTION */}
@@ -134,7 +153,9 @@ export default function Contact() {
                 <MapPin className="text-blue-600 w-5 h-5" />
                 Headquarters
               </h4>
-              <p className="text-slate-500 text-sm font-bold mt-1">123 Medical Boulevard, NY</p>
+              <p className="text-slate-500 text-sm font-bold mt-1">
+                123 Medical Boulevard, NY
+              </p>
             </div>
             <div className="w-full h-[450px]">
               <iframe

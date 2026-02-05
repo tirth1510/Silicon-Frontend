@@ -14,7 +14,7 @@ const categories = [
   { value: "1", label: "Category 1" },
   { value: "2", label: "Category 2" },
   { value: "3", label: "Category 3" },
-  { value: "4", label: "Category 4" },
+  { value: "7", label: "Category 4" },
 ];
 
 interface UpdateProductDialogProps {

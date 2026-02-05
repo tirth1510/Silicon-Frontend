@@ -33,11 +33,8 @@ export function About() {
       <div className="bg-linear-to-br from-blue-50 via-white to-purple-50 py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16 max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full mb-6 font-medium">
-              <Sparkles size={18} />
-              <span>Leading Healthcare Solutions Provider Since 2013</span>
-            </div>
-            <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
+           
+            {/* <h1 className="text-5xl font-bold text-gray-900 mb-6 leading-tight">
               Transforming Healthcare with
               <span className="text-blue-900">
                 {" "}
@@ -49,7 +46,7 @@ export function About() {
               Manufacturers and Suppliers of Medical Equipment, Hospital
               Furniture & Consumables in India. Founded in 2013, we have grown
               to become a recognized name in the healthcare industry.
-            </p>
+            </p> */}
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
@@ -99,10 +96,10 @@ export function About() {
                       </div>
                       <div>
                         <p className="text-white font-black text-sm tracking-tight">
-                          - Mr. Krunal Adiyecha
+                          - Mr. Krunal Mistry
                         </p>
                         <p className="text-white/70 text-[10px] font-bold uppercase tracking-widest">
-                          Founder & CEO
+                          Managing director 
                         </p>
                       </div>
                     </div>
@@ -137,7 +134,7 @@ export function About() {
                           - Mr. Nirmal Patel
                         </p>
                         <p className="text-blue-100/70 text-[10px] font-bold uppercase tracking-widest">
-                          Excellence Since 2013
+                          Managing director 
                         </p>
                       </div>
                     </div>
@@ -194,7 +191,7 @@ export function About() {
           </div>
         </div>
       </div>
-
+      
       {/* Our Values Section */}
       <div className="py-24 bg-white relative overflow-hidden">
         {/* Background Decoration */}

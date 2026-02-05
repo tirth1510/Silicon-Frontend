@@ -19,7 +19,6 @@ import {
 import { useRouter } from "next/navigation";
 import { useCategories } from "@/hooks/useCategories";
 
-// Icon mapping based on category icon name from backend
 const iconMap: Record<string, LucideIcon> = {
   stethoscope: Stethoscope,
   activity: Activity,
@@ -34,11 +33,9 @@ const iconMap: Record<string, LucideIcon> = {
   'circle-dot': CircleDot,
 };
 
-// Default image for category card header (media section)
 const DEFAULT_CATEGORY_IMAGE =
   "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&auto=format&fit=crop";
 
-// Helper function to get icon component
 const getIconComponent = (iconName?: string): LucideIcon => {
   if (!iconName) return Package; // Default icon
   const icon = iconMap[iconName.toLowerCase()];
@@ -51,7 +48,6 @@ export default function ProductCategorySection() {
 
   return (
     <section className="relative bg-white py-20 overflow-hidden">
-      {/* Subtle Background Pattern */}
       <div className="absolute inset-0 opacity-[0.03]">
         <div className="absolute inset-0"
           style={{
@@ -64,10 +60,7 @@ export default function ProductCategorySection() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* SECTION HEADER */}
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-lg mb-5 border border-blue-100">
-            <TrendingUp className="w-4 h-4 text-blue-900" />
-            <span className="text-sm font-semibold text-blue-900">Premium Medical Solutions</span>
-          </div>
+         
 
           <h2 className="text-4xl sm:text-5xl font-bold text-blue-900 mb-4">
             Product Categories

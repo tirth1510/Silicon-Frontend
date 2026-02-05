@@ -239,6 +239,7 @@ export default function ContactForm() {
                 value={formData.message}
                 onChange={handleChange}
                 rows={5}
+                required
                 placeholder="Tell us more about your inquiry..."
                 className="border-gray-300 focus:border-blue-900 focus:ring-blue-900 resize-none"
               />

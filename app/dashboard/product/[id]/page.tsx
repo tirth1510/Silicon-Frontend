@@ -153,7 +153,7 @@ export default function ProductDetailsPage() {
       <div className="max-w-7xl mx-auto px-4 pt-28">
         <Button
           variant="link"
-          onClick={() => router.push("/products")}
+          onClick={() => router.push("/dashboard/product")}
           className="mb-8 p-0 text-blue-900 hover:no-underline font-semibold"
         >
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Products

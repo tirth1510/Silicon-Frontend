@@ -120,9 +120,9 @@ export default function UpdateColorDialog({
         </DialogHeader>
 
         <Tabs defaultValue="info" className="mt-4">
-          <TabsList className="grid grid-cols-5 w-full">
+          <TabsList className="grid grid-cols-4 w-full">
             <TabsTrigger value="info">Basic Info</TabsTrigger>
-            <TabsTrigger value="price">Pricing</TabsTrigger>
+            {/* <TabsTrigger value="price">Pricing</TabsTrigger> */}
             <TabsTrigger value="main">Main Image</TabsTrigger>
             <TabsTrigger value="product">Product Images</TabsTrigger>
             <TabsTrigger value="gallery">Gallery</TabsTrigger>
@@ -152,7 +152,7 @@ export default function UpdateColorDialog({
           </TabsContent>
 
           {/* PRICE */}
-          <TabsContent value="price" className="space-y-4 mt-4">
+          {/* <TabsContent value="price" className="space-y-4 mt-4">
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Original Price (₹)</Label>
@@ -188,7 +188,7 @@ export default function UpdateColorDialog({
                 </p>
               )}
             </div>
-          </TabsContent>
+          </TabsContent> */}
 
           {/* MAIN IMAGE */}
           <TabsContent value="main" className="space-y-4 mt-4">

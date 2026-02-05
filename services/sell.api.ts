@@ -3,7 +3,8 @@
 import axios from "axios";
 import { SaleProductsResponse } from "@/types/sell";
 import { ProductSchemeKey } from "@/constants/schemes";
-import {ProductallSchemeKey} from "@/app/dashboard/sales/view/schemes"
+import { ProductallSchemeKey } from "@/types/model";
+
 
 export const getSaleProductsService = async (): Promise<SaleProductsResponse> => {
   const res = await axios.get<SaleProductsResponse>(

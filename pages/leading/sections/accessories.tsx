@@ -49,7 +49,6 @@ export default function FeaturedAccessories() {
         setLoading(true);
         const response = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accessorize/all`,
-          { timeout: 10000 }
         );
 
         const rawData = response.data.products || response.data.data || [];
@@ -107,10 +106,6 @@ export default function FeaturedAccessories() {
         
         {/* CENTERED HEADER SECTION */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border border-blue-100 shadow-sm">
-            <Package className="w-4 h-4" />
-            Featured Accessories
-          </div>
           
           <h2 className="text-4xl md:text-5xl font-extrabold text-blue-900 mb-6 tracking-tight">
             Premium Medical Accessories

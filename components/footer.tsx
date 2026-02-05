@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useRouter } from "next/navigation";
@@ -15,6 +16,8 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link"; // Hamesha Link component use karein SEO ke liye
+import { useCategories } from "@/hooks/useCategories";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -24,6 +27,8 @@ export default function Footer() {
   const navigateTo = (path: string) => {
     router.push(path);
   };
+
+  const { categories } = useCategories();
 
   return (
     <footer className="bg-slate-50 border-t border-slate-200 text-slate-600">
@@ -74,7 +79,7 @@ export default function Footer() {
                 className="object-contain cursor-pointer"
               />
             </Link>
-            <p className="text-sm font-medium leading-relaxed text-slate-500">
+            <p className="text-sm font-medium leading-relaxed mt-3 ml-2 text-slate-500">
               Exalted manufacturers and suppliers of high-quality Medical
               Equipment, Hospital Furniture & Consumables in India since 2013.
             </p>
@@ -86,14 +91,14 @@ export default function Footer() {
                   url: "https://facebook.com",
                 },
                 {
-                  icon: Twitter,
-                  color: "hover:bg-sky-500",
-                  url: "https://twitter.com",
-                },
-                {
                   icon: Instagram,
                   color: "hover:bg-pink-600",
-                  url: "https://instagram.com",
+                  url: "https://www.instagram.com/silicon_meditech_pvt_ltd?igsh=cWMya3lxZWs1bGVq&utm_source=qr",
+                },
+                {
+                  icon: FaWhatsapp,
+                  color: "hover:bg-green-600",
+                  url: "https://wa.me/919601551892",
                 },
               ].map((social, i) => (
                 <a
@@ -137,20 +142,16 @@ export default function Footer() {
           {/* Expertise Links */}
           <div>
             <h3 className="text-slate-900 font-black uppercase tracking-widest text-xs mb-6">
-              Expertise
+              Categories
             </h3>
             <ul className="space-y-4">
-              {[
-                "Hospital Furniture",
-                "Medical Consumables",
-                "Biomedical Services",
-              ].map((item) => (
-                <li key={item}>
+              {categories?.slice(0, 6).map((item: any) => (
+                <li key={item._id}>
                   <Link
-                    href="/products"
+                    href={`/products?category=${item.categorySlug}`}
                     className="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors"
                   >
-                    {item}
+                    {item.categoryName}
                   </Link>
                 </li>
               ))}
@@ -171,7 +172,8 @@ export default function Footer() {
                   href="tel:+911234567890"
                   className="text-sm font-bold text-slate-700 hover:text-blue-600"
                 >
-                  +91 123 456 7890
+                  +91 96015 51892 <br />
+                  +91 94295 54465
                 </a>
               </li>
               <li className="flex items-start gap-3">
@@ -182,16 +184,20 @@ export default function Footer() {
                   href="mailto:info@siliconmeditech.com"
                   className="text-sm font-bold text-slate-700 hover:text-blue-600"
                 >
-                  info@siliconmeditech.com
+                  siliconmeditech@gmail.com
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
                   <MapPin className="w-4 h-4 text-slate-600" />
                 </div>
-                <p className="text-sm font-bold text-slate-700">
-                  Surat, Gujarat, India
-                </p>
+                <a
+                  href="https://www.google.com/maps/place/Silicon+Medi+Tech+Pvt+Ltd/@21.1645666,72.8196701,17z/data=!3m1!4b1!4m6!3m5!1s0x3be04dce7c1f68d3:0xc4a37b13297092d4!8m2!3d21.1645666!4d72.822245!16s%2Fg%2F11cmf9dbyr?entry=ttu&g_ep=EgoyMDI2MDIwMS4wIKXMDSoASAFQAw%3D%3D"
+                  className="text-sm font-bold hover:text-blue-600 text-slate-700"
+                >
+
+                  09, Hariom Industrial Soc, Shantinath Mill Street, Navjivan Circle, Bhatar, Surat, Gujarat- 395017
+                </a>
               </li>
             </ul>
           </div>
@@ -207,25 +213,6 @@ export default function Footer() {
               <span className="text-slate-900">Silicon Meditech</span>. All
               rights reserved.
             </p>
-            <div className="flex items-center gap-6">
-              <Link
-                href="/privacy"
-                className="text-xs font-bold text-slate-400 hover:text-blue-600 transition-colors"
-              >
-                Privacy
-              </Link>
-              <Link
-                href="/terms"
-                className="text-xs font-bold text-slate-400 hover:text-blue-600 transition-colors"
-              >
-                Terms
-              </Link>
-              <div className="h-4 w-px bg-slate-200 hidden md:block"></div>
-              <p className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                Built with{" "}
-                <Heart className="w-3 h-3 text-red-500 fill-red-500" /> in India
-              </p>
-            </div>
           </div>
         </div>
       </div>

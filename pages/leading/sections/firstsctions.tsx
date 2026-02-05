@@ -28,14 +28,15 @@ import PremiumProductsPage from "@/pages/leading/sections/products2";
 
 // Local imports
 import Iso from "@/public/iso.png";
-import Global from "@/public/gobal.png";
+import Global from "@/public/gobalmap.png";
 import Company from "@/public/company.png";
 import Cdsco from "@/public/cdsco.png";
 import Panters from "@/public/panters.png";
 import Care from "@/public/care.png";
+import { Router } from "next/router";
 export default function LandingPage() {
   const autoplay = React.useRef(
-    Autoplay({ delay: 6000, stopOnInteraction: true }),
+    Autoplay({ delay: 5000, stopOnInteraction: true }),
   );
 
   const heroContainerVariants: Variants = {
@@ -58,29 +59,28 @@ export default function LandingPage() {
   const slides = [
     {
       id: 1,
-      title: "Healthcare Excellence",
-      subtitle: "Siliconmeditech.pvt.ltd",
+      title: "Committed to Quality",
+      subtitle: "In Healthcare Equipment & Services",
       description:
-        "Setting the gold standard in medical supply chain management with precision and global reach.",
-      image: Company,
-      cta: "Work With Us",
+        "Delivering excellence through high-standard medical instruments and dedicated support services, ensuring every product meets global safety benchmarks.",
+      image: "/slides/1.png",
+      cta: "View Our Services",
     },
     {
       id: 2,
-      title: "The Future of",
-      subtitle: "Surgical Tech",
+      title: "Built on Manufacturing",
+      subtitle: "Excellence in Healthcare",
       description:
-        "Equipping the world's leading surgeons with AI-driven diagnostics and robotic assistance.",
-      image:
-        "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2080&auto=format&fit=crop",
-      cta: "Learn More",
+        "Delivering Cost-Effective Healthcare Solutions Supported by Goblal Services Capabilities.",
+      image: "/slides/second.png",
+      cta: "View Our Services",
     },
   ];
 
   const features = [
     {
       title: "Global Supply",
-      desc: "Seamless logistics across 50+ countries with real-time tracking.",
+      desc: "Seamless supply across Indian states and 10+ countries with real-time tracking.",
       iconBg: "bg-sky-500",
       icon: Globe,
       imgSrc: Global,
@@ -93,7 +93,7 @@ export default function LandingPage() {
       iconBg: "bg-cyan-600",
     },
     {
-      title: "ISO 9001:2015",
+      title: "ISO 13485.2016",
       desc: "Certified Quality Management ensuring global safety standards.",
       imgSrc: Iso,
       icon: ShieldCheck,
@@ -215,23 +215,13 @@ export default function LandingPage() {
         </Carousel>
       </section>
 
-      {/* FEATURES SECTION */}
-     <section className="bg-slate-50 py-20">
-  <div className="max-w-7xl mx-auto px-4">
-    <div className="text-center mb-14">
-      <Image src="/logo.png" alt="Features" width={300} height={100} className="mx-auto" />
-    </div>
-
-    {/* CHANGE 1: Responsive Grid 
-      - Mobile: 1 col (full width cards)
-      - Tablet: 2 cols
-      - Desktop: 3 to 5 cols
-    */}
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 items-stretch">
-      {features.map((item, idx) => (
-        <div
-          key={idx}
-          className="
+      <section className="bg-slate-50 py-20">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8 items-stretch">
+            {features.map((item, idx) => (
+              <div
+                key={idx}
+                className="
             group bg-white rounded-2xl
             shadow-md hover:shadow-xl
             transition-all duration-300
@@ -241,43 +231,32 @@ export default function LandingPage() {
             hover:-translate-y-1
             max-w-md mx-auto w-full 
           "
-        >
-          {/* CHANGE 2: Responsive Image Height
-            - h-64 on mobile (much larger/taller)
-            - h-48 on desktop (keeps it compact for 5 cols)
-          */}
-          <div className="relative h-64 md:h-52 lg:h-48 w-full overflow-hidden shrink-0">
-            <Image
-              src={item.imgSrc}
-              alt={item.title}
-              fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
-            />
-          </div>
+              >
+                <div className="relative h-64 md:h-52 lg:h-48 w-full overflow-hidden shrink-0">
+                  <Image
+                    src={item.imgSrc}
+                    alt={item.title}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  />
+                </div>
 
-          {/* Content */}
-          <div className="p-6 flex flex-col flex-1">
-            <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-2">
-              {item.title}
-            </h3>
+                {/* Content */}
+                <div className="p-6 flex flex-col flex-1">
+                  <h3 className="text-xl font-bold text-slate-900 mb-2 line-clamp-2">
+                    {item.title}
+                  </h3>
 
-            {/* CHANGE 3: Improved font size for mobile readability */}
-            <p className="text-slate-500 text-sm leading-relaxed line-clamp-4">
-              {item.desc}
-            </p>
-
-            {/* Optional CTA */}
-            <div className="mt-auto pt-6">
-               <span className="text-sm font-semibold text-blue-600 group-hover:translate-x-1 transition-transform inline-block">
-                 Learn more →
-               </span>
-            </div>
+                  {/* CHANGE 3: Improved font size for mobile readability */}
+                  <p className="text-slate-500 text-sm leading-relaxed line-clamp-4">
+                    {item.desc}
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
+      </section>
 
       <div className="text-center w-full overflow-hidden">
         <ProductCategorySection />

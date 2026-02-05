@@ -125,10 +125,7 @@ export default function FeaturedProducts() {
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* HEADER SECTION */}
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-xs font-bold uppercase tracking-widest mb-6 border border-blue-100 shadow-sm">
-            <ShoppingBag className="w-4 h-4" />
-            Featured Collection
-          </div>
+          
           <h2 className="text-4xl md:text-5xl font-extrabold text-blue-900 mb-6 tracking-tight">
             Premium Medical Equipment
           </h2>

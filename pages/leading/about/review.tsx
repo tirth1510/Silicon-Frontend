@@ -17,29 +17,29 @@ interface Review {
 const reviews: Review[] = [
   {
     id: 1,
-    name: "Dr. Arpan Shah",
-    position: "Chief Surgeon",
-    hospital: "Metro Heart Institute",
-    text: "The precision and durability of the ICU furniture from Silicon Meditech are outstanding. It has significantly improved our workflow efficiency.",
+    name: "Mr Kamlesh Vekariya",
+    position: "CEO",
+    hospital: "Korida Medical System",
+    text: "Excellent service. Guidance is provided anytime it’s needed. Thank you for the consistent support.",
     rating: 5,
     theme: "bg-[#00B5AD]", // Teal
   },
   {
     id: 2,
-    name: "Dr. Sonalika Rao",
-    position: "Managing Director",
-    hospital: "City Care Hospital",
-    text: "Finding affordable yet high-quality medical consumables in India was a challenge until we partnered with Silicon Meditech. Highly recommended.",
+    name: "Dr. Suchay Parikh",
+    position: "Intensivist",
+    hospital: " Shrizee Hospital",
+    text:"Professional approach and continuous support. Guidance is clear and extremely helpful.",
     rating: 5,
     theme: "bg-blue-900", // Blue
   },
   {
     id: 3,
-    name: "Mr. Rajesh Khanna",
-    position: "Purchase Manager",
-    hospital: "LifeLine Multi-Specialty",
-    text: "Their biomedical service team is exceptional. Maintenance and calibration are always on time, ensuring our equipment never fails during emergencies.",
-    rating: 5,
+    name: "Mr. Bhumit Koisa",
+    position: "Head Bio-Medical",
+    hospital: "Parul Sevashram Hospital",
+    text:"Skilled and dependable technical team. Issues are resolved without unnecessary delays.",
+    rating: 4,
     theme: "bg-[#FFB800]", // Gold
   },
 ];
@@ -57,10 +57,7 @@ export default function ReviewsSection() {
         {/* HEADER */}
         <div className="flex flex-col md:flex-row items-end justify-between gap-6 mb-16">
           <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-xl border border-blue-100">
-              <Star className="w-4 h-4 text-blue-600 fill-blue-600" />
-              <span className="text-xs font-black uppercase tracking-widest text-blue-900">Patient Safety First</span>
-            </div>
+
             <h2 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter leading-none">
               Trusted by the <br />
               <span className="text-blue-900">Medical Fraternity.</span>
