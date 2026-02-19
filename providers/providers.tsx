@@ -7,7 +7,14 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const CLIENT_ID = "349309195310-ee43pba87mk2i0kvc0a5sj173rossika.apps.googleusercontent.com";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(() => new QueryClient({
+    defaultOptions: {
+      queries: {
+        // Build ke waqt error na aaye isliye window check add hota hai default behavior mein
+        staleTime: 60 * 1000,
+      },
+    },
+  }));
 
   return (
     <GoogleOAuthProvider clientId={CLIENT_ID}>
@@ -17,4 +24,3 @@ export function Providers({ children }: { children: React.ReactNode }) {
     </GoogleOAuthProvider>
   );
 }
-

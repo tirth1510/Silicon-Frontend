@@ -5,8 +5,9 @@ export interface CategoryDTO {
     categoryId: string;
     categoryName: string;
     categorySlug: string;
-    categoryDescription?: string;
+    description?: string;
     icon?: string;
+    categoryImage?: string;
     displayOrder: number;
     isActive: boolean;
     metadata?: {
@@ -22,6 +23,7 @@ export interface CreateCategoryPayload {
     categorySlug: string;
     categoryDescription?: string;
     icon?: string;
+    categoryImage?: string;
     displayOrder: number;
     isActive?: boolean;
 }
@@ -31,6 +33,7 @@ export interface UpdateCategoryPayload {
     categorySlug?: string;
     categoryDescription?: string;
     icon?: string;
+    categoryImage?: string;
     displayOrder?: number;
     isActive?: boolean;
 }
@@ -91,4 +94,3 @@ export interface ProductsByCategoryParams {
     minPrice?: number;
     maxPrice?: number;
 }
-

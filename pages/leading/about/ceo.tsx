@@ -62,15 +62,7 @@ export default function CEOSection() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Section Header */}
-          <div className="mb-16">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 rounded-xl mb-4 border border-blue-100">
-              <Award className="w-4 h-4 text-blue-700" />
-              <span className="text-xs font-black uppercase tracking-widest text-blue-900">Our Leadership</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tighter">
-              Visionary Minds <span className="text-blue-900">Behind Us.</span>
-            </h2>
-          </div>
+          
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
             {ceos.map((ceo, idx) => (

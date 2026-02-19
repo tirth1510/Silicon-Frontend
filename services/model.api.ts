@@ -201,3 +201,33 @@ export const deleteModelService = async (productId: string, modelId: string) => 
 
   return res.json(); // { success: true, message: "...", product: {...} }
 };
+
+
+// services/model.api.ts
+
+export const updateValuableSchemeService = async (
+  productId: string, 
+  modelId: string, 
+  isValuable: boolean
+) => {
+  const response = await fetch(`${API_BASE_URL}/valuable/${productId}/${modelId}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ isValuable }),
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.message || "Failed to update scheme");
+  }
+
+  return response.json();
+};
+
+export const getValuableProductsService = async () => {
+  const response = await fetch(`${API_BASE_URL}/valuable`);
+  if (!response.ok) {
+    throw new Error("Valuable products fetch karne mein error aaya");
+  }
+  return response.json();
+};

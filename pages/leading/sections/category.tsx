@@ -6,7 +6,6 @@ import {
   ShieldCheck,
   Settings,
   ArrowRight,
-  TrendingUp,
   Package,
   Wrench,
   Heart,
@@ -14,15 +13,16 @@ import {
   Syringe,
   Microscope,
   CircleDot,
-  LucideIcon
+  LucideIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCategories } from "@/hooks/useCategories";
+import { Providers } from "@/providers/providers";
 
 const iconMap: Record<string, LucideIcon> = {
   stethoscope: Stethoscope,
   activity: Activity,
-  'shield-check': ShieldCheck,
+  "shield-check": ShieldCheck,
   settings: Settings,
   package: Package,
   wrench: Wrench,
@@ -30,16 +30,16 @@ const iconMap: Record<string, LucideIcon> = {
   pill: Pill,
   syringe: Syringe,
   microscope: Microscope,
-  'circle-dot': CircleDot,
+  "circle-dot": CircleDot,
 };
 
 const DEFAULT_CATEGORY_IMAGE =
   "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&auto=format&fit=crop";
 
 const getIconComponent = (iconName?: string): LucideIcon => {
-  if (!iconName) return Package; // Default icon
+  if (!iconName) return Package;
   const icon = iconMap[iconName.toLowerCase()];
-  return icon || Package; // Fallback to Package icon
+  return icon || Package;
 };
 
 export default function ProductCategorySection() {
@@ -47,133 +47,125 @@ export default function ProductCategorySection() {
   const { categories: apiCategories, loading, error } = useCategories();
 
   return (
-    <section className="relative bg-white py-20 overflow-hidden">
-      <div className="absolute inset-0 opacity-[0.03]">
-        <div className="absolute inset-0"
+    <Providers>
+    <section className="relative bg-white py-12 md:py-20 overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+        <div
+          className="absolute inset-0"
           style={{
             backgroundImage: `radial-gradient(circle at 2px 2px, rgb(30 58 138) 1px, transparent 0)`,
-            backgroundSize: '40px 40px'
-          }}>
-        </div>
+            backgroundSize: "40px 40px",
+          }}
+        />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* SECTION HEADER */}
-        <div className="text-center mb-14">
-         
-
-          <h2 className="text-4xl sm:text-5xl font-bold text-blue-900 mb-4">
+        <div className="text-center mb-8 md:mb-14">
+          <h2 className="text-3xl sm:text-5xl font-bold text-blue-900 mb-3">
             Product Categories
           </h2>
-
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-lg text-gray-600 max-w-2xl mx-auto px-4">
             Discover our comprehensive range of medical products and services
           </p>
         </div>
 
-        {/* CATEGORY CARDS */}
+        {/* CATEGORY CARDS - CHANGE: grid-cols-2 for mobile */}
         {!loading && !error && apiCategories && apiCategories.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {apiCategories.map((item, index) => {
-              const Icon = getIconComponent(item.icon);
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+            {apiCategories
+              .slice()
+              .sort((a, b) => Number(a.categoryId) - Number(b.categoryId))
+              .map((item) => {
+                const Icon = getIconComponent(item.icon);
 
-              return (
-                <div
-                  key={item._id}
-                  onClick={() => router.push(`/products?category=${item.categorySlug}`)}
-                  className="group relative cursor-pointer h-full"
-                >
-                  {/* Main Card */}
-                  <div className="relative bg-white rounded-xl shadow-md h-full
-                                 transition-all duration-500 overflow-hidden flex flex-col
-                                 group-hover:shadow-2xl group-hover:-translate-y-1">
-
-                    {/* Media / Header Section with background image */}
+                return (
+                  <div
+                    key={item._id}
+                    onClick={() => {
+                      if (Number(item.categoryId) === 4) {
+                        router.push("/products/accessories");
+                      } else if (item.categorySlug) {
+                        router.push(`/products?category=${item.categorySlug}`);
+                      }
+                    }}
+                    className="group relative cursor-pointer h-full"
+                  >
                     <div
-                      className="relative px-6 pt-8 pb-20 bg-cover bg-center
-                                    transition-all duration-500 group-hover:pb-24 shrink-0"
-                      style={{
-                        backgroundImage: `url(${DEFAULT_CATEGORY_IMAGE})`,
-                      }}
+                      className="relative bg-white rounded-lg md:rounded-xl shadow-sm h-full
+                                   transition-all duration-500 overflow-hidden flex flex-col
+                                   group-hover:shadow-xl group-hover:-translate-y-1 border border-gray-100"
                     >
-                      {/* Dark overlay for readability */}
-                      <div className="absolute inset-0 bg-blue-900/70" aria-hidden />
-                      {/* Decorative Dots */}
-                      <div className="absolute top-4 right-4 flex gap-1.5 z-10">
-                        <div className="w-1.5 h-1.5 rounded-full bg-white/30"></div>
-                        <div className="w-1.5 h-1.5 rounded-full bg-white/30"></div>
-                        <div className="w-1.5 h-1.5 rounded-full bg-white/50"></div>
-                      </div>
+                      {/* Media Section - CHANGE: Reduced height on mobile */}
+                      <div
+                        className="relative px-3 md:px-6 pt-4 md:pt-8 pb-12 md:pb-20 bg-cover bg-center shrink-0"
+                        style={{
+                          backgroundImage: `url(${item.categoryImage || DEFAULT_CATEGORY_IMAGE})`,
+                        }}
+                      >
+                        <div
+                          className="absolute inset-0 bg-blue-900/70"
+                          aria-hidden
+                        />
 
-                      {/* Icon */}
-                      <div className="relative z-10">
-                        <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-sm
-                                        flex items-center justify-center
-                                        border border-white/20
-                                        group-hover:bg-white/20 group-hover:scale-110
-                                        transition-all duration-500">
-                          <Icon className="w-8 h-8 text-white" strokeWidth={2} />
+                        {/* Icon - CHANGE: Smaller on mobile */}
+                        <div className="relative z-10">
+                          <div
+                            className="w-10 h-10 md:w-16 md:h-16 rounded-lg md:rounded-2xl bg-white/10 backdrop-blur-sm
+                                        flex items-center justify-center border border-white/20
+                                        group-hover:bg-white/20 transition-all duration-500"
+                          >
+                            <Icon
+                              className="w-5 h-5 md:w-8 md:h-8 text-white"
+                              strokeWidth={2}
+                            />
+                          </div>
                         </div>
                       </div>
 
-                      {/* Subtle light orbs */}
-                      <div className="absolute inset-0 opacity-10 pointer-events-none z-0">
-                        <div className="absolute top-0 right-0 w-32 h-32 
-                                        bg-white rounded-full blur-2xl transform translate-x-8 -translate-y-8"></div>
-                        <div className="absolute bottom-0 left-0 w-24 h-24 
-                                        bg-white rounded-full blur-2xl transform -translate-x-4 translate-y-4"></div>
-                      </div>
-                    </div>
-
-                    {/* White Content Section */}
-                    <div className="relative -mt-12 px-6 pb-6 grow flex flex-col">
-                      {/* Title Card */}
-                      <div className="bg-white rounded-lg shadow-lg p-4 mb-4 
-                                      border border-gray-100
-                                      group-hover:shadow-xl transition-shadow duration-500">
-                        <h3 className="text-lg font-bold text-gray-900 mb-1">
-                          {item.categoryName}
-                        </h3>
-                        <div className="flex items-center gap-2 text-xs text-blue-900 font-semibold">
-                          <div className="w-1 h-1 rounded-full bg-blue-900"></div>
-                          <span>{item.metadata?.productCount || 0} Products</span>
+                      {/* Content Section - CHANGE: Reduced margins and padding */}
+                      <div className="relative -mt-8 px-3 md:px-6 pb-4 grow flex flex-col">
+                        <div className="bg-white rounded-md md:rounded-lg shadow-md p-2 md:p-4 mb-2 border border-gray-50">
+                          <h3 className="text-sm md:text-lg font-bold text-gray-900 line-clamp-2 leading-tight min-h-[2.5rem] md:min-h-0">
+                            {item.categoryName}
+                          </h3>
                         </div>
-                      </div>
 
-                      {/* Description */}
-                      <p className="text-sm text-gray-600 leading-relaxed mb-4 grow">
-                        {item.categoryDescription || 'Explore our range of quality medical products'}
-                      </p>
+                        {/* Description - CHANGE: Hidden or clamped on small mobile */}
+                        <p className="text-[10px] md:text-sm text-gray-600 leading-tight mb-3 line-clamp-2 md:line-clamp-3 grow">
+                          {item.description || "Explore our medical range"}
+                        </p>
 
-                      {/* CTA */}
-                      <div className="flex items-center justify-between mt-auto">
-                        <button className="text-sm font-semibold text-blue-900 
-                                         flex items-center gap-2 
-                                         group-hover:gap-3 transition-all duration-300">
-                          <span>Explore</span>
-                          <ArrowRight className="w-4 h-4" />
-                        </button>
-
-                        <div className="text-xs text-gray-400 font-medium">
-                          #{String(index + 1).padStart(2, '0')}
+                        {/* CTA */}
+                        <div className="flex items-center justify-between mt-auto">
+                          <span className="text-[10px] md:text-sm font-semibold text-blue-900 flex items-center gap-1">
+                            Explore{" "}
+                            <ArrowRight className="w-3 h-3 md:w-4 md:h-4" />
+                          </span>
+                          <div className="text-[9px] md:text-xs text-gray-400 font-medium">
+                            #{String(item.categoryId).padStart(2, "0")}
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                );
+              })}
           </div>
         )}
 
         {/* Empty State */}
-        {!loading && !error && (!apiCategories || apiCategories.length === 0) && (
-          <div className="text-center py-20">
-            <Package className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-            <p className="text-lg text-gray-600">No categories available at the moment</p>
-          </div>
-        )}
+        {!loading &&
+          !error &&
+          (!apiCategories || apiCategories.length === 0) && (
+            <div className="text-center py-20">
+              <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600">No categories available</p>
+            </div>
+          )}
       </div>
     </section>
+    </Providers>
   );
 }

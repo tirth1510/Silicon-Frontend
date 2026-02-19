@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { useState } from "react";
@@ -6,6 +7,8 @@ import { addProductModelDetails } from "@/services/product.api";
 import { ProductModelDetailsPayload } from "@/types/product";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Trash2, Plus, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 interface Props {
   productId: string;
@@ -24,8 +27,13 @@ export default function Step2ModelDetails({ productId, modelId, onNext }: Props)
   const mutation = useMutation({
     mutationFn: () => addProductModelDetails(productId, modelId, form),
     onSuccess: () => {
+      toast.success("Model details saved successfully!");
       onNext();
     },
+    onError: (error) => {
+      toast.error("Failed to save details");
+      console.error(error);
+    }
   });
 
   /* ---------------- Helper Functions ---------------- */
@@ -36,13 +44,13 @@ export default function Step2ModelDetails({ productId, modelId, onNext }: Props)
     key: string,
     value: string
   ) => {
-    const arr = [...(form[field] ?? [])]; // Ensure array exists
-    arr[index] = { ...(arr[index] ?? {}), [key]: value }; // Ensure object exists
+    const arr = [...(form[field] ?? [])] as any[];
+    arr[index] = { ...arr[index], [key]: value };
     setForm({ ...form, [field]: arr });
   };
 
   const addArrayItem = (field: keyof ProductModelDetailsPayload, isPoints = false) => {
-    const arr = [...(form[field] ?? [])];
+    const arr = [...(form[field] ?? [])] as any[];
     if (isPoints) {
       arr.push({ points: "" });
     } else {
@@ -51,92 +59,111 @@ export default function Step2ModelDetails({ productId, modelId, onNext }: Props)
     setForm({ ...form, [field]: arr });
   };
 
-  /* ---------------- Render ---------------- */
+  const removeArrayItem = (field: keyof ProductModelDetailsPayload, index: number) => {
+    const arr = [...(form[field] ?? [])] as any[];
+    if (arr.length > 1) { // Kam se kam ek row rehni chahiye
+      arr.splice(index, 1);
+      setForm({ ...form, [field]: arr });
+    }
+  };
+
+  /* ---------------- Render Helpers ---------------- */
+
+  // Point-based fields (Specifications, Warranty)
+  const renderPointField = (label: string, field: keyof ProductModelDetailsPayload) => (
+    <div className="space-y-3 p-4 border rounded-xl bg-slate-50/50">
+      <label className="font-bold text-blue-900 uppercase text-xs tracking-wider">{label}</label>
+      {(form[field] as any[] ?? []).map((item, idx) => (
+        <div key={idx} className="flex gap-2">
+          <Input
+            placeholder={`Enter ${label.toLowerCase()}`}
+            value={item.points}
+            onChange={(e) => updateArrayField(field, idx, "points", e.target.value)}
+            className="bg-white"
+          />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-red-500 hover:text-red-700 shrink-0"
+            onClick={() => removeArrayItem(field, idx)}
+          >
+            <Trash2 size={18} />
+          </Button>
+        </div>
+      ))}
+      <Button 
+        variant="outline" 
+        size="sm" 
+        className="mt-2 text-blue-700 border-blue-200" 
+        onClick={() => addArrayItem(field, true)}
+      >
+        <Plus size={16} className="mr-1" /> Add {label}
+      </Button>
+    </div>
+  );
+
+  // Key-Value based fields (Product Specs, Features)
+  const renderKeyValueField = (label: string, field: keyof ProductModelDetailsPayload) => (
+    <div className="space-y-3 p-4 border rounded-xl bg-slate-50/50">
+      <label className="font-bold text-blue-900 uppercase text-xs tracking-wider">{label}</label>
+      {(form[field] as any[] ?? []).map((item, idx) => (
+        <div key={idx} className="flex gap-2 items-center">
+          <Input
+            placeholder="Label (e.g. Color)"
+            value={item.key}
+            onChange={(e) => updateArrayField(field, idx, "key", e.target.value)}
+            className="bg-white flex-1"
+          />
+          <Input
+            placeholder="Value (e.g. Blue)"
+            value={item.value}
+            onChange={(e) => updateArrayField(field, idx, "value", e.target.value)}
+            className="bg-white flex-1"
+          />
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-red-500 hover:text-red-700 shrink-0"
+            onClick={() => removeArrayItem(field, idx)}
+          >
+            <Trash2 size={18} />
+          </Button>
+        </div>
+      ))}
+      <Button 
+        variant="outline" 
+        size="sm" 
+        className="mt-2 text-blue-700 border-blue-200" 
+        onClick={() => addArrayItem(field)}
+      >
+        <Plus size={16} className="mr-1" /> Add {label}
+      </Button>
+    </div>
+  );
 
   return (
-    <div className="space-y-6">
-      {/* Specifications */}
-      <div>
-        <label className="font-medium text-sm">Specifications</label>
-        {(form.specifications ?? []).map((item, idx) => (
-          <Input
-            key={idx}
-            placeholder="Enter specification"
-            value={item.points}
-            onChange={(e) => updateArrayField("specifications", idx, "points", e.target.value)}
-            className="mb-2"
-          />
-        ))}
-        <Button size="sm" onClick={() => addArrayItem("specifications", true)}>
-          + Add Specification
-        </Button>
+    <div className="space-y-8 max-w-4xl mx-auto p-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {renderPointField("Specifications", "specifications")}
+        {renderPointField("Warranty Points", "warranty")}
       </div>
 
-      {/* Product Specifications */}
-      <div>
-        <label className="font-medium text-sm">Product Specifications</label>
-        {(form.productSpecifications ?? []).map((item, idx) => (
-          <div key={idx} className="flex gap-2 mb-2">
-            <Input
-              placeholder="Key"
-              value={item.key}
-              onChange={(e) => updateArrayField("productSpecifications", idx, "key", e.target.value)}
-            />
-            <Input
-              placeholder="Value"
-              value={item.value}
-              onChange={(e) => updateArrayField("productSpecifications", idx, "value", e.target.value)}
-            />
-          </div>
-        ))}
-        <Button size="sm" onClick={() => addArrayItem("productSpecifications")}>
-          + Add Product Specification
+      {renderKeyValueField("Product Features", "productFeatures")}
+
+      <div className="pt-6 border-t flex justify-end">
+        <Button 
+          size="lg"
+          className="bg-blue-900 hover:bg-blue-800 px-10 rounded-xl"
+          onClick={() => mutation.mutate()} 
+          disabled={mutation.isPending}
+        >
+          {mutation.isPending ? (
+            <><Loader2 className="mr-2 animate-spin" size={18} /> Saving...</>
+          ) : (
+            "Save & Continue"
+          )}
         </Button>
       </div>
-
-      {/* Product Features */}
-      <div>
-        <label className="font-medium text-sm">Product Features</label>
-        {(form.productFeatures ?? []).map((item, idx) => (
-          <div key={idx} className="flex gap-2 mb-2">
-            <Input
-              placeholder="Key"
-              value={item.key}
-              onChange={(e) => updateArrayField("productFeatures", idx, "key", e.target.value)}
-            />
-            <Input
-              placeholder="Value"
-              value={item.value}
-              onChange={(e) => updateArrayField("productFeatures", idx, "value", e.target.value)}
-            />
-          </div>
-        ))}
-        <Button size="sm" onClick={() => addArrayItem("productFeatures")}>
-          + Add Feature
-        </Button>
-      </div>
-
-      {/* Warranty */}
-      <div>
-        <label className="font-medium text-sm">Warranty</label>
-        {(form.warranty ?? []).map((item, idx) => (
-          <Input
-            key={idx}
-            placeholder="Enter warranty point"
-            value={item.points}
-            onChange={(e) => updateArrayField("warranty", idx, "points", e.target.value)}
-            className="mb-2"
-          />
-        ))}
-        <Button size="sm" onClick={() => addArrayItem("warranty", true)}>
-          + Add Warranty Point
-        </Button>
-      </div>
-
-      {/* Submit */}
-      <Button onClick={() => mutation.mutate()} disabled={mutation.isPending}>
-        Save & Continue
-      </Button>
     </div>
   );
 }
