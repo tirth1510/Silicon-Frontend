@@ -150,7 +150,7 @@ export default function ProductDetailsPage() {
 
   return (
     <div className="min-h-screen bg-white pb-20">
-      <div className="max-w-7xl mx-auto px-4 pt-28">
+      <div className="max-w-7xl mx-auto px-4 pt-8">
         <Button
           variant="link"
           onClick={() => router.push("/products")}
@@ -165,7 +165,7 @@ export default function ProductDetailsPage() {
           <div className="lg:col-span-6 lg:sticky lg:top-32 z-10">
             <div className="flex flex-col gap-6">
               {/* Image Box */}
-              <div className="relative w-full h-[350px] md:h-[480px] bg-slate-50 rounded-2xl border border-slate-100 overflow-hidden">
+              <div className="relative w-full h-[350px] md:h-[480px] bg- rounded-2xl border border-slate-100 overflow-hidden">
                 <Image
                   src={productImages[activeImageIndex]}
                   alt={product.productTitle}
@@ -259,7 +259,7 @@ export default function ProductDetailsPage() {
               )}
             </div>
 
-            {/* Overview Box */}
+            {/* Overview Box
             <div className="pt-6 border-t border-slate-100 space-y-4">
               <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                 <FileText size={20} className="text-blue-900" /> Overview
@@ -269,35 +269,30 @@ export default function ProductDetailsPage() {
                   &quot;{product.description}&quot;
                 </p>
               </div>
-            </div>
+            </div> */}
 
-            {activeModel.specifications?.length > 0 && (
+            {activeModel.specifications?.filter((s: any) => (typeof s === "string" ? s : s.points || s.value || s.label))?.length > 0 && (
               <div className="pt-6 space-y-4 border-t border-slate-100">
                 <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                   <ShieldCheck size={20} className="text-blue-900" />{" "}
                   Specifications
                 </h3>
-                {/* Replace your current map with this */}
                 <ul className="space-y-3">
-                  {activeModel.specifications.map((s: any, i: number) => {
-                    // Determine the content: check .points, then .value, then if s itself is a string
-                    const content =
-                      typeof s === "string"
-                        ? s
-                        : s.points || s.value || s.label;
+                  {activeModel.specifications
+                    .filter((s: any) => (typeof s === "string" ? s : s.points || s.value || s.label))
+                    .map((s: any, i: number) => {
+                      const content = typeof s === "string" ? s : s.points || s.value || s.label;
 
-                    return (
-                      <li
-                        key={i}
-                        className="flex items-start gap-3 text-sm text-slate-700"
-                      >
-                        <CheckCircle className="w-5 h-5 text-slate-700 shrink-0 mt-0.5" />
-                        <span>
-                          {content || "Specification detail unavailable"}
-                        </span>
-                      </li>
-                    );
-                  })}
+                      return (
+                        <li
+                          key={i}
+                          className="flex items-start gap-3 text-sm text-slate-700"
+                        >
+                          <CheckCircle className="w-5 h-5 text-slate-700 shrink-0 mt-0.5" />
+                          <span>{content}</span>
+                        </li>
+                      );
+                    })}
                 </ul>
               </div>
             )}

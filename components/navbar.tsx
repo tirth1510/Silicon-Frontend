@@ -4,7 +4,8 @@
 import { useState, useEffect } from "react";
 import {
   ChevronDown, Package, LayoutDashboard, LogOut, MoreVertical,
-  Layers, Stethoscope, Activity, ShieldCheck, Home, Info, Mail, Search, ArrowRight
+  Layers, Stethoscope, Activity, ShieldCheck, Home, Info, Mail, Search, ArrowRight,
+  Star // Naya icon premium products ke liye
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -64,7 +65,7 @@ export default function Navbar() {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-500 ${scrolled ? "bg-white shadow-xl py-0" : "bg-white/95 backdrop-blur-md py-1"}`}>
+      <header className={`fixed top-0 left-0 right-0 z-50 w-full transition-all duration-500 ${scrolled ? "bg-white shadow-md py-0" : "bg-white/95 backdrop-blur-md py-1"}`}>
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             
@@ -85,8 +86,26 @@ export default function Navbar() {
                       Products <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
                     </button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="center" className="w-[480px] mt-2 rounded-[2rem] shadow-2xl p-5 bg-white border border-slate-100 animate-in fade-in slide-in-from-top-4 duration-300">
+                  <DropdownMenuContent align="center" className="w-[580px] mt-2 rounded-[2rem] shadow-2xl p-5 bg-white border border-slate-100 animate-in fade-in slide-in-from-top-4 duration-300">
                     <div className="grid grid-cols-2 gap-4">
+                      
+                      {/* DEFAULT FIELD: All Equipment */}
+                      <div onClick={() => router.push("/products")} className="flex items-center gap-4 p-4 rounded-2xl cursor-pointer hover:bg-blue-900 group transition-all duration-300 border border-transparent hover:shadow-xl">
+                        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-all duration-500">
+                          <Package className="w-6 h-6 text-blue-900 group-hover:text-white" />
+                        </div>
+                        <span className="text-sm font-bold text-slate-800 group-hover:text-white leading-tight">All Equipment</span>
+                      </div>
+
+                      {/* DEFAULT FIELD: Premium Products */}
+                      <div onClick={() => router.push("/products?category=premium")} className="flex items-center gap-4 p-4 rounded-2xl cursor-pointer hover:bg-blue-900 group transition-all duration-300 border border-transparent hover:shadow-xl">
+                        <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center shrink-0 group-hover:bg-white/20 transition-all duration-500">
+                          <Star className="w-6 h-6 text-blue-900 group-hover:text-white" />
+                        </div>
+                        <span className="text-sm font-bold text-slate-800 group-hover:text-white leading-tight">Premium Products</span>
+                      </div>
+
+                      {/* API CATEGORIES */}
                       {apiCategories?.slice(0, 4).map((item: any) => {
                         const Icon = iconMap[String(item.categoryId)] || iconMap.default;
                         return (
@@ -171,12 +190,27 @@ export default function Navbar() {
                         <ChevronDown className={`w-4 h-4 transition-transform ${mobileProductsOpen ? "rotate-180" : ""}`} />
                       </button>
 
+                      {/* MOBILE DROPDOWN CONTENT */}
                       {mobileProductsOpen && (
                         <div className="grid grid-cols-2 gap-2 p-2 bg-blue-50/50 rounded-2xl mb-2">
+                          
+                          {/* DEFAULT FIELD: All Equipment */}
+                          <div onClick={() => { router.push("/products"); setMobileMenu(false); }} className="flex items-center gap-2 p-3 bg-white rounded-xl shadow-sm border border-blue-100 cursor-pointer">
+                            <Package className="w-4 h-4 text-blue-900" />
+                            <span className="text-[11px] font-bold text-slate-700 line-clamp-1">All Equipment</span>
+                          </div>
+
+                          {/* DEFAULT FIELD: Premium Products */}
+                          <div onClick={() => { router.push("/products?category=premium"); setMobileMenu(false); }} className="flex items-center gap-2 p-3 bg-white rounded-xl shadow-sm border border-blue-100 cursor-pointer">
+                            <Star className="w-4 h-4 text-blue-900" />
+                            <span className="text-[11px] font-bold text-slate-700 line-clamp-1">Premium Products</span>
+                          </div>
+
+                          {/* API CATEGORIES */}
                           {apiCategories?.slice(0, 4).map((item: any) => {
                             const Icon = iconMap[String(item.categoryId)] || iconMap.default;
                             return (
-                              <div key={item._id} onClick={() => { router.push(`/products?category=${item.categorySlug}`); setMobileMenu(false); }} className="flex items-center gap-2 p-3 bg-white rounded-xl shadow-sm border border-blue-100">
+                              <div key={item._id} onClick={() => { router.push(`/products?category=${item.categorySlug}`); setMobileMenu(false); }} className="flex items-center gap-2 p-3 bg-white rounded-xl shadow-sm border border-blue-100 cursor-pointer">
                                 <Icon className="w-4 h-4 text-blue-900" />
                                 <span className="text-[11px] font-bold text-slate-700 line-clamp-1">{item.categoryName}</span>
                               </div>

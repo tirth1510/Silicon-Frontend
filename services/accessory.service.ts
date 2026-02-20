@@ -39,13 +39,13 @@ export const getPaddingAccessoriesService = async (): Promise<Product[]> => {
 /** Update product status */
 export const updateProductStatusService = async (
   productId: string,
-  status: ProductStatus
+  status: ProductStatus,
 ): Promise<UpdateStatusResponse> => {
   if (!productId) throw new Error("Product ID is required");
 
   const { data } = await API.put<UpdateStatusResponse>(
     `/accessorize/${productId}/status`,
-    { status }
+    { status },
   );
 
   return data;
@@ -80,7 +80,7 @@ export type CreateProductFiles = {
 /** Create product */
 export const createProductService = async (
   data: CreateProductPayload,
-  files: CreateProductFiles
+  files: CreateProductFiles,
 ) => {
   if (!files.productImages?.length) {
     throw new Error("At least one product image is required");
@@ -107,7 +107,7 @@ export const createProductService = async (
   if (data.productSpecifications?.length) {
     formData.append(
       "productSpecifications",
-      JSON.stringify(data.productSpecifications)
+      JSON.stringify(data.productSpecifications),
     );
   }
 
@@ -115,7 +115,7 @@ export const createProductService = async (
   files.productImages.forEach((file) => formData.append("productImages", file));
 
   files.galleryImages?.forEach((file) =>
-    formData.append("galleryImages", file)
+    formData.append("galleryImages", file),
   );
 
   /* ---------- API ---------- */
@@ -129,7 +129,7 @@ export const createProductService = async (
 export const updateProductService = async (
   id: string,
   data: CreateProductPayload,
-  files?: CreateProductFiles
+  files?: CreateProductFiles,
 ): Promise<Product> => {
   const formData = new FormData();
 
@@ -141,12 +141,12 @@ export const updateProductService = async (
   // append files
   if (files?.productImages) {
     files.productImages.forEach((file) =>
-      formData.append("productImages", file)
+      formData.append("productImages", file),
     );
   }
   if (files?.galleryImages) {
     files.galleryImages.forEach((file) =>
-      formData.append("galleryImages", file)
+      formData.append("galleryImages", file),
     );
   }
 
@@ -164,22 +164,16 @@ export const updateProductService = async (
 
 /** Update product main image */
 
-
-
 export const getAccessoryByIdService = async (
-  id: string
+  id: string,
 ): Promise<AccessoryApiResponse> => {
   const res = await API.get<SingleAccessoryResponse>(`/accessorize/${id}`);
   return res.data.data;
 };
 
-
-
 /* ================= UPDATE ACCESSORIES (ADVANCED) ================= */
 
 /* ---------------- Types ---------------- */
-
-
 
 /* ---------------- GET ---------------- */
 
@@ -190,6 +184,16 @@ export const getAccessoryByervice = async (id: string) => {
   return res.data.product;
 };
 
+
+
+export const deleteAccessoryService = async (id: string): Promise<void> => {
+  // Apni API ka endpoint yahan dalein
+  const response = await API.delete(`/accessorize/${id}`);
+
+  if (!response.data.success) {
+    throw new Error(response.data.message);
+  }
+};
 /* ---------------- UPDATE ---------------- */
 
 export type UpdateAccessoriesPayload = {
@@ -224,17 +228,20 @@ export type UpdateAccessoriesFiles = {
 export const updateAccessoriesDetailsService = async (
   id: string,
   payload: UpdateAccessoriesPayload = {},
-  files?: UpdateAccessoriesFiles
+  files?: UpdateAccessoriesFiles,
 ) => {
   if (!id) throw new Error("Accessory ID required");
 
   const formData = new FormData();
 
   /* ---------- simple fields ---------- */
-  if (payload.productCategory) formData.append("productCategory", payload.productCategory);
-  if (payload.productTitle) formData.append("productTitle", payload.productTitle);
+  if (payload.productCategory)
+    formData.append("productCategory", payload.productCategory);
+  if (payload.productTitle)
+    formData.append("productTitle", payload.productTitle);
   if (payload.description) formData.append("description", payload.description);
-  if (payload.stock !== undefined) formData.append("stock", String(payload.stock));
+  if (payload.stock !== undefined)
+    formData.append("stock", String(payload.stock));
 
   if (payload.priceDetails) {
     formData.append("priceDetails", JSON.stringify(payload.priceDetails));
@@ -244,7 +251,7 @@ export const updateAccessoriesDetailsService = async (
   if (payload.productSpecifications)
     formData.append(
       "productSpecifications",
-      JSON.stringify(payload.productSpecifications)
+      JSON.stringify(payload.productSpecifications),
     );
 
   if (payload.specifications)
@@ -260,14 +267,11 @@ export const updateAccessoriesDetailsService = async (
   if (payload.specificationIndexes !== undefined)
     formData.append(
       "specificationIndexes",
-      JSON.stringify(payload.specificationIndexes)
+      JSON.stringify(payload.specificationIndexes),
     );
 
   if (payload.warrantyIndexes !== undefined)
-    formData.append(
-      "warrantyIndexes",
-      JSON.stringify(payload.warrantyIndexes)
-    );
+    formData.append("warrantyIndexes", JSON.stringify(payload.warrantyIndexes));
 
   if (payload.deleteIndex !== undefined)
     formData.append("deleteIndex", String(payload.deleteIndex));
@@ -275,14 +279,11 @@ export const updateAccessoriesDetailsService = async (
   if (payload.deleteSpecificationIndex !== undefined)
     formData.append(
       "deleteSpecificationIndex",
-      String(payload.deleteSpecificationIndex)
+      String(payload.deleteSpecificationIndex),
     );
 
   if (payload.deleteWarrantyIndex !== undefined)
-    formData.append(
-      "deleteWarrantyIndex",
-      String(payload.deleteWarrantyIndex)
-    );
+    formData.append("deleteWarrantyIndex", String(payload.deleteWarrantyIndex));
 
   if (payload.deleteGalleryIndex !== undefined)
     formData.append("deleteGalleryIndex", String(payload.deleteGalleryIndex));
@@ -298,11 +299,11 @@ export const updateAccessoriesDetailsService = async (
 
   /* ---------- files ---------- */
   files?.productGallery?.forEach((file) =>
-    formData.append("productGallery", file)
+    formData.append("productGallery", file),
   );
 
   files?.productImageUrl?.forEach((file) =>
-    formData.append("productImageUrl", file)
+    formData.append("productImageUrl", file),
   );
 
   /* ---------- API ---------- */
@@ -312,3 +313,5 @@ export const updateAccessoriesDetailsService = async (
 
   return res.data.product;
 };
+
+// Response ka type define kar rahe hain

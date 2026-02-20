@@ -13,7 +13,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { updateValuableSchemeService } from "@/services/model.api";
+import { updateValuableSchemeService, deleteValuableSchemeService } from "@/services/model.api";
 import { Star, Loader2, Save, X, Info, CheckCircle2, XCircle, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
@@ -42,12 +42,18 @@ export default function UpdateValuableDialog({
   // Jab dialog open ho, tab database se aayi value set karein
   useEffect(() => {
     if (open) {
-      setIsValuable(currentScheme?.valuableProduct || false);
+      setIsValuable(currentScheme?.productModelDetails?.scheme?.valuableProduct || false);
     }
   }, [open, currentScheme]);
 
   const mutation = useMutation({
-    mutationFn: (value: boolean) => updateValuableSchemeService(productId, modelId, value),
+    mutationFn: (value: boolean) => {
+      if (value) {
+        return updateValuableSchemeService(productId, modelId, value);
+      } else {
+        return deleteValuableSchemeService(productId, modelId);
+      }
+    },
     onSuccess: () => {
       toast.success("Catalog synchronization complete!");
       onSuccess();

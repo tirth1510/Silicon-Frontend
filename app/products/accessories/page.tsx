@@ -165,27 +165,27 @@ function AccessoriesContent() {
   }
 
   return (
-    <section className="relative bg-slate-50 min-h-screen pb-20 pt-28">
+    <section className="relative min-h-screen pb-20 pt-28">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* HEADER */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-blue-900 mb-2">
+          <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 mb-2 capitalize">
             {categoryQuery ? categoryQuery : "Medical Accessories"}
           </h1>
-          <p className="text-slate-500 text-sm">Showing {filteredProducts.length} accessories</p>
+          <p className="text-slate-500 text-sm italic">Showing {filteredProducts.length} accessories</p>
         </div>
 
-        {/* TOP TOOLBAR: Search & Click to Filter */}
-        <div className="bg-white p-3 rounded-2xl shadow-sm border border-slate-200 mb-6 flex flex-col gap-4">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+        {/* TOP TOOLBAR - Sticky & Responsive */}
+        <div className="sticky top-16 lg:top-20 z-40 bg-white/95 backdrop-blur-md p-3 rounded-2xl shadow-sm border border-slate-200 mb-6 flex flex-col gap-4 transition-all duration-300">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
             
-            {/* SEARCH BAR WITH SUGGESTION DROPDOWN */}
-            <div className="relative flex-1 min-w-[280px]" ref={searchContainerRef}>
+            {/* SEARCH BAR */}
+            <div className="relative w-full sm:flex-1 sm:max-w-[350px]" ref={searchContainerRef}>
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input 
                 placeholder="Search accessories..." 
-                className="pl-10 border-none bg-slate-50 focus:ring-blue-900 rounded-xl"
+                className="pl-10 border border-slate-200 bg-slate-50 focus:ring-blue-900 rounded-xl w-full"
                 value={searchQuery}
                 onFocus={() => setShowSuggestions(true)}
                 onChange={(e) => {
@@ -226,10 +226,11 @@ function AccessoriesContent() {
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* BUTTONS: Filters & Grid/List */}
+            <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
               <Button 
                 variant="outline" 
-                className={cn("rounded-xl gap-2 border-slate-200", isFilterOpen && "bg-blue-50 border-blue-200 text-blue-900")}
+                className={cn("rounded-xl gap-2 border-slate-200 flex-1 sm:flex-none", isFilterOpen && "bg-blue-50 border-blue-200 text-blue-900")}
                 onClick={() => setIsFilterOpen(!isFilterOpen)}
               >
                 <Filter className="w-4 h-4" />
@@ -237,11 +238,17 @@ function AccessoriesContent() {
                 <ChevronDown className={cn("w-4 h-4 transition-transform", isFilterOpen && "rotate-180")} />
               </Button>
 
-              <div className="flex bg-slate-100 p-1 rounded-xl">
-                <button onClick={() => setLayout("grid")} className={cn("p-2 rounded-lg", layout === "grid" ? "bg-white shadow-sm text-blue-900" : "text-slate-500")}>
+              <div className="flex bg-slate-100 p-1 rounded-xl shrink-0">
+                <button 
+                  onClick={() => { setLayout("grid"); toast.success("Grid view applied"); }} 
+                  className={cn("p-2 rounded-lg transition-all", layout === "grid" ? "bg-white shadow-sm text-blue-900" : "text-slate-500")}
+                >
                   <LayoutGrid className="w-4 h-4" />
                 </button>
-                <button onClick={() => setLayout("list")} className={cn("p-2 rounded-lg", layout === "list" ? "bg-white shadow-sm text-blue-900" : "text-slate-500")}>
+                <button 
+                  onClick={() => { setLayout("list"); toast.success("List view applied"); }} 
+                  className={cn("p-2 rounded-lg transition-all", layout === "list" ? "bg-white shadow-sm text-blue-900" : "text-slate-500")}
+                >
                   <List className="w-4 h-4" />
                 </button>
               </div>
@@ -254,7 +261,7 @@ function AccessoriesContent() {
               <Button 
                 variant={!categoryQuery ? "default" : "outline"} 
                 className={cn("rounded-full px-5 text-xs h-8", !categoryQuery ? "bg-blue-900" : "border-slate-200 text-slate-600")}
-                onClick={() => router.push("/products/accessories")}
+                onClick={() => { router.push("/products/accessories"); toast.info("Showing All Accessories"); }}
               >
                 All Accessories
               </Button>
@@ -263,7 +270,7 @@ function AccessoriesContent() {
                   key={cat}
                   variant={categoryQuery === cat ? "default" : "outline"} 
                   className={cn("rounded-full px-5 text-xs h-8", categoryQuery === cat ? "bg-blue-900" : "border-slate-200 text-slate-600")}
-                  onClick={() => router.push(`/products/accessories?category=${cat}`)}
+                  onClick={() => { router.push(`/products/accessories?category=${cat}`); toast.info(`Showing ${cat}`); }}
                 >
                   {cat}
                 </Button>
@@ -276,18 +283,18 @@ function AccessoriesContent() {
         <div className="w-full">
           {Object.entries(groupedProducts).length > 0 ? (
             Object.entries(groupedProducts).map(([categoryName, items]) => (
-              <div key={categoryName} className="mb-12">
-                <div className="flex items-center gap-3 mb-6">
-                  <h2 className="text-xl font-bold text-blue-900 uppercase tracking-tight">{categoryName}</h2>
+              <div key={categoryName} className="mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-bold text-blue-900 uppercase tracking-tight">{categoryName}</h2>
                   <div className="h-[1px] flex-1 bg-slate-200" />
-                  <span className="text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                  <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full shrink-0">
                     {items.length} ITEMS
                   </span>
                 </div>
 
                 <div className={cn(
                   layout === "grid" 
-                    ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" 
+                    ? "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6" 
                     : "space-y-4"
                 )}>
                   {items.map((product, idx) => (
@@ -303,7 +310,7 @@ function AccessoriesContent() {
               </div>
             ))
           ) : (
-            <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
+            <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200 animate-in zoom-in-95 duration-300">
               <ShoppingBag className="w-12 h-12 text-slate-300 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-slate-600">No accessories found</h3>
             </div>
@@ -313,7 +320,7 @@ function AccessoriesContent() {
 
       {/* ENQUIRY DIALOG */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-md rounded-3xl border-none shadow-2xl">
+        <DialogContent className="sm:max-w-md rounded-3xl border-none shadow-2xl w-[95vw] sm:w-full">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold text-blue-900">Enquire for Accessory</DialogTitle>
           </DialogHeader>
@@ -396,43 +403,83 @@ export default function AccessoriesPage() {
 function ProductCard({ product, layout, onContact, router }: any) {
   const imageUrl = product.productImages?.[0]?.url || "https://via.placeholder.com/400";
 
+  // LIST VIEW
   if (layout === "list") {
     return (
-      <div className="group bg-white p-4 rounded-2xl border border-slate-200 hover:border-blue-900 flex flex-col sm:flex-row items-center gap-6 transition-all shadow-sm hover:shadow-md">
-        <div className="relative w-24 h-24 bg-slate-50 rounded-xl shrink-0 overflow-hidden">
+      <div 
+        onClick={() => router.push(`/products/accessories/${product.id}`)}
+        className="group cursor-pointer bg-white p-3 sm:p-4 rounded-2xl border border-slate-200 hover:border-blue-900 flex flex-row items-center gap-3 sm:gap-6 transition-all shadow-sm hover:shadow-md"
+      >
+        <div className="relative w-24 h-24 sm:w-32 sm:h-32 bg-slate-50 rounded-xl shrink-0 overflow-hidden">
           <Image src={imageUrl} alt={product.productTitle} fill className="object-contain p-2" unoptimized />
         </div>
-        <div className="flex-1 text-center sm:text-left">
-          <p className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{product.productCategory}</p>
-          <h4 className="font-bold text-blue-900 text-lg leading-tight">{product.productTitle}</h4>
-        </div>
-        <div className="flex gap-2 w-full sm:w-auto">
-          <Button variant="outline" className="flex-1 rounded-xl border-slate-200 h-10" onClick={() => router.push(`/products/accessories/${product.id}`)}>
-            Details
-          </Button>
-          <Button className="flex-1 bg-blue-900 rounded-xl h-10 px-6 font-bold" onClick={onContact}>
-            Get Enquiry
-          </Button>
+        
+        <div className="flex-1 text-left min-w-0 flex flex-col justify-center">
+          <p className="text-[8px] sm:text-[10px] font-bold text-blue-600 uppercase tracking-widest line-clamp-2 leading-tight">{product.productCategory}</p>
+          <h4 className="font-bold text-blue-900 text-[11px] sm:text-lg leading-tight mt-1 mb-2 sm:mb-3 line-clamp-2">{product.productTitle}</h4>
+          
+          <div className="flex gap-2 w-full mt-auto">
+            <Button 
+              variant="outline" 
+              className="flex-1 rounded-lg sm:rounded-xl border-slate-200 h-8 sm:h-10 text-[9px] sm:text-sm px-0 sm:px-4" 
+              onClick={(e) => {
+                e.stopPropagation();
+                router.push(`/products/accessories/${product.id}`);
+              }}
+            >
+              Details
+            </Button>
+            <Button 
+              className="flex-1 bg-blue-900 rounded-lg sm:rounded-xl h-8 sm:h-10 px-0 sm:px-6 font-bold text-[9px] sm:text-sm text-white" 
+              onClick={(e) => {
+                e.stopPropagation();
+                onContact();
+              }}
+            >
+              Enquiry
+            </Button>
+          </div>
         </div>
       </div>
     );
   }
 
+  // GRID VIEW
   return (
-    <div className="group bg-white rounded-3xl overflow-hidden border border-slate-200 hover:shadow-xl hover:border-blue-900 transition-all duration-300">
-      <div className="relative h-52 bg-white overflow-hidden">
-        <Image src={imageUrl} alt={product.productTitle} fill className="object-contain p-6 group-hover:scale-105 transition-transform duration-500" unoptimized />
+    <div 
+      onClick={() => router.push(`/products/accessories/${product.id}`)}
+      className="group cursor-pointer flex flex-col bg-white rounded-2xl sm:rounded-3xl overflow-hidden border border-slate-200 hover:shadow-xl hover:border-blue-900 transition-all duration-300"
+    >
+      <div className="relative h-32 sm:h-52 bg-white overflow-hidden shrink-0">
+        <Image src={imageUrl} alt={product.productTitle} fill className="object-contain p-3 sm:p-6 group-hover:scale-105 transition-transform duration-500" unoptimized />
       </div>
-      <div className="p-5 border-t border-slate-50">
-        <p className="text-[10px] uppercase tracking-widest text-blue-600 font-bold mb-1">{product.productCategory}</p>
-        <h4 className="text-md font-bold text-blue-900 mb-4 h-10 line-clamp-2 leading-tight">{product.productTitle}</h4>
-        <div className="flex flex-col gap-2">
-          <Button className="w-full bg-blue-900 hover:bg-blue-800 h-9 text-xs font-bold rounded-xl" onClick={() => router.push(`/products/accessories/${product.id}`)}>
+      
+      <div className="p-3 sm:p-5 border-t border-slate-50 flex flex-col flex-1">
+        <div className="mb-2 sm:mb-4">
+          <p className="text-[8px] sm:text-[10px] uppercase tracking-widest text-blue-600 font-bold mb-1 line-clamp-2 leading-tight">{product.productCategory}</p>
+          <h4 className="text-[11px] sm:text-md font-bold text-blue-900 h-auto min-h-[30px] sm:h-10 line-clamp-2 leading-tight">{product.productTitle}</h4>
+        </div>
+        
+        <div className="flex flex-col gap-1.5 sm:gap-2 mt-auto">
+          <Button 
+            className="w-full bg-blue-900 hover:bg-blue-800 text-white h-7 sm:h-9 text-[9px] sm:text-xs font-bold rounded-lg sm:rounded-xl" 
+            onClick={(e) => {
+              e.stopPropagation();
+              router.push(`/products/accessories/${product.id}`);
+            }}
+          >
             View Details
           </Button>
-          <Button variant="ghost" className="w-full h-9 text-blue-900 text-xs font-bold bg-blue-50 hover:bg-blue-100 rounded-xl gap-2" onClick={onContact}>
-            <MessageCircle className="w-4 h-4" />
-            Get Enquiry
+          <Button 
+            variant="ghost" 
+            className="w-full h-7 sm:h-9 text-blue-900 text-[9px] sm:text-xs font-bold bg-blue-50 hover:bg-blue-100 rounded-lg sm:rounded-xl gap-1 sm:gap-2 px-1" 
+            onClick={(e) => {
+              e.stopPropagation();
+              onContact();
+            }}
+          >
+            <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 shrink-0" />
+            <span className="line-clamp-1">Get Enquiry</span>
           </Button>
         </div>
       </div>

@@ -63,7 +63,7 @@ export default function AddModelStep({ productId, onSuccess }: Props) {
                 Model Name <span className="text-red-500">*</span>
               </label>
               <Input
-                placeholder="e.g. X-500 Pro / Deluxe Edition"
+                placeholder="Enter Model Name"
                 value={modelName}
                 onChange={(e) => setModelName(e.target.value)}
                 className="w-full h-14 bg-white border-2 border-slate-200 rounded-2xl focus:ring-4 focus:ring-blue-50 transition-all font-bold text-slate-900 placeholder:font-medium"

@@ -26,6 +26,7 @@ import {
   getAllAccessoriesService,
   updateProductStatusService,
   getPaddingAccessoriesService,
+  deleteAccessoryService,
 } from "@/services/accessory.service";
 import { Product } from "@/types/accessory";
 
@@ -40,6 +41,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toast } from "sonner";
 
 export default function AccessoriesPage() {
   const [accessories, setAccessories] = useState<Product[]>([]);
@@ -130,8 +132,8 @@ export default function AccessoriesPage() {
     if (!confirmDelete) return;
 
     try {
-      // TODO: Add delete API call when available
-      alert("Delete functionality will be implemented with API");
+      await deleteAccessoryService(id);
+      toast.success("Accessory deleted successfully");
       fetchData();
     } catch (error: unknown) {
       const err = error as Error;

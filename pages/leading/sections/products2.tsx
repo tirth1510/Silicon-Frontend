@@ -18,7 +18,10 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import axios from "axios";
-import { getAllModelsWithProductInfo, getValuableProductsService } from "@/services/model.api";
+import {
+  getAllModelsWithProductInfo,
+  getValuableProductsService,
+} from "@/services/model.api";
 import { useCategories } from "@/hooks/useCategories";
 import { Providers } from "@/providers/providers";
 
@@ -32,32 +35,44 @@ type ProductForList = {
   image: string;
 };
 
-function FeaturedProductsContent() {
+function FeaturedProductsContent({ preFetchedValuable, preFetchedAllModels }: { preFetchedValuable?: any, preFetchedAllModels?: any }) {
   const router = useRouter();
   const { categories } = useCategories();
   const [open, setOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<ProductForList | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ProductForList | null>(
+    null,
+  );
 
-  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "" });
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    address: "",
+  });
 
-  const FALLBACK_IMAGE = "https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg";
+  const FALLBACK_IMAGE =
+    "https://t4.ftcdn.net/jpg/02/60/04/09/360_F_260040900_oO6YW1sHTnKxby4GcjCvtypUCWjnQRg5.jpg";
 
   // Fetch Valuable (Flagged) Products
   const { data: valuableData, isLoading: isLoadingValuable } = useQuery({
     queryKey: ["valuable-products"],
     queryFn: () => getValuableProductsService(),
+    enabled: !preFetchedValuable,
+    initialData: preFetchedValuable
   });
 
   // Fetch All Products for Random Section
   const { data: allModelsData, isLoading: isLoadingAll } = useQuery({
     queryKey: ["all-models-info"],
     queryFn: () => getAllModelsWithProductInfo(),
+    enabled: !preFetchedAllModels,
+    initialData: preFetchedAllModels
   });
 
   const { valuableProducts, randomProducts } = useMemo(() => {
     // Logic for Valuable Products (Using flat response from GET API)
-    const valuableList: ProductForList[] = Array.isArray(valuableData) 
+    const valuableList: ProductForList[] = Array.isArray(valuableData)
       ? valuableData.map((item: any) => ({
           id: item.productId,
           modelId: item.modelId,
@@ -73,7 +88,9 @@ function FeaturedProductsContent() {
 
     // Logic for All Models (Standard source)
     let allList: ProductForList[] = [];
-    const sourceData = Array.isArray(allModelsData) ? allModelsData : (allModelsData as any)?.data || [];
+    const sourceData = Array.isArray(allModelsData)
+      ? allModelsData
+      : (allModelsData as any)?.data || [];
 
     if (Array.isArray(sourceData)) {
       allList = sourceData.map((item: any) => ({
@@ -82,11 +99,14 @@ function FeaturedProductsContent() {
         title: item.productTitle,
         modelName: item.modelName,
         category: item.productCategory,
-        image: item.productModelDetails?.colors?.[0]?.imageUrl || FALLBACK_IMAGE,
+        image:
+          item.productModelDetails?.colors?.[0]?.imageUrl || FALLBACK_IMAGE,
       }));
     }
 
-    const filteredRandom = allList.filter((item) => !valuableModelIds.has(item.modelId));
+    const filteredRandom = allList.filter(
+      (item) => !valuableModelIds.has(item.modelId),
+    );
     const random8 = filteredRandom.sort(() => 0.5 - Math.random()).slice(0, 8);
 
     return { valuableProducts: top4Valuable, randomProducts: random8 };
@@ -110,7 +130,10 @@ function FeaturedProductsContent() {
         enquiryType: "Product",
         productImageUrl: selectedProduct?.image || FALLBACK_IMAGE,
       };
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/product-enquiry`, payload);
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/product-enquiry`,
+        payload,
+      );
       if (res.data.success) {
         toast.success("Enquiry sent!");
         setOpen(false);
@@ -124,13 +147,15 @@ function FeaturedProductsContent() {
   };
 
   const renderProductCard = (product: ProductForList) => {
-    const categoryName = categories?.find((c: any) => String(c.categoryId) === String(product.category))?.categoryName;
+    const categoryName = categories?.find(
+      (c: any) => String(c.categoryId) === String(product.category),
+    )?.categoryName;
 
     return (
       <div
         key={`${product.id}-${product.modelId}`}
         onClick={() => router.push(`/products/${product.modelId}`)}
-        className="group bg-white rounded-xl md:rounded-3xl overflow-hidden border border-slate-200 hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col h-full"
+        className="group bg-white rounded-xl md:rounded-3xl overflow-hidden border border-slate-200 hover:border-blue-900  hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col h-full"
       >
         {/* Old Card Image Section */}
         <div className="relative h-32 sm:h-48 md:h-60 bg-white overflow-hidden shrink-0">
@@ -138,6 +163,7 @@ function FeaturedProductsContent() {
             src={product.image}
             alt={product.modelName}
             fill
+            quality={100}
             className="object-contain p-3 md:p-8 group-hover:scale-105 transition-transform duration-700"
             unoptimized
           />
@@ -156,7 +182,7 @@ function FeaturedProductsContent() {
           <h4 className="text-[11px] md:text-lg font-bold text-blue-900 mb-3 md:mb-6 line-clamp-2 leading-tight min-h-[1.8rem] md:min-h-[3rem]">
             {product.modelName}
           </h4>
-          
+
           <div className="flex flex-col gap-1.5 mt-auto">
             <Button
               className="w-full bg-blue-900 hover:bg-blue-800 h-7 md:h-11 rounded-lg md:rounded-xl text-[10px] md:text-sm font-bold"
@@ -209,7 +235,15 @@ function FeaturedProductsContent() {
                 {valuableProducts.map(renderProductCard)}
               </div>
             )}
-
+            <div className="text-center max-w-3xl mx-auto mb-8  md:mb-16">
+              <h2 className="text-2xl md:text-5xl font-extrabold text-blue-900 mb-3 tracking-tight">
+                Medical Equipment
+              </h2>
+              <p className="text-slate-500 text-[11px] md:text-lg px-4">
+                medical solutions designed for hospital-grade
+                durability.
+              </p>
+            </div>
             {/* Random Items Grid */}
             {randomProducts.length > 0 && (
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-8">
@@ -223,9 +257,9 @@ function FeaturedProductsContent() {
         <div className="mt-12 md:mt-20 text-center">
           <Button
             onClick={() => router.push("/products")}
-            className="bg-blue-900 hover:bg-blue-950 text-white px-8 md:px-12 py-5 md:py-7 rounded-xl md:rounded-2xl font-bold text-xs md:text-lg shadow-xl group"
+            className="bg-blue-900 hover:bg-blue-800 text-white px-8 md:px-12 py-5 md:py-7 rounded-xl md:rounded-2xl font-bold text-xs md:text-lg shadow-xl group"
           >
-            View All Products
+            <span className="mx-2">View All Medical Equipment</span>
             <ArrowRight className="ml-2 w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>
@@ -243,23 +277,64 @@ function FeaturedProductsContent() {
             <div className="space-y-4 mt-2">
               <div className="flex items-center gap-3 bg-blue-50/30 p-3 rounded-xl">
                 <div className="relative w-14 h-14 bg-white rounded-lg shrink-0 border">
-                  <Image src={selectedProduct.image} alt="" fill className="object-contain p-1" unoptimized />
+                  <Image
+                    src={selectedProduct.image}
+                    alt=""
+                    fill
+                    className="object-contain p-1"
+                    unoptimized
+                  />
                 </div>
                 <div className="min-w-0">
-                  <h4 className="font-bold text-blue-900 text-xs md:text-base truncate">{selectedProduct.modelName}</h4>
-                  <p className="text-[10px] text-slate-500 uppercase">{selectedProduct.title}</p>
+                  <h4 className="font-bold text-blue-900 text-xs md:text-base truncate">
+                    {selectedProduct.modelName}
+                  </h4>
+                  <p className="text-[10px] text-slate-500 uppercase">
+                    {selectedProduct.title}
+                  </p>
                 </div>
               </div>
 
               <div className="space-y-2.5">
-                <Input placeholder="Full Name" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="h-10 md:h-12 text-xs md:text-sm" />
-                <Input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="h-10 md:h-12 text-xs md:text-sm" />
-                <Input placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="h-10 md:h-12 text-xs md:text-sm" />
-                <Textarea placeholder="Address" rows={2} value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="text-xs md:text-sm" />
+                <Input
+                  placeholder="Full Name"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="h-10 md:h-12 text-xs md:text-sm"
+                />
+                <Input
+                  placeholder="Email"
+                  value={form.email}
+                  onChange={(e) => setForm({ ...form, email: e.target.value })}
+                  className="h-10 md:h-12 text-xs md:text-sm"
+                />
+                <Input
+                  placeholder="Phone"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  className="h-10 md:h-12 text-xs md:text-sm"
+                />
+                <Textarea
+                  placeholder="Address"
+                  rows={2}
+                  value={form.address}
+                  onChange={(e) =>
+                    setForm({ ...form, address: e.target.value })
+                  }
+                  className="text-xs md:text-sm"
+                />
               </div>
 
-              <Button className="w-full bg-blue-900 hover:bg-blue-800 py-6 md:py-7 rounded-xl font-bold text-sm md:text-lg" onClick={handleSubmitEnquiry} disabled={submitting}>
-                {submitting ? <Loader2 className="animate-spin h-5 w-5" /> : "Submit Enquiry"}
+              <Button
+                className="w-full bg-blue-900 hover:bg-blue-800 py-6 md:py-7 rounded-xl font-bold text-sm md:text-lg"
+                onClick={handleSubmitEnquiry}
+                disabled={submitting}
+              >
+                {submitting ? (
+                  <Loader2 className="animate-spin h-5 w-5" />
+                ) : (
+                  "Submit Enquiry"
+                )}
               </Button>
             </div>
           )}
@@ -269,10 +344,10 @@ function FeaturedProductsContent() {
   );
 }
 
-export default function FeaturedProducts() {
+export default function FeaturedProducts(props: { preFetchedValuable?: any, preFetchedAllModels?: any }) {
   return (
     <Providers>
-      <FeaturedProductsContent />
+      <FeaturedProductsContent {...props} />
     </Providers>
   );
 }

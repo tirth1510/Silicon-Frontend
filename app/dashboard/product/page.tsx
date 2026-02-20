@@ -57,7 +57,7 @@ export default function ProductsPage() {
   const [filteredModels, setFilteredModels] = useState<ModelWithProductDTO[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "live">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "pending" | "live" | "valuable">("all");
 
   // --- PAGINATION STATES ---
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,7 +77,7 @@ export default function ProductsPage() {
   const hasFetchedRef = useRef(false);
   const router = useRouter();
 
-  const fetchData = async () => {
+  const fetchAllData = async () => {
     try {
       setLoading(true);
       const [pending, live] = await Promise.all([
@@ -111,19 +111,45 @@ export default function ProductsPage() {
     }
   };
 
+  const fetchValuableData = async () => {
+    setLoading(true);
+    try {
+      const [pending, live] = await Promise.all([
+        getPaddingModelsWithProductInfo(),
+        getAllModelsWithProductInfo(),
+      ]);
+      const merged = [...pending, ...live];
+      const valuable = merged.filter((m: any) => m.productModelDetails?.scheme?.valuableProduct);
+      setModels(valuable);
+      setFilteredModels(valuable);
+      setCurrentPage(1);
+    } catch (error) {
+      console.error("Error fetching valuable models:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRefresh = () => {
+    if (statusFilter === "all") {
+      fetchAllData();
+    } else if (statusFilter === "valuable") {
+      fetchValuableData();
+    } else {
+      fetchByStatus(statusFilter as "pending" | "live");
+    }
+  };
+
   useEffect(() => {
     if (!hasFetchedRef.current) {
       hasFetchedRef.current = true;
-      fetchData();
+      fetchAllData();
     }
   }, []);
 
   useEffect(() => {
-    if (statusFilter === "all") {
-      fetchData();
-    } else {
-      fetchByStatus(statusFilter);
-    }
+    handleRefresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusFilter]);
 
   // Search filter logic
@@ -148,7 +174,7 @@ export default function ProductsPage() {
   const handleStatusChange = async (productId: string, modelId: string, status: "Live" | "Padding" | "Enquiry") => {
     try {
       await goLiveModelService(productId, modelId, status);
-      fetchData();
+      handleRefresh();
     } catch (error) {
       console.error("Error updating status:", error);
     }
@@ -158,7 +184,7 @@ export default function ProductsPage() {
     if (!confirm(`Are you sure you want to delete "${modelName}"?`)) return;
     try {
       await deleteModelService(productId, modelId);
-      fetchData();
+      handleRefresh();
     } catch (error: any) {
       alert(error.message || "Failed to delete");
     }
@@ -192,6 +218,7 @@ export default function ProductsPage() {
             <SelectItem value="all" className="font-bold">All Status</SelectItem>
             <SelectItem value="pending" className="font-bold text-amber-600">Pending</SelectItem>
             <SelectItem value="live" className="font-bold text-green-600">Live</SelectItem>
+            <SelectItem value="valuable" className="font-bold text-purple-600">Valuable</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -203,7 +230,8 @@ export default function ProductsPage() {
             <TableRow className="hover:bg-blue-900">
               <TableHead className="w-16 text-center text-blue-100 font-black text-[10px] uppercase tracking-widest py-6">ID</TableHead>
               <TableHead className="w-28 text-center text-blue-100 font-black text-[10px] uppercase py-6">Preview</TableHead>
-              <TableHead className="text-left text-blue-100 font-black text-[10px] uppercase py-6">Product Details</TableHead>
+              <TableHead className="text-left text-blue-100 font-black text-[10px] uppercase py-6">Product</TableHead>
+              <TableHead className="text-center text-blue-100 font-black text-[10px] uppercase py-6">Category</TableHead>
               <TableHead className="text-center text-blue-100 font-black text-[10px] uppercase py-6">Model Info</TableHead>
               <TableHead className="text-center text-blue-100 font-black text-[10px] uppercase py-6">Stock</TableHead>
               <TableHead className="text-center text-blue-100 font-black text-[10px] uppercase py-6">Status</TableHead>
@@ -228,6 +256,8 @@ export default function ProductsPage() {
                   </TableCell>
                   <TableCell className="text-left py-4">
                     <div className="font-black text-slate-900">{model.productTitle}</div>
+                  </TableCell>
+                  <TableCell className="text-center">
                     <div className="text-[10px] font-bold text-slate-500 uppercase">{model.productCategory}</div>
                   </TableCell>
                   <TableCell className="text-center"><span className="text-slate-600 font-bold bg-slate-50 px-3 py-1 rounded-full border">{model.modelName}</span></TableCell>
@@ -319,16 +349,16 @@ export default function ProductsPage() {
       </div>
 
       {/* All Dialogs */}
-      <AddProductDialog open={openAddDialog} onClose={() => setOpenAddDialog(false)} onSuccess={fetchData} />
-      {selectedProductForModel && <AddModelDialog open={openAddModelDialog} onClose={() => { setOpenAddModelDialog(false); setSelectedProductForModel(null); }} productId={selectedProductForModel} onSuccess={fetchData} />}
+      <AddProductDialog open={openAddDialog} onClose={() => setOpenAddDialog(false)} onSuccess={handleRefresh} />
+      {selectedProductForModel && <AddModelDialog open={openAddModelDialog} onClose={() => { setOpenAddModelDialog(false); setSelectedProductForModel(null); }} productId={selectedProductForModel} onSuccess={handleRefresh} />}
       {selectedModel && (
         <>
        
-          <UpdateProductDialog open={openEditProductDialog} onClose={() => setOpenEditProductDialog(false)} productId={selectedModel.productId} defaultValues={{ productTitle: selectedModel.productTitle, productCategory: selectedModel.productCategory ?? "1", description: selectedModel.productDescription || "" }} onSuccess={fetchData} />
-          <UpdateModelDialog open={openEditModelDialog} onClose={() => setOpenEditModelDialog(false)} productId={selectedModel.productId} modelId={selectedModel.modelId} defaultValues={{ modelName: selectedModel.modelName, status: selectedModel.status }} onSuccess={fetchData} />
+          <UpdateProductDialog open={openEditProductDialog} onClose={() => setOpenEditProductDialog(false)} productId={selectedModel.productId} defaultValues={{ productTitle: selectedModel.productTitle, productCategory: selectedModel.productCategory ?? "1", description: selectedModel.productDescription || "" }} onSuccess={handleRefresh} />
+          <UpdateModelDialog open={openEditModelDialog} onClose={() => setOpenEditModelDialog(false)} productId={selectedModel.productId} modelId={selectedModel.modelId} defaultValues={{ modelName: selectedModel.modelName, status: selectedModel.status }} onSuccess={handleRefresh} />
           {selectedModel.productModelDetails && (
             <>
-              <UpdateModelDetailsDialog open={openEditDetailsDialog} onClose={() => setOpenEditDetailsDialog(false)} productId={selectedModel.productId} modelId={selectedModel.modelId} modelDetails={selectedModel.productModelDetails} onSuccess={fetchData} />
+              <UpdateModelDetailsDialog open={openEditDetailsDialog} onClose={() => setOpenEditDetailsDialog(false)} productId={selectedModel.productId} modelId={selectedModel.modelId} modelDetails={selectedModel.productModelDetails} onSuccess={handleRefresh} />
               {selectedModel.productModelDetails.colors?.[0] && (
                 <UpdateColorDialog 
                   open={openEditColorDialog} 
@@ -337,7 +367,7 @@ export default function ProductsPage() {
                   modelId={selectedModel.modelId} 
                   colorId={selectedModel.productModelDetails.colors[0]._id} 
                   colorData={selectedModel.productModelDetails.colors[0]} 
-                  onSuccess={fetchData} 
+                  onSuccess={handleRefresh} 
                 />
               )}
             </>
@@ -348,7 +378,7 @@ export default function ProductsPage() {
             productId={selectedModel.productId}
             modelId={selectedModel.modelId}
             currentScheme={selectedModel}
-            onSuccess={fetchData}
+            onSuccess={handleRefresh}
           >
             <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-2xl border border-slate-100">
               <div className="relative w-16 h-16 bg-white rounded-xl overflow-hidden border border-slate-200 shrink-0">

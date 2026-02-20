@@ -25,7 +25,7 @@ type ProductForList = {
   productImage: string;
 };
 
-export default function FeaturedAccessories() {
+export default function FeaturedAccessories({ preFetchedAccessories }: { preFetchedAccessories?: any }) {
   const router = useRouter();
   const [products, setProducts] = useState<ProductForList[]>([]);
   const [loading, setLoading] = useState(true);
@@ -45,6 +45,18 @@ export default function FeaturedAccessories() {
   const FALLBACK_IMAGE = "https://via.placeholder.com/400x400?text=No+Image";
 
   useEffect(() => {
+    if (preFetchedAccessories) {
+      const rawData = preFetchedAccessories.products || preFetchedAccessories.data || [];
+      const mapped: ProductForList[] = rawData.map((item: any, index: number) => ({
+        id: item._id || item.id || `acc-${index}`,
+        productname: item.productTitle || "Medical Accessory",
+        category: item.productCategory || "Accessories",
+        productImage: item.productImages?.[0]?.url || FALLBACK_IMAGE,
+      }));
+      setProducts(mapped.sort(() => 0.5 - Math.random()).slice(0, 8));
+      setLoading(false);
+      return;
+    }
     const fetchProducts = async () => {
       try {
         setLoading(true);
@@ -64,7 +76,7 @@ export default function FeaturedAccessories() {
       }
     };
     fetchProducts();
-  }, []);
+  }, [preFetchedAccessories]);
 
   // Added missing handleSubmitEnquiry function
   const handleSubmitEnquiry = async () => {
@@ -102,18 +114,18 @@ export default function FeaturedAccessories() {
   if (loading) {
     return (
       <div className="min-h-[400px] flex items-center justify-center bg-white">
-        <div className="w-12 h-12 border-4 border-blue-900 border-t-transparent rounded-full animate-spin"></div>
+        <Loader2 className="animate-spin h-10 w-10 text-blue-900" />
       </div>
     );
   }
 
   return (
-    <section className="relative bg-white py-10 md:py-20 overflow-hidden">
+    <section className="relative bg-white py-10 md:py-5  overflow-hidden">
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
         <div className="absolute inset-0" style={{ backgroundImage: `radial-gradient(circle at 2px 2px, rgb(30 58 138) 1px, transparent 0)`, backgroundSize: "40px 40px" }} />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-3 md:px-8">
+      <div className="relative max-w-[1400px] mx-auto px-3 md:px-8">
         {/* HEADER SECTION */}
         <div className="text-center max-w-3xl mx-auto mb-8 md:mb-16">
           <h2 className="text-2xl md:text-5xl font-extrabold text-blue-900 mb-3 tracking-tight">
@@ -131,7 +143,7 @@ export default function FeaturedAccessories() {
               <div
                 key={product.id}
                 onClick={() => router.push(`/products/accessories/${product.id}`)}
-                className="group bg-white rounded-xl md:rounded-3xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col h-full"
+                className="group bg-white rounded-xl md:rounded-3xl overflow-hidden border border-slate-100 hover:border-blue-900 shadow-sm hover:shadow-xl transition-all duration-500 cursor-pointer flex flex-col h-full"
               >
                 <div className="relative h-32 sm:h-48 md:h-60 bg-slate-50/50 overflow-hidden shrink-0">
                   <Image
@@ -143,7 +155,7 @@ export default function FeaturedAccessories() {
                   />
                   <div className="absolute top-1.5 left-1.5">
                     <span className="px-1.5 py-0.5 text-[8px] md:text-[10px] font-bold text-white bg-blue-900/90 rounded-md uppercase">
-                      New
+                      Accessories & Consumables
                     </span>
                   </div>
                 </div>
@@ -186,7 +198,7 @@ export default function FeaturedAccessories() {
           </div>
         ) : (
           <div className="text-center py-10 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-            <p className="text-slate-500 text-xs">No products found.</p>
+            <p className="text-slate-500 text-xs">No Accessories found.</p>
           </div>
         )}
 
@@ -196,7 +208,7 @@ export default function FeaturedAccessories() {
             onClick={() => router.push("/products/accessories")}
             className="bg-blue-900 hover:bg-blue-950 text-white px-6 md:px-12 py-4 md:py-7 rounded-xl font-bold text-xs md:text-lg transition-all group"
           >
-            View All
+            View All Accessories
             <ShoppingBag className="ml-2 w-3 h-3 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
           </Button>
         </div>

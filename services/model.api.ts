@@ -231,3 +231,30 @@ export const getValuableProductsService = async () => {
   }
   return response.json();
 };
+
+// service.ts file mein add karein
+
+export const deleteValuableSchemeService = async (productId: string, modelId: string) => {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/valuable/${productId}/${modelId}`,
+      {
+        method: "DELETE", // Kyuki aap database mein sirf ek field update kar rahe hain
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message || "Something went wrong while updating status");
+    }
+
+    return data;
+  } catch (error: any) {
+    console.error("Delete Valuable Status Error:", error);
+    throw error;
+  }
+};

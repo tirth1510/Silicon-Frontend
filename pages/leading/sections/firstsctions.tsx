@@ -13,6 +13,7 @@ import {
   ChevronDown,
   TrendingUp,
   Shield,
+  Loader2,
 } from "lucide-react";
 
 import {
@@ -35,6 +36,11 @@ import Panters from "@/public/panters.png";
 import Care from "@/public/care.png";
 import { Router } from "next/router";
 import { Providers } from "@/providers/providers";
+import { useCategories } from "@/hooks/useCategories";
+import { useQuery } from "@tanstack/react-query";
+import { getAllModelsWithProductInfo, getValuableProductsService } from "@/services/model.api";
+import axios from "axios";
+
 export default function LandingPage() {
   const autoplay = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true }),
@@ -116,6 +122,35 @@ export default function LandingPage() {
       iconBg: "bg-green-600",
     },
   ];
+
+  // --- DATA FETCHING FOR LOADER ---
+  const { categories, loading: loadingCategories } = useCategories();
+
+  const { data: valuableData, isLoading: loadingValuable } = useQuery({
+    queryKey: ["valuable-products"],
+    queryFn: () => getValuableProductsService(),
+  });
+
+  const { data: allModelsData, isLoading: loadingModels } = useQuery({
+    queryKey: ["all-models-info"],
+    queryFn: () => getAllModelsWithProductInfo(),
+  });
+
+  const { data: accessoriesData, isLoading: loadingAccessories } = useQuery({
+    queryKey: ["accessories-all"],
+    queryFn: async () => {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/accessorize/all`);
+      return response.data;
+    }
+  });
+
+  if (loadingCategories || loadingValuable || loadingModels || loadingAccessories) {
+    return (
+      <div className="flex min-h-screen w-full items-center justify-center bg-white">
+        <Loader2 className="h-12 w-12 animate-spin text-blue-900" />
+      </div>
+    );
+  }
 
   return (
     <Providers>
@@ -269,11 +304,11 @@ export default function LandingPage() {
 </section>
 
       <div className="text-center w-full overflow-hidden">
-        <ProductCategorySection />
+        <ProductCategorySection categories={categories} />
         <div className="bg-white py-12 md:py-20">
-          <PremiumProductsPage />
+          <PremiumProductsPage preFetchedValuable={valuableData} preFetchedAllModels={allModelsData} />
         </div>
-        <AccessoriesPage />
+        <AccessoriesPage preFetchedAccessories={accessoriesData} />
       </div>
     </div>
     </Providers>

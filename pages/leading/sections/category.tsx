@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import {
@@ -14,6 +15,7 @@ import {
   Microscope,
   CircleDot,
   LucideIcon,
+  Loader2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCategories } from "@/hooks/useCategories";
@@ -42,9 +44,12 @@ const getIconComponent = (iconName?: string): LucideIcon => {
   return icon || Package;
 };
 
-export default function ProductCategorySection() {
+export default function ProductCategorySection({ categories: propCategories }: { categories?: any[] }) {
   const router = useRouter();
-  const { categories: apiCategories, loading, error } = useCategories();
+  const { categories: hookCategories, loading: hookLoading, error } = useCategories();
+
+  const apiCategories = propCategories || hookCategories;
+  const loading = propCategories ? false : hookLoading;
 
   return (
     <Providers>
@@ -70,6 +75,12 @@ export default function ProductCategorySection() {
             Discover our comprehensive range of medical products and services
           </p>
         </div>
+
+        {loading && (
+          <div className="flex justify-center py-20">
+            <Loader2 className="animate-spin h-10 w-10 text-blue-900" />
+          </div>
+        )}
 
         {/* CATEGORY CARDS - CHANGE: grid-cols-2 for mobile */}
         {!loading && !error && apiCategories && apiCategories.length > 0 && (
@@ -105,7 +116,7 @@ export default function ProductCategorySection() {
                         }}
                       >
                         <div
-                          className="absolute inset-0 bg-blue-900/70"
+                          className="absolute inset-0 bg-blue-900/45"
                           aria-hidden
                         />
 
