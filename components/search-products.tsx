@@ -69,7 +69,7 @@ export function SearchProducts() {
 
         // Accessories Mapping (Service response handle karna)
         // Note: Assuming accRes has data in accRes.data or directly as array
-        const accessoriesList = Array.isArray(accRes) ? accRes : accRes?.data || [];
+        const accessoriesList = Array.isArray(accRes) ? accRes : (accRes as any)?.data || [];
         const mappedAccessories = accessoriesList.map((a: any) => ({
           ...a,
           type: "accessory",

@@ -41,7 +41,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllModelsWithProductInfo, getValuableProductsService } from "@/services/model.api";
 import axios from "axios";
 
-export default function LandingPage() {
+function LandingPageContent() {
   const autoplay = React.useRef(
     Autoplay({ delay: 5000, stopOnInteraction: true }),
   );
@@ -153,7 +153,6 @@ export default function LandingPage() {
   }
 
   return (
-    <Providers>
     <div className="flex flex-col w-full bg-white overflow-x-hidden">
       <section className="relative w-full">
   <Carousel
@@ -311,6 +310,13 @@ export default function LandingPage() {
         <AccessoriesPage preFetchedAccessories={accessoriesData} />
       </div>
     </div>
+  );
+}
+
+export default function LandingPage() {
+  return (
+    <Providers>
+      <LandingPageContent />
     </Providers>
   );
 }
