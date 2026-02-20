@@ -354,7 +354,7 @@ export default function ProductsPage() {
       {selectedModel && (
         <>
        
-          <UpdateProductDialog open={openEditProductDialog} onClose={() => setOpenEditProductDialog(false)} productId={selectedModel.productId} defaultValues={{ productTitle: selectedModel.productTitle, productCategory: selectedModel.productCategory ?? "1", description: selectedModel.productDescription || "" }} onSuccess={handleRefresh} />
+          <UpdateProductDialog open={openEditProductDialog} onClose={() => setOpenEditProductDialog(false)} productId={selectedModel.productId} defaultValues={{ productTitle: selectedModel.productTitle, productCategory: selectedModel.productCategory ?? "1" }} onSuccess={handleRefresh} />
           <UpdateModelDialog open={openEditModelDialog} onClose={() => setOpenEditModelDialog(false)} productId={selectedModel.productId} modelId={selectedModel.modelId} defaultValues={{ modelName: selectedModel.modelName, status: selectedModel.status }} onSuccess={handleRefresh} />
           {selectedModel.productModelDetails && (
             <>

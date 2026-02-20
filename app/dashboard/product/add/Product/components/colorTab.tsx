@@ -30,7 +30,6 @@ export default function Step3ColorVariant({ productId, modelId, onNext }: Props)
       // Logic Validation
       if (!colorName) throw new Error("Color name is required");
       if (!colorImage) throw new Error("Main color image is required");
-      if (price <= 0) throw new Error("Price must be greater than 0");
 
       const payload: ColorVariantPayload = {
         colorName,
@@ -38,7 +37,6 @@ export default function Step3ColorVariant({ productId, modelId, onNext }: Props)
         colorImage,
         productImages,
         galleryImages,
-        colorPrice: [{ currency: "INR", price, discount }],
       };
 
       return addColorVariant(productId, modelId, payload);
@@ -86,33 +84,7 @@ export default function Step3ColorVariant({ productId, modelId, onNext }: Props)
       </div>
 
       {/* Pricing Section - Single Default Entry */}
-      <div className="p-6 border-2 border-dashed border-blue-100 rounded-[2rem] bg-blue-50/30 space-y-4">
-        <h3 className="text-sm font-black text-blue-900 uppercase flex items-center gap-2">
-          <CheckCircle2 size={16} /> Pricing Details (INR)
-        </h3>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-slate-500 uppercase">Base Price</label>
-            <Input
-              type="number"
-              placeholder="0.00"
-              value={price}
-              onChange={(e) => setPrice(parseFloat(e.target.value))}
-              className="bg-white rounded-xl"
-            />
-          </div>
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-slate-500 uppercase">Discount (%)</label>
-            <Input
-              type="number"
-              placeholder="0"
-              value={discount}
-              onChange={(e) => setDiscount(parseFloat(e.target.value))}
-              className="bg-white rounded-xl"
-            />
-          </div>
-        </div>
-      </div>
+     
 
       {/* Image Upload Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -91,7 +91,6 @@ export interface ProductDTO {
 export interface CreateProductStep1Payload {
   productCategory: "1" | "2" | "3" | "4";
   productTitle: string;
-  description: string;
   modelName: string;
 }
 

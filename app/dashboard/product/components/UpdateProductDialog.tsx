@@ -25,7 +25,6 @@ interface UpdateProductDialogProps {
   defaultValues: {
     productTitle: string;
     productCategory: string;
-    description: string;
   };
   onSuccess: () => void;
 }
@@ -106,23 +105,7 @@ export default function UpdateProductDialog({
             </div>
           </div>
 
-          {/* Description */}
-          <div className="space-y-2">
-            <label className="text-[10px] font-black uppercase text-blue-900 tracking-[0.2em] ml-1">
-              Main Description
-            </label>
-            <Textarea
-              placeholder="Detailed description..."
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="min-h-[160px] bg-slate-50 border-slate-200 rounded-[1.5rem] p-4 font-medium resize-none focus:ring-blue-900/10 leading-relaxed"
-            />
-            <div className="flex justify-end pr-2">
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic flex items-center gap-1">
-                    <Info size={10} /> Length: {form.description.length} chars
-                </span>
-            </div>
-          </div>
+         
 
           {/* --- FOOTER ACTIONS --- */}
           <div className="flex justify-end items-center gap-3 pt-4 border-t border-slate-100">

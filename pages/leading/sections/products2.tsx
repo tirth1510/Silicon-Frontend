@@ -35,7 +35,13 @@ type ProductForList = {
   image: string;
 };
 
-function FeaturedProductsContent({ preFetchedValuable, preFetchedAllModels }: { preFetchedValuable?: any, preFetchedAllModels?: any }) {
+function FeaturedProductsContent({
+  preFetchedValuable,
+  preFetchedAllModels,
+}: {
+  preFetchedValuable?: any;
+  preFetchedAllModels?: any;
+}) {
   const router = useRouter();
   const { categories } = useCategories();
   const [open, setOpen] = useState(false);
@@ -48,7 +54,7 @@ function FeaturedProductsContent({ preFetchedValuable, preFetchedAllModels }: { 
     name: "",
     email: "",
     phone: "",
-    address: "",
+    message: "",
   });
 
   const FALLBACK_IMAGE =
@@ -59,7 +65,7 @@ function FeaturedProductsContent({ preFetchedValuable, preFetchedAllModels }: { 
     queryKey: ["valuable-products"],
     queryFn: () => getValuableProductsService(),
     enabled: !preFetchedValuable,
-    initialData: preFetchedValuable
+    initialData: preFetchedValuable,
   });
 
   // Fetch All Products for Random Section
@@ -67,7 +73,7 @@ function FeaturedProductsContent({ preFetchedValuable, preFetchedAllModels }: { 
     queryKey: ["all-models-info"],
     queryFn: () => getAllModelsWithProductInfo(),
     enabled: !preFetchedAllModels,
-    initialData: preFetchedAllModels
+    initialData: preFetchedAllModels,
   });
 
   const { valuableProducts, randomProducts } = useMemo(() => {
@@ -120,13 +126,15 @@ function FeaturedProductsContent({ preFetchedValuable, preFetchedAllModels }: { 
     try {
       setSubmitting(true);
       const payload = {
+        productId: selectedProduct?.id, // <-- Add this
+        modelId: selectedProduct?.modelId,
         productTitle: selectedProduct?.title,
         modelName: selectedProduct?.modelName,
         name: form.name,
         email: form.email,
         phone: form.phone,
         messageTitle: `Enquiry for ${selectedProduct?.modelName}`,
-        message: `${form.address}`,
+        message: `${form.message}`,
         enquiryType: "Product",
         productImageUrl: selectedProduct?.image || FALLBACK_IMAGE,
       };
@@ -137,7 +145,7 @@ function FeaturedProductsContent({ preFetchedValuable, preFetchedAllModels }: { 
       if (res.data.success) {
         toast.success("Enquiry sent!");
         setOpen(false);
-        setForm({ name: "", email: "", phone: "", address: "" });
+        setForm({ name: "", email: "", phone: "", message: "" });
       }
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to send enquiry");
@@ -240,8 +248,7 @@ function FeaturedProductsContent({ preFetchedValuable, preFetchedAllModels }: { 
                 Medical Equipment
               </h2>
               <p className="text-slate-500 text-[11px] md:text-lg px-4">
-                medical solutions designed for hospital-grade
-                durability.
+                medical solutions designed for hospital-grade durability.
               </p>
             </div>
             {/* Random Items Grid */}
@@ -315,11 +322,11 @@ function FeaturedProductsContent({ preFetchedValuable, preFetchedAllModels }: { 
                   className="h-10 md:h-12 text-xs md:text-sm"
                 />
                 <Textarea
-                  placeholder="Address"
+                  placeholder="Message"
                   rows={2}
-                  value={form.address}
+                  value={form.message}
                   onChange={(e) =>
-                    setForm({ ...form, address: e.target.value })
+                    setForm({ ...form, message: e.target.value })
                   }
                   className="text-xs md:text-sm"
                 />
@@ -344,7 +351,10 @@ function FeaturedProductsContent({ preFetchedValuable, preFetchedAllModels }: { 
   );
 }
 
-export default function FeaturedProducts(props: { preFetchedValuable?: any, preFetchedAllModels?: any }) {
+export default function FeaturedProducts(props: {
+  preFetchedValuable?: any;
+  preFetchedAllModels?: any;
+}) {
   return (
     <Providers>
       <FeaturedProductsContent {...props} />

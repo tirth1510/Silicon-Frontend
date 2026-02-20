@@ -33,7 +33,6 @@ export default function Step1BasicInfo({ onSuccess }: Props) {
   const [form, setForm] = useState<CreateProductStep1Payload>({
     productCategory: "1",
     productTitle: "",
-    description: "",
     modelName: "",
   });
 
@@ -46,7 +45,7 @@ export default function Step1BasicInfo({ onSuccess }: Props) {
     },
   });
 
-  const isFormValid = form.productTitle && form.description && form.modelName;
+  const isFormValid = form.productTitle  && form.modelName;
 
   return (
     <div className="flex flex-col h-full relative">
@@ -107,23 +106,7 @@ export default function Step1BasicInfo({ onSuccess }: Props) {
           </div>
 
           {/* Description */}
-          <div className="space-y-3">
-            <label className="text-xs font-black uppercase text-blue-900 tracking-widest">
-              Detailed Description <span className="text-red-500">*</span>
-            </label>
-            <Textarea
-              placeholder="Describe the product's core technology and medical benefits..."
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              className="w-full min-h-[180px] bg-white border-2 border-slate-200 rounded-[2rem] p-6 focus:ring-4 focus:ring-blue-50 transition-all font-medium leading-relaxed resize-none"
-            />
-            <div className="flex items-center gap-2 text-slate-400 mt-2 ml-2">
-              <Info size={14} />
-              <p className="text-[10px] font-bold uppercase tracking-wider">
-                Current Length: {form.description.length} characters
-              </p>
-            </div>
-          </div>
+          
         </div>
       </div>
 
