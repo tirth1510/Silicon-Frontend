@@ -20,6 +20,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 // Navigation data
 const data = {
@@ -64,6 +65,7 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const router = useRouter();
   return (
     <Sidebar 
       collapsible="icon" 
@@ -78,6 +80,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             alt="Silicon Meditech" 
             height={60} 
             width={180}
+            onClick={() => router.push("/")}
             className="object-contain group-data-[collapsible=icon]:hidden"
           />
           <div className="hidden group-data-[collapsible=icon]:flex w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl items-center justify-center shadow-lg">

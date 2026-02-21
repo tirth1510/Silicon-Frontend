@@ -177,7 +177,7 @@ export default function FeaturedAccessories({ preFetchedAccessories }: { preFetc
                       }}
                     >
                       <Eye className="w-3 h-3 mr-1 md:mr-2" />
-                      View
+                      View Details
                     </Button>
                     <Button
                       variant="ghost"
@@ -189,7 +189,7 @@ export default function FeaturedAccessories({ preFetchedAccessories }: { preFetc
                       }}
                     >
                       <MessageCircle className="w-3 h-3" />
-                      Enquiry
+                      Get Enquiry
                     </Button>
                   </div>
                 </div>
