@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Image from "next/image";
 import { motion, type Variants } from "framer-motion";
 import Autoplay from "embla-carousel-autoplay";
@@ -37,6 +37,7 @@ import Care from "@/public/care.png";
 import { Router } from "next/router";
 import { Providers } from "@/providers/providers";
 import { useCategories } from "@/hooks/useCategories";
+import { useAppReady } from "@/contexts/app-ready-context";
 import { useQuery } from "@tanstack/react-query";
 import { getAllModelsWithProductInfo, getValuableProductsService } from "@/services/model.api";
 import axios from "axios";
@@ -143,6 +144,13 @@ export default function LandingPage() {
       return response.data;
     }
   });
+
+  const { setReady } = useAppReady();
+  const contentReady = !(loadingCategories || loadingValuable || loadingModels || loadingAccessories);
+
+  useEffect(() => {
+    if (contentReady) setReady(true);
+  }, [contentReady, setReady]);
 
   if (loadingCategories || loadingValuable || loadingModels || loadingAccessories) {
     return (
