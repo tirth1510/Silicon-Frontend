@@ -22,6 +22,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
+import { submitProductEnquiry } from "@/services/enquiry.api";
 
 /* ---------- TYPES ---------- */
 type ProductForList = {
@@ -147,38 +148,33 @@ function ProductsContent() {
   }, [displayedProducts]);
 
   const handleSubmitEnquiry = async () => {
-    if (!form.name || !form.phone || !form.email) {
-      toast.error("Please fill in all required fields");
+    if (!form.name?.trim() || !form.phone?.trim() || !form.email?.trim()) {
+      toast.error("Please fill in Name, Email, and Phone");
       return;
     }
-
+    if (!selectedProduct) return;
     try {
       setSubmitting(true);
-
-      const payload = {
-        productTitle: selectedProduct?.modelName,
-        modelName: selectedProduct?.modelName,
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        messageTitle: `Enquiry for ${selectedProduct?.modelName}`,
-        message: `${form.address}`,
-        enquiryType: "Product",
-        productImageUrl: selectedProduct?.image || FALLBACK_IMAGE,
-      };
-
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/product-enquiry`,
-        payload,
-      );
-
-      if (res.data.success) {
+      const result = await submitProductEnquiry({
+        productId: selectedProduct.id,
+        modelId: selectedProduct.modelId,
+        productTitle: selectedProduct.title,
+        modelName: selectedProduct.modelName,
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        message: form.address?.trim() || "",
+        productImageUrl: selectedProduct.image || FALLBACK_IMAGE,
+      });
+      if (result.success) {
         toast.success("Enquiry sent! Our team will contact you soon.");
         setOpen(false);
         setForm({ name: "", email: "", phone: "", address: "" });
+      } else {
+        toast.error(result.error || "Failed to send enquiry");
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to send enquiry");
+    } catch {
+      toast.error("Failed to send enquiry. Please try again.");
     } finally {
       setSubmitting(false);
     }
