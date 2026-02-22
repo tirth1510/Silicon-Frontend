@@ -17,11 +17,11 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import axios from "axios";
 import {
   getAllModelsWithProductInfo,
   getValuableProductsService,
 } from "@/services/model.api";
+import { submitProductEnquiry } from "@/services/enquiry.api";
 import { useCategories } from "@/hooks/useCategories";
 import { Providers } from "@/providers/providers";
 
@@ -118,37 +118,42 @@ function FeaturedProductsContent({
     return { valuableProducts: top4Valuable, randomProducts: random8 };
   }, [valuableData, allModelsData]);
 
-  const handleSubmitEnquiry = async () => {
-    if (!form.name || !form.phone || !form.email) {
-      toast.error("Please fill in all required fields");
+  const handleSubmitEnquiry = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.name?.trim() || !form.phone?.trim() || !form.email?.trim()) {
+      toast.error("Please fill in Name, Email, and Phone");
+      return;
+    }
+    if (!selectedProduct) {
+      toast.error("Please select a product");
+      return;
+    }
+    if (!process.env.NEXT_PUBLIC_API_BASE_URL) {
+      toast.error("API not configured. Please contact support.");
       return;
     }
     try {
       setSubmitting(true);
-      const payload = {
-        productId: selectedProduct?.id, // <-- Add this
-        modelId: selectedProduct?.modelId,
-        productTitle: selectedProduct?.title,
-        modelName: selectedProduct?.modelName,
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        messageTitle: `Enquiry for ${selectedProduct?.modelName}`,
-        message: `${form.message}`,
-        enquiryType: "Product",
-        productImageUrl: selectedProduct?.image || FALLBACK_IMAGE,
-      };
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/product-enquiry`,
-        payload,
-      );
-      if (res.data.success) {
-        toast.success("Enquiry sent!");
+      const result = await submitProductEnquiry({
+        productId: selectedProduct.id,
+        modelId: selectedProduct.modelId,
+        productTitle: selectedProduct.title,
+        modelName: selectedProduct.modelName,
+        name: form.name.trim(),
+        email: form.email.trim(),
+        phone: form.phone.trim(),
+        message: form.message?.trim() || "",
+        productImageUrl: selectedProduct.image || FALLBACK_IMAGE,
+      });
+      if (result.success) {
+        toast.success("Enquiry sent successfully!");
         setOpen(false);
         setForm({ name: "", email: "", phone: "", message: "" });
+      } else {
+        toast.error(result.error || "Failed to send enquiry");
       }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to send enquiry");
+    } catch {
+      toast.error("Failed to send enquiry. Please try again.");
     } finally {
       setSubmitting(false);
     }
@@ -281,7 +286,10 @@ function FeaturedProductsContent({
             </DialogTitle>
           </DialogHeader>
           {selectedProduct && (
-            <div className="space-y-4 mt-2">
+            <form
+              onSubmit={handleSubmitEnquiry}
+              className="space-y-4 mt-2"
+            >
               <div className="flex items-center gap-3 bg-blue-50/30 p-3 rounded-xl">
                 <div className="relative w-14 h-14 bg-white rounded-lg shrink-0 border">
                   <Image
@@ -333,8 +341,8 @@ function FeaturedProductsContent({
               </div>
 
               <Button
+                type="submit"
                 className="w-full bg-blue-900 hover:bg-blue-800 py-6 md:py-7 rounded-xl font-bold text-sm md:text-lg"
-                onClick={handleSubmitEnquiry}
                 disabled={submitting}
               >
                 {submitting ? (
@@ -343,7 +351,7 @@ function FeaturedProductsContent({
                   "Submit Enquiry"
                 )}
               </Button>
-            </div>
+            </form>
           )}
         </DialogContent>
       </Dialog>

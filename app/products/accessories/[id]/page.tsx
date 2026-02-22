@@ -78,19 +78,17 @@ export default function AccessoryDetailsPage() {
       setSubmitting(true);
 
       const payload = {
+        productId: accessory.productId ?? accessory._id,
         productTitle: accessory.productTitle,
-        modelName: accessory.productTitle,
+        productImageUrl: accessoryImages[0] || "https://via.placeholder.com/400",
         name: form.name,
         email: form.email,
         phone: form.phone,
-        messageTitle: `Enquiry for ${accessory.productTitle}`,
-        message: `${form.address}`,
-        enquiryType: "Accessory",
-        productImageUrl: accessoryImages[0] || "https://via.placeholder.com/400",
+        message: form.address,
       };
 
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/product-enquiry`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/accessory-enquiry`,
         payload,
       );
 

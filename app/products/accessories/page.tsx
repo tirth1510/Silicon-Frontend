@@ -128,19 +128,17 @@ function AccessoriesContent() {
       setSubmitting(true);
 
       const payload = {
+        productId: selectedProduct?.id ?? selectedProduct?._id ?? selectedProduct?.productId,
         productTitle: selectedProduct?.productTitle,
-        modelName: selectedProduct?.productTitle,
+        productImageUrl: selectedProduct?.productImages?.[0]?.url || "https://via.placeholder.com/400",
         name: form.name,
         email: form.email,
         phone: form.phone,
-        messageTitle: `Enquiry for ${selectedProduct?.productTitle}`,
-        message: `${form.address}`,
-        enquiryType: "Accessory",
-        productImageUrl: selectedProduct?.productImages?.[0]?.url || "https://via.placeholder.com/400",
+        message: form.address,
       };
 
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/product-enquiry`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/accessory-enquiry`,
         payload,
       );
 

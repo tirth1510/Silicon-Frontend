@@ -16,7 +16,9 @@ type ContactFormData = {
 };
 
 const sendContactMessage = async (data: ContactFormData) => {
-  const response = await fetch("http://localhost:5000/api/contact/create", {
+  const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+  if (!apiBase) throw new Error("API configuration error");
+  const response = await fetch(`${apiBase}/api/contact/create`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
