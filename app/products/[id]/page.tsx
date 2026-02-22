@@ -46,6 +46,7 @@ type ProductModelDetails = {
   schem: { saleProduct: boolean; recommendedProduct: boolean };
 };
 type Product = {
+  productId?: string;
   productTitle: string;
   modelName: string;
   modelId: string;
