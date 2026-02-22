@@ -132,6 +132,12 @@ function FeaturedProductsContent({
       toast.error("API not configured. Please contact support.");
       return;
     }
+
+    if (form.phone.trim().length < 10) {
+      toast.error("Please enter a valid phone number");
+      return;
+    }
+
     try {
       setSubmitting(true);
       const result = await submitProductEnquiry({
@@ -286,10 +292,7 @@ function FeaturedProductsContent({
             </DialogTitle>
           </DialogHeader>
           {selectedProduct && (
-            <form
-              onSubmit={handleSubmitEnquiry}
-              className="space-y-4 mt-2"
-            >
+            <form onSubmit={handleSubmitEnquiry} className="space-y-4 mt-2">
               <div className="flex items-center gap-3 bg-blue-50/30 p-3 rounded-xl">
                 <div className="relative w-14 h-14 bg-white rounded-lg shrink-0 border">
                   <Image
@@ -309,28 +312,36 @@ function FeaturedProductsContent({
                   </p>
                 </div>
               </div>
-
+              <p className="text-xs text-gray-500 my-2 text-center">
+                All Fields are required
+              </p>
               <div className="space-y-2.5">
                 <Input
-                  placeholder="Full Name"
+                  placeholder="Enter Your Full Name"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="h-10 md:h-12 text-xs md:text-sm"
                 />
                 <Input
-                  placeholder="Email"
+                  placeholder="Enter Your Email"
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   className="h-10 md:h-12 text-xs md:text-sm"
                 />
                 <Input
-                  placeholder="Phone"
+                  type="tel"
+                  maxLength={10}
+                  placeholder="Enter Your Phone Number"
                   value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  onChange={(e) => {
+                    // Replaces any non-digit character with an empty string
+                    const onlyDigits = e.target.value.replace(/\D/g, "");
+                    setForm({ ...form, phone: onlyDigits });
+                  }}
                   className="h-10 md:h-12 text-xs md:text-sm"
                 />
                 <Textarea
-                  placeholder="Message"
+                  placeholder="Enter Your Message"
                   rows={2}
                   value={form.message}
                   onChange={(e) =>

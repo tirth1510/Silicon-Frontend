@@ -26,7 +26,7 @@ import { submitProductEnquiry } from "@/services/enquiry.api";
 
 /* ---------- TYPES ---------- */
 type ProductForList = {
-  id: string;
+  productId: string;
   modelId: string;
   title: string;
   modelName: string;
@@ -67,7 +67,7 @@ function ProductsContent() {
         const data = await res.json();
         if (data.success && Array.isArray(data.data)) {
           const mapped = data.data.map((product: any) => ({
-            id: product._id,
+            productId: product.productId || product._id,
             modelId: product.modelId,
             title: product.productTitle,
             modelName: product.modelName,
@@ -156,7 +156,7 @@ function ProductsContent() {
     try {
       setSubmitting(true);
       const result = await submitProductEnquiry({
-        productId: selectedProduct.id,
+        productId: selectedProduct.productId ,
         modelId: selectedProduct.modelId,
         productTitle: selectedProduct.title,
         modelName: selectedProduct.modelName,
@@ -216,7 +216,7 @@ function ProductsContent() {
                     </div>
                     {searchSuggestions.map((item) => (
                       <button
-                        key={item.id}
+                        key={item.productId}
                         className="w-full flex items-center gap-4 px-4 py-3 hover:bg-blue-50 transition-colors text-left border-b border-slate-50 last:border-none"
                         onClick={() => {
                           setSearchQuery(item.modelName);
@@ -322,7 +322,7 @@ function ProductsContent() {
                     )}>
                     {items.map((product) => (
                         <ProductCard 
-                        key={product.id} 
+                        key={product.productId} 
                         product={product} 
                         layout={layout} 
                         onContact={() => { setSelectedProduct(product); setOpen(true); }}
@@ -358,28 +358,32 @@ function ProductsContent() {
                         <p className="text-xs text-slate-500 line-clamp-2">{selectedProduct.title}</p>
                     </div>
                 </div>
+                <p className="text-sm text-slate-500 text-center ">All fields are required</p>
                 
                 <div className="space-y-3">
                     <Input 
-                        placeholder="Full Name" 
+                        placeholder="Enter your Full Name" 
+                         value={form.name}
                         onChange={(e) => setForm({...form, name: e.target.value})} 
                         className="rounded-xl border-slate-200 focus:ring-blue-900"
                     />
                     <Input 
-                        placeholder="Email Address" 
+                        placeholder="Enter your Email Address" 
                         type="email"
                         value={form.email}
                         onChange={(e) => setForm({...form, email: e.target.value})} 
                         className="rounded-xl border-slate-200 focus:ring-blue-900"
                     />
-                    <Input 
-                        placeholder="Phone Number" 
+                   <Input 
+                        type="tel"
+                        maxLength={10} // ✅ RESTORED 10 DIGIT LIMIT
+                        placeholder="Enter your Phone Number" 
                         value={form.phone}
-                        onChange={(e) => setForm({...form, phone: e.target.value})} 
+                        onChange={(e) => setForm({...form, phone: e.target.value.replace(/\D/g, "")})} // ✅ RESTORED NUMBER-ONLY TYPING
                         className="rounded-xl border-slate-200 focus:ring-blue-900"
                     />
                     <Textarea 
-                        placeholder="Delivery Address / Additional Requirements" 
+                        placeholder="Enter your Message" 
                         rows={3} 
                         value={form.address}
                         onChange={(e) => setForm({...form, address: e.target.value})} 
@@ -434,7 +438,7 @@ function ProductCard({ product, layout, onContact, router }: any) {
                 router.push(`/products/${product.modelId}`);
               }}
             >
-              Details
+             View Details
             </Button>
             <Button 
               className="flex-1 bg-blue-900 rounded-lg sm:rounded-xl h-8 sm:h-10 px-0 sm:px-6 font-bold text-[9px] sm:text-sm text-white" 
@@ -443,7 +447,7 @@ function ProductCard({ product, layout, onContact, router }: any) {
                 onContact();
               }}
             >
-              Enquiry
+              Get Enquiry
             </Button>
           </div>
         </div>

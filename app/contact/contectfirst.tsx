@@ -5,7 +5,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { useContactForm } from "@/hooks/useContactForm";
+import { useMutation } from "@tanstack/react-query";
+import { submitContactEnquiry } from "@/services/enquiry.api";
+import { toast } from "sonner";
 
 /* ---------- TYPES ---------- */
 type ContactFormData = {
@@ -18,30 +20,6 @@ type ContactFormData = {
   companyPhoneNumber: string;
   messageTitle: string;
   message: string;
-};
-
-/* ---------- WHATSAPP NUMBER (NO + SIGN) ---------- */
-const WHATSAPP_NUMBER = "+918160496588"; // example: 919876543210
-
-/* ---------- FORMAT WHATSAPP MESSAGE ---------- */
-const formatWhatsAppMessage = (data: ContactFormData) => {
-  return `
-📩 *New Contact Form Submission*
-
-👤 Name: ${data.name}
-📧 Email: ${data.email}
-📞 Phone: ${data.phone || "N/A"}
-
-🏢 Company Name: ${data.companyName || "N/A"}
-🏢 Company Email: ${data.companyEmail || "N/A"}
-📍 Company Location: ${data.companyLocation || "N/A"}
-☎️ Company Phone: ${data.companyPhoneNumber || "N/A"}
-
-📝 Subject: ${data.messageTitle || "N/A"}
-
-💬 Message:
-${data.message}
-`;
 };
 
 export default function ContactForm() {
@@ -57,7 +35,10 @@ export default function ContactForm() {
     message: "",
   });
 
-  const { mutate, isPending } = useContactForm();
+  // ✅ Fixed: Kept only the useMutation setup and removed the conflicting custom hook
+  const { mutate, isPending } = useMutation({
+    mutationFn: submitContactEnquiry,
+  });
 
   /* ---------- HANDLE INPUT CHANGE ---------- */
   const handleChange = (
@@ -72,20 +53,11 @@ export default function ContactForm() {
     e.preventDefault();
 
     mutate(formData, {
-      onSuccess: () => {
-        // 1️⃣ Build WhatsApp message
-        const message = formatWhatsAppMessage(formData);
+      onSuccess: (data) => {
+        // 1️⃣ Show success toast or alert
+        toast.success("Form submitted successfully!");
 
-        // 2️⃣ Encode message for URL
-        const encodedMessage = encodeURIComponent(message);
-
-        // 3️⃣ Open WhatsApp
-        window.open(
-          `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`,
-          "_blank"
-        );
-
-        // 4️⃣ Reset form
+        // 2️⃣ Reset form completely
         setFormData({
           name: "",
           email: "",
@@ -98,6 +70,11 @@ export default function ContactForm() {
           message: "",
         });
       },
+      onError: (error) => {
+        // 3️⃣ Handle error 
+        console.error("Submission failed:", error);
+        alert("Something went wrong. Please try again.");
+      }
     });
   };
 

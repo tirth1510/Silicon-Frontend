@@ -272,7 +272,9 @@ export default function ProductDetailsPage() {
               </div>
             </div> */}
 
-            {activeModel.specifications?.filter((s: any) => (typeof s === "string" ? s : s.points || s.value || s.label))?.length > 0 && (
+            {activeModel.specifications?.filter((s: any) =>
+              typeof s === "string" ? s : s.points || s.value || s.label,
+            )?.length > 0 && (
               <div className="pt-6 space-y-4 border-t border-slate-100">
                 <h3 className="text-xl font-bold text-slate-900 flex items-center gap-2">
                   <ShieldCheck size={20} className="text-blue-900" />{" "}
@@ -280,9 +282,16 @@ export default function ProductDetailsPage() {
                 </h3>
                 <ul className="space-y-3">
                   {activeModel.specifications
-                    .filter((s: any) => (typeof s === "string" ? s : s.points || s.value || s.label))
+                    .filter((s: any) =>
+                      typeof s === "string"
+                        ? s
+                        : s.points || s.value || s.label,
+                    )
                     .map((s: any, i: number) => {
-                      const content = typeof s === "string" ? s : s.points || s.value || s.label;
+                      const content =
+                        typeof s === "string"
+                          ? s
+                          : s.points || s.value || s.label;
 
                       return (
                         <li
@@ -338,24 +347,50 @@ export default function ProductDetailsPage() {
               Product Enquiry
             </DialogTitle>
           </DialogHeader>
+          <div className="flex items-center gap-4 bg-blue-50 p-3 rounded-2xl border border-blue-100">
+            <div className="relative w-16 h-16 bg-white rounded-xl overflow-hidden shrink-0 border border-blue-100">
+              <Image
+                src={productImages[0]}
+                alt=""
+                fill
+                className="object-contain p-1"
+                unoptimized
+              />
+            </div>
+            <div>
+              <p className="text-[10px] font-bold text-blue-600 uppercase">
+                Product Details
+              </p>
+              <h4 className="font-bold text-blue-900">
+                {product.modelName}
+              </h4>
+              <p className="text-xs text-slate-500 line-clamp-2">
+                {product.productTitle}
+              </p>
+            </div>
+          </div>
+          <p className="text-sm text-slate-500 text-center ">
+            All fields are required
+          </p>
+
           <div className="space-y-4">
             <Input
-              placeholder="Your Name"
+              placeholder="Enter Your Full Name"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
             />
             <Input
-              placeholder="Email"
+              placeholder="Enter Your Email"
               value={form.email}
               onChange={(e) => setForm({ ...form, email: e.target.value })}
             />
             <Input
-              placeholder="Phone"
+              placeholder="Enter Your Phone Number"
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
             />
             <Textarea
-              placeholder="Address / Message"
+              placeholder="Enter Your Message"
               value={form.address}
               onChange={(e) => setForm({ ...form, address: e.target.value })}
             />

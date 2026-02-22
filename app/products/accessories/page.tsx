@@ -32,6 +32,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
+import { useMutation } from "@tanstack/react-query";
+import { submitAccessoryEnquiry } from "@/services/enquiry.api";
 
 function AccessoriesContent() {
   const router = useRouter();
@@ -46,7 +48,7 @@ function AccessoriesContent() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [open, setOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [form, setForm] = useState({ name: "", email: "", phone: "", address: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", message: "" });
   const [submitting, setSubmitting] = useState(false);
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
@@ -118,41 +120,46 @@ function AccessoriesContent() {
   }, [filteredProducts]);
 
   /* ---------- ENQUIRY HANDLER ---------- */
-  const handleSubmitEnquiry = async () => {
-    if (!form.name || !form.phone || !form.email) {
-      toast.error("Please fill in all required fields");
+  const { mutate: submitEnquiry, isPending: isSubmitting } = useMutation({
+    mutationFn: submitAccessoryEnquiry,
+  });
+
+  /* ---------- HANDLE SUBMIT ENQUIRY ---------- */
+  /* ---------- HANDLE SUBMIT ENQUIRY ---------- */
+  const handleSubmitEnquiry = () => {
+    // 1️⃣ Validation: Check all fields since backend requires them
+    if (!form.name || !form.phone || !form.email || !form.message) {
+      toast.error("Please fill in all the required fields.");
       return;
     }
 
-    try {
-      setSubmitting(true);
+    const FALLBACK_IMAGE = "https://via.placeholder.com/400x400?text=No+Image";
 
-      const payload = {
-        productId: selectedProduct?.id ?? selectedProduct?._id ?? selectedProduct?.productId,
-        productTitle: selectedProduct?.productTitle,
-        productImageUrl: selectedProduct?.productImages?.[0]?.url || "https://via.placeholder.com/400",
-        name: form.name,
-        email: form.email,
-        phone: form.phone,
-        message: form.address,
-      };
+    // 2️⃣ Prepare payload 
+    // ✅ FIXED: Used correct properties from the `Product` type (productTitle, _id, productImages)
+    const payload = {
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      message: form.message,
+      productTitle: selectedProduct?.productTitle || "Medical Accessory", 
+      productId: selectedProduct?._id || selectedProduct?.id || "unknown", 
+      productImageUrl: selectedProduct?.productImages?.[0]?.url || FALLBACK_IMAGE, 
+    };
 
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/contact/accessory-enquiry`,
-        payload,
-      );
-
-      if (res.data.success) {
-        toast.success("Enquiry sent! Our team will contact you soon.");
-        setOpen(false);
-        setForm({ name: "", email: "", phone: "", address: "" });
-      }
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || "Failed to send enquiry");
-    } finally {
-      setSubmitting(false);
-    }
+    submitEnquiry(payload, {
+      onSuccess: () => {
+        toast.success("Enquiry submitted successfully!");
+        setOpen(false); // Close the dialog
+        setForm({ name: "", email: "", phone: "", message: "" }); // Reset the form
+      },
+      onError: (error) => {
+        console.error("Enquiry submission error:", error);
+        toast.error("Failed to send enquiry. Please try again.");
+      },
+    });
   };
+
 
   if (loading) {
     return (
@@ -336,32 +343,39 @@ function AccessoriesContent() {
                   <h4 className="font-bold text-blue-900 leading-tight">{selectedProduct.productTitle}</h4>
                 </div>
               </div>
-              
+               <p className="text-xs text-gray-500 my-2 text-center">
+                All Fields are required
+              </p>
               <div className="space-y-3">
                 <Input 
-                  placeholder="Full Name" 
+                  placeholder="Enter Your Full Name" 
                   value={form.name}
                   onChange={(e) => setForm({...form, name: e.target.value})} 
                   className="rounded-xl border-slate-200 focus:ring-blue-900"
                 />
                 <Input 
-                  placeholder="Email Address" 
+                  placeholder="Enter Your Email" 
                   type="email"
                   value={form.email}
                   onChange={(e) => setForm({...form, email: e.target.value})} 
                   className="rounded-xl border-slate-200 focus:ring-blue-900"
                 />
                 <Input 
-                  placeholder="Phone Number" 
+                  placeholder="Enter Your Phone Number" 
                   value={form.phone}
-                  onChange={(e) => setForm({...form, phone: e.target.value})} 
+                  onChange={(e) => {
+                    // Replaces any non-digit character with an empty string
+                    const onlyDigits = e.target.value.replace(/\D/g, "");
+                    setForm({ ...form, phone: onlyDigits });
+                  }}
+
                   className="rounded-xl border-slate-200 focus:ring-blue-900"
                 />
                 <Textarea 
-                  placeholder="Delivery Address" 
+                  placeholder="Enter Your Message" 
                   rows={3} 
-                  value={form.address}
-                  onChange={(e) => setForm({...form, address: e.target.value})} 
+                  value={form.message}
+                  onChange={(e) => setForm({...form, message: e.target.value})} 
                   className="rounded-xl border-slate-200 focus:ring-blue-900 resize-none"
                 />
               </div>
