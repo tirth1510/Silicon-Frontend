@@ -77,7 +77,7 @@ export default function Navbar() {
             {/* CENTER: Desktop Navigation */}
             <div className="hidden md:flex items-center bg-slate-100/50 p-1.5 rounded-2xl border border-slate-200/60 gap-x-2">
               <Link href="/" className={`px-5 py-2.5 text-sm font-bold rounded-xl transition-all duration-300 ${isActive("/") ? "bg-blue-900 text-white shadow-lg" : "text-slate-600 hover:text-blue-900"}`}>Home</Link>
-              <Link href="/about" className="px-5 py-2.5 text-sm font-bold rounded-xl text-slate-600 hover:text-blue-900">About</Link>
+              <Link href="/about-us" className="px-5 py-2.5 text-sm font-bold rounded-xl text-slate-600 hover:text-blue-900">About</Link>
 
               <div className="relative" onMouseEnter={() => setIsDropdownOpen(true)} onMouseLeave={() => setIsDropdownOpen(false)}>
                 <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen} modal={false}>
@@ -121,7 +121,7 @@ export default function Navbar() {
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
-              <Link href="/contact" className="px-5 py-2.5 text-sm font-bold rounded-xl text-slate-600 hover:text-blue-900">Contact</Link>
+              <Link href="/contact-us" className="px-5 py-2.5 text-sm font-bold rounded-xl text-slate-600 hover:text-blue-900">Contact</Link>
             </div>
 
             {/* RIGHT: Actions */}

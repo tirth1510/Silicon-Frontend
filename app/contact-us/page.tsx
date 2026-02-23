@@ -51,7 +51,10 @@ export default function Contact() {
             {/* Visual Decorative Element - Hidden on Small Screens */}
             <div className="hidden lg:block relative shrink-0">
               <div className="w-56 h-56 bg-blue-600 rounded-[3rem] rotate-12 flex items-center justify-center shadow-2xl animate-pulse">
-                <Plus className="text-white w-24 h-24 opacity-20" strokeWidth={4} />
+                <Plus
+                  className="text-white w-24 h-24 opacity-20"
+                  strokeWidth={4}
+                />
                 <Send className="absolute text-white w-16 h-16 -rotate-12" />
               </div>
             </div>
@@ -62,7 +65,6 @@ export default function Contact() {
       {/* MAIN CONTENT */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12 items-start">
-          
           {/* LEFT SIDE - CONTACT CARDS */}
           <div className="lg:col-span-1 space-y-6">
             {contactDetails.map((item, idx) => (
@@ -72,7 +74,10 @@ export default function Contact() {
               >
                 {/* Background Pattern */}
                 <div className="absolute top-4 right-6 opacity-10">
-                  <Plus className="w-16 h-16 text-white group-hover:rotate-90 transition-transform duration-700" strokeWidth={4} />
+                  <Plus
+                    className="w-16 h-16 text-white group-hover:rotate-90 transition-transform duration-700"
+                    strokeWidth={4}
+                  />
                 </div>
 
                 <div className="relative z-10 w-full space-y-4">
@@ -84,11 +89,17 @@ export default function Contact() {
                       {item.title}
                     </h3>
                     <div className="space-y-1">
-                      <a href={item.href1} className="block text-white/90 font-bold text-sm md:text-base hover:underline break-words">
+                      <a
+                        href={item.href1}
+                        className="block text-white/90 font-bold text-sm md:text-base hover:underline break-words"
+                      >
                         {item.info1}
                       </a>
                       {item.info2 && (
-                        <a href={item.href2} className="block text-white/90 font-bold text-sm md:text-base hover:underline">
+                        <a
+                          href={item.href2}
+                          className="block text-white/90 font-bold text-sm md:text-base hover:underline"
+                        >
                           {item.info2}
                         </a>
                       )}
@@ -110,12 +121,25 @@ export default function Contact() {
               </div>
               <div className="space-y-4">
                 {[
-                  { days: "Monday – Saturday", time: "10:00 AM – 7:00 PM", color: "text-slate-900" },
+                  {
+                    days: "Monday – Saturday",
+                    time: "10:00 AM – 7:00 PM",
+                    color: "text-slate-900",
+                  },
                   { days: "Sunday", time: "Closed", color: "text-red-600" },
                 ].map((row, i) => (
-                  <div key={i} className="flex justify-between items-center border-b border-slate-50 pb-2">
-                    <span className="text-xs md:text-sm font-bold text-slate-500">{row.days}</span>
-                    <span className={`text-xs md:text-sm font-black ${row.color}`}>{row.time}</span>
+                  <div
+                    key={i}
+                    className="flex justify-between items-center border-b border-slate-50 pb-2"
+                  >
+                    <span className="text-xs md:text-sm font-bold text-slate-500">
+                      {row.days}
+                    </span>
+                    <span
+                      className={`text-xs md:text-sm font-black ${row.color}`}
+                    >
+                      {row.time}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -125,7 +149,7 @@ export default function Contact() {
           {/* RIGHT SIDE - CONTACT FORM */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-[2.5rem] p-1 shadow-sm">
-               <ContactFirst />
+              <ContactFirst />
             </div>
           </div>
         </div>
@@ -143,7 +167,7 @@ export default function Contact() {
                 09, Hariom Industrial Soc, Bhatar, Surat, Gujarat
               </p>
             </div>
-            
+
             <div className="w-full h-[350px] md:h-[500px]">
               <iframe
                 src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3721.218386823374!2d72.8080!3d21.15!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjHCsDA5JzAwLjAiTiA3MsKwNDgnMjguOCJF!5e0!3m2!1sen!2sin!4v1234567890"

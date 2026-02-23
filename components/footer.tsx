@@ -58,7 +58,7 @@ export default function Footer() {
               Product&apos;s <ArrowRight className="w-4 h-4" />
             </button>
             <button
-              onClick={() => navigateTo("/contact")}
+              onClick={() => navigateTo("/contact-us")}
               className="flex items-center justify-center gap-2 px-8 py-4 bg-blue-900 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-slate-900 transition-all shadow-lg active:scale-95"
             >
               Contact Us <ArrowRight className="w-4 h-4" />

@@ -72,7 +72,7 @@ function ProductsContent() {
             title: product.productTitle,
             modelName: product.modelName,
             category: product.productCategory,
-            valuble: product.valuble || product.valuable === true, 
+            valuble: product.productModelDetails?.scheme?.valuableProduct ||  product.productModelDetails?.scheme?.valuableProduct === true, 
             image: product.productModelDetails?.colors?.[0]?.imageUrl || 
                    product.productModelDetails?.colors?.[0]?.productImageUrl?.[0]?.url || 
                    FALLBACK_IMAGE,

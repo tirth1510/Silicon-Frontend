@@ -253,13 +253,13 @@ function LandingPageContent() {
                     >
                       <Button
                         size="lg"
-                        onClick={() => router.push("/about")}
+                        onClick={() => router.push("/about-us")}
                         className="bg-blue-500 hover:bg-blue-700 text-white px-8 md:px-12 h-12 md:h-16 text-sm md:text-lg font-bold rounded-full w-full sm:w-auto"
                       >
                         View Our Services 
                       </Button>
                       <Button
-                        onClick={() => router.push("/contact")}
+                        onClick={() => router.push("/contact-us")}
                         size="lg"
                         variant="outline"
                         className="h-12 md:h-16 px-8 md:px-12 text-sm md:text-lg font-bold rounded-full border-2 border-white text-white hover:bg-white hover:text-blue-900 bg-transparent w-full sm:w-auto"
