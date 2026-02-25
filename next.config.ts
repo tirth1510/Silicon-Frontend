@@ -8,6 +8,22 @@ const nextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      // .html extension ko hatane ke liye
+      {
+        source: '/:path*.html',
+        destination: '/:path*',
+        permanent: true,
+      },
+      // .htm extension ko hatane ke liye
+      {
+        source: '/:path*.htm',
+        destination: '/:path*',
+        permanent: true,
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
