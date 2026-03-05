@@ -41,6 +41,7 @@ function ProductsContent() {
   const categorySlug = searchParams?.get("category") || null;
 
   const [products, setProducts] = useState<ProductForList[]>([]);
+  const [productsLoaded, setProductsLoaded] = useState(false);
   const [displayedProducts, setDisplayedProducts] = useState<ProductForList[]>([]);
   const [isFiltering, setIsFiltering] = useState(true); // Loader State
   
@@ -81,6 +82,8 @@ function ProductsContent() {
         }
       } catch (error) {
         console.error("Failed to fetch products:", error);
+      } finally {
+        setProductsLoaded(true);
       }
     };
     fetchProducts();
@@ -96,38 +99,38 @@ function ProductsContent() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Filtering Logic with Timeout for Loader
+  // Filtering Logic
   useEffect(() => {
+    if (!productsLoaded) {
+      return; // Don't filter until initial product list is loaded.
+    }
+
     setIsFiltering(true);
+
+    // Defer filtering if category data is still loading
+    if (categorySlug && categorySlug !== "premium" && categoryLoading) {
+      return;
+    }
+
+    let result = products;
     
-    const timer = setTimeout(() => {
-      // Jab tak category load nahi ho jaati, tab tak process mat aage badhao
-      if (categorySlug && categorySlug !== "premium" && categoryLoading) {
-        return;
-      }
-
-      let result = products;
-      
-      if (categorySlug === "premium") {
-        result = result.filter((p) => p.valuble === true);
-      } 
-      else if (categorySlug && category) {
-        result = result.filter((p) => String(p.category) === String(category.categoryId));
-      }
-      
-      if (searchQuery) {
-        result = result.filter((p) => 
-          p.modelName.toLowerCase().includes(searchQuery.toLowerCase()) || 
-          p.title.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-      }
-      
-      setDisplayedProducts(result);
-      setIsFiltering(false);
-    }, 400); // 400ms ka delay loader show karne ke liye
-
-    return () => clearTimeout(timer);
-  }, [products, category, categorySlug, searchQuery, categoryLoading]);
+    if (categorySlug === "premium") {
+      result = result.filter((p) => p.valuble === true);
+    } 
+    else if (categorySlug && category) {
+      result = result.filter((p) => String(p.category) === String(category.categoryId));
+    }
+    
+    if (searchQuery) {
+      result = result.filter((p) => 
+        p.modelName.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        p.title.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    }
+    
+    setDisplayedProducts(result);
+    setIsFiltering(false);
+  }, [products, productsLoaded, category, categorySlug, searchQuery, categoryLoading]);
 
   // Suggestions search query se hi chalegi taaki autocomplete fast rahe
   const searchSuggestions = useMemo(() => {
@@ -181,12 +184,12 @@ function ProductsContent() {
   };
 
   return (
-    <section className="bg-slate-50 min-h-screen pb-20 pt-28">
+    <section className="bg-slate-50 min-h-screen pb-20 pt-15">
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 mb-2 capitalize">
-                {categorySlug === "premium" ? "Premium Products" : (category ? category.categoryName : "Medical Equipment Catalog")}
+                {categorySlug === "premium" ? "Premium Products" : (category ? category.categoryName : "Medical Equipment")}
             </h1>
             <p className="text-slate-500 text-sm italic">
                 {isFiltering ? "Loading products..." : `Showing ${displayedProducts.length} items`}

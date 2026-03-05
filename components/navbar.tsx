@@ -219,8 +219,8 @@ export default function Navbar() {
                         </div>
                       )}
 
-                      <Link href="/about" onClick={() => setMobileMenu(false)} className="p-4 rounded-xl font-bold text-slate-700 flex items-center gap-3"><Info size={18} /> About Us</Link>
-                      <Link href="/contact" onClick={() => setMobileMenu(false)} className="p-4 rounded-xl font-bold text-slate-700 flex items-center gap-3"><Mail size={18} /> Contact</Link>
+                      <Link href="/about-us" onClick={() => setMobileMenu(false)} className="p-4 rounded-xl font-bold text-slate-700 flex items-center gap-3"><Info size={18} /> About Us</Link>
+                      <Link href="/contact-us" onClick={() => setMobileMenu(false)} className="p-4 rounded-xl font-bold text-slate-700 flex items-center gap-3"><Mail size={18} /> Contact</Link>
 
                       {/* Mobile Auth/Profile Actions */}
                       <div className="mt-2 pt-4 border-t border-slate-100">

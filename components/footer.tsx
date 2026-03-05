@@ -122,9 +122,9 @@ export default function Footer() {
             <ul className="space-y-4">
               {[
                 { name: "Home", path: "/" },
-                { name: "About Us", path: "/about" },
+                { name: "About Us", path: "/about-us" },
                 { name: "Products", path: "/products" },
-                { name: "Contact Us", path: "/contact" },
+                { name: "Contact Us", path: "/contact-us" },
               ].map((link) => (
                 <li key={link.name}>
                   <Link
@@ -145,16 +145,23 @@ export default function Footer() {
               Categories
             </h3>
             <ul className="space-y-4">
-              {categories?.slice(0, 6).map((item: any) => (
-                <li key={item._id}>
-                  <Link
-                    href={`/products?category=${item.categorySlug}`}
-                    className="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors"
-                  >
-                    {item.categoryName}
-                  </Link>
-                </li>
-              ))}
+              {categories?.slice(0, 6).map((item: any) => {
+                const isAccessoryCategory = String(item.categoryId) === "4";
+                const href = isAccessoryCategory
+                  ? "/products/accessories"
+                  : `/products?category=${item.categorySlug}`;
+                
+                return (
+                  <li key={item._id}>
+                    <Link
+                      href={href}
+                      className="text-sm font-bold text-slate-500 hover:text-blue-600 transition-colors"
+                    >
+                      {item.categoryName}
+                    </Link>
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
