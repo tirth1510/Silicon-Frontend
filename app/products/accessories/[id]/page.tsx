@@ -188,7 +188,7 @@ export default function AccessoryDetailsPage() {
                   onClick={() => setOpen(true)}
                   className="w-full h-14 sm:h-16 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-bold text-base sm:text-lg shadow-xl shadow-blue-50 transition-all active:scale-95"
                 >
-                  Fill Inquire Form
+                   Enquire Now
                 </Button>
               </div>
             </div>

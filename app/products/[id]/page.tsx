@@ -204,7 +204,7 @@ export default function ProductDetailsPage() {
                 onClick={() => setOpen(true)}
                 className="w-full h-16 rounded-xl bg-blue-900 hover:bg-blue-800 text-white font-bold text-lg shadow-xl"
               >
-                Inquire Now
+                Enquire Now
               </Button>
             </div>
           </div>

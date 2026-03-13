@@ -188,11 +188,13 @@ export default function Footer() {
                   <Mail className="w-4 h-4 text-teal-600" />
                 </div>
                 <a
-                  href="mailto:info@siliconmeditech.com"
-                  className="text-sm font-bold text-slate-700 hover:text-blue-600"
-                >
-                  siliconmeditech@gmail.com
-                </a>
+  href="https://mail.google.com/mail/?view=cm&fs=1&to=siliconmeditech@gmail.com"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="text-sm font-bold text-slate-700 hover:text-blue-600"
+>
+  siliconmeditech@gmail.com
+</a>
               </li>
               <li className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
@@ -217,7 +219,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">
               © {currentYear}{" "}
-              <span className="text-slate-900">Silicon Meditech</span>. All
+              <span className="text-slate-900">Silicon Meditech Pvt. Ltd.</span>. All
               rights reserved.
             </p>
           </div>

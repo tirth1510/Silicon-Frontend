@@ -282,6 +282,9 @@ export default function ProductsPage() {
                          <DropdownMenuItem onClick={() => { setSelectedModel(model); setOpenEditProductDialog(true); }} className="rounded-xl p-3 cursor-pointer focus:bg-green-50">
                            <Edit3 className="w-4 h-4 mr-3 text-green-600" /> <span className="font-bold">Edit Product</span>
                          </DropdownMenuItem>
+                         <DropdownMenuItem onClick={() => { setSelectedModel(model); setOpenEditModelDialog(true); }} className="rounded-xl p-3 cursor-pointer focus:bg-orange-50">
+                           <Package className="w-4 h-4 mr-3 text-orange-600" /> <span className="font-bold">Edit Model</span>
+                         </DropdownMenuItem>
                          <DropdownMenuItem onClick={() => { setSelectedModel(model); setOpenEditDetailsDialog(true); }} className="rounded-xl p-3 cursor-pointer focus:bg-amber-50">
                            <FileText className="w-4 h-4 mr-3 text-amber-600" /> <span className="font-bold">Edit Details</span>
                          </DropdownMenuItem>

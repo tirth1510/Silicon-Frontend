@@ -10,7 +10,7 @@ export default function Contact() {
       info1: "siliconmeditech@gmail.com",
       icon: Mail,
       theme: "bg-[#00B5AD]",
-      href1: "mailto:siliconmeditech@gmail.com",
+      href1:"https://mail.google.com/mail/?view=cm&fs=1&to=siliconmeditech@gmail.com"
     },
     {
       title: "Call Us",
